@@ -4,8 +4,9 @@ namespace Modules\ProductPos\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Modules\ProductPos\app\Models\ProductPos;
+use Modules\ProductPos\app\Http\Requests\EditProductRequest;
+use Modules\ProductPos\app\Http\Requests\StoreProductRequest;
 
 class ProductPosController extends Controller
 {
@@ -28,7 +29,7 @@ class ProductPosController extends Controller
      */
     public function index()
     {
-        return view('productpos::index');
+        return view('productpos::index')->with(['products' => ProductPos::latest()->paginate(3)]);
     }
 
     /**
@@ -42,33 +43,59 @@ class ProductPosController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreProductRequest $request): RedirectResponse
     {
         //
+
+        $input = $request->all();
+
+        $data_send = [
+            'name' => $input['name'],
+            'code_product' => $input['code_product'],
+            'category' => $input['category'],
+            'description' => $input['description']
+        ];
+
+        if ($request->hasFile('image_product')) {
+            $imageName = time() . '.' . $request->image_product->extension();
+            $path = $request->file('image_product')->storeAs('/upload/product/images', $imageName, 'public');
+            $data_send['image_product'] = $path;
+        }
+
+        ProductPos::create($data_send);
+        return redirect()->route('productpos.index')
+            ->withSuccess('New product is added successfully.');
     }
 
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(ProductPos $product)
     {
-        return view('productpos::show');
+        return view('productpos::show')->with([
+            'product' => $product
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(ProductPos $product)
     {
-        return view('productpos::edit');
+        return view('productpos::edit')->with([
+            'product' => $product
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(EditProductRequest $request, ProductPos $product): RedirectResponse
     {
         //
+        $product->update($request->all());
+        return redirect()->back()
+            ->withSuccess('Product is updated successfully.');
     }
 
     /**
@@ -77,5 +104,8 @@ class ProductPosController extends Controller
     public function destroy($id)
     {
         //
+        ProductPos::find($id)->delete();
+        return redirect()->route('productpos.index')
+            ->withSuccess('Product is deleted successfully.');
     }
 }

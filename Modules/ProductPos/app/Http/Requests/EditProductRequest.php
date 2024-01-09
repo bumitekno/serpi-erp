@@ -17,7 +17,7 @@ class EditProductRequest extends FormRequest
             'name' => 'required|string|max:250',
             'description' => 'required|string',
             'category' => 'required|string|max:250',
-            'avatar' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+            'image_product' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ];
     }
 
