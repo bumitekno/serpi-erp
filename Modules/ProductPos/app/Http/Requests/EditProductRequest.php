@@ -3,6 +3,7 @@
 namespace Modules\ProductPos\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EditProductRequest extends FormRequest
 {
@@ -13,7 +14,6 @@ class EditProductRequest extends FormRequest
     {
         return [
             //
-            'code_product' => 'required|string|max:250|unique:product_pos,code_product' . $this->ProductPos->id,
             'name' => 'required|string|max:250',
             'description' => 'required|string',
             'category' => 'required|string|max:250',

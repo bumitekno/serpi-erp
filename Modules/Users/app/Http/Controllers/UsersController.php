@@ -168,8 +168,8 @@ class UsersController extends Controller
             $user->syncRoles([]);
 
             if (!empty($user->avatar)) {
-                if (Storage::exists($user->avatar))
-                    Storage::delete($user->avatar);
+                if (Storage::disk('public')->exists($user->avatar))
+                    Storage::disk('public')->delete($user->avatar);
             }
             $user->delete();
             return response()->json(['message' => 'User Delete successfully', 'redirect' => route('users.index')], 200);
@@ -193,8 +193,8 @@ class UsersController extends Controller
                 $user = User::find($ls);
                 if (!empty($user)) {
                     if (!empty($user->avatar)) {
-                        if (Storage::exists($user->avatar))
-                            Storage::delete($user->avatar);
+                        if (Storage::disk('public')->exists($user->avatar))
+                            Storage::disk('public')->delete($user->avatar);
                     }
                     // About if user is Super Admin or User ID belongs to Auth User
                     if ($user->hasRole('Superadmin') || $user->id == auth()->user()->id) {

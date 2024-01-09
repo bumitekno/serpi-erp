@@ -4,24 +4,27 @@
         <div class="col-md-8">
 
             <div class="card">
-                <div class="card-header mt-3">
+                <div class="card-header mt-3 ">
                     <div class="float-start">
-                        Add New Product
+                        Edit Product
                     </div>
                     <div class="float-end">
                         <a href="{{ route('productpos.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('productpos.store') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('productpos.update', $product->id) }}" method="post"
+                        enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
 
                         <div class="mb-3 row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Code
+                            <label for="code_product" class="col-md-4 col-form-label text-md-end text-start">Code
                                 Product</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control @error('code_product') is-invalid @enderror"
-                                    id="name" name="code_product" value="{{ old('code_product') }}">
+                                <input type="text"
+                                    class="form-control @error('code_product') is-invalid @enderror form-control-solid"
+                                    id="code_product" name="code_product" value="{{ $product->code_product }}" readonly>
                                 @if ($errors->has('code_product'))
                                     <span class="text-danger">{{ $errors->first('code_product') }}</span>
                                 @endif
@@ -32,7 +35,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Name</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name') }}">
+                                    id="name" name="name" value="{{ $product->name }}">
                                 @if ($errors->has('name'))
                                     <span class="text-danger">{{ $errors->first('name') }}</span>
                                 @endif
@@ -43,7 +46,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Category</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('category') is-invalid @enderror"
-                                    id="name" name="category" value="{{ old('category') }}">
+                                    id="category" name="category" value="{{ $product->category }}">
                                 @if ($errors->has('category'))
                                     <span class="text-danger">{{ $errors->first('category') }}</span>
                                 @endif
@@ -59,9 +62,15 @@
                                     style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
                                     <!--begin::Preview existing avatar-->
 
-                                    <div class="image-input-wrapper w-125px h-125px"
-                                        style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
-                                    </div>
+                                    @if (!empty($product->image_product))
+                                        <div class="image-input-wrapper w-125px h-125px"
+                                            style="background-image: url({{ Storage::url($product->image_product) }});">
+                                        </div>
+                                    @else
+                                        <div class="image-input-wrapper w-125px h-125px"
+                                            style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                        </div>
+                                    @endif
 
                                     <!--end::Preview existing avatar-->
                                     <!--begin::Label-->
@@ -104,7 +113,7 @@
                             <label for="description"
                                 class="col-md-4 col-form-label text-md-end text-start">Description</label>
                             <div class="col-md-6">
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description">{{ old('description') }}</textarea>
+                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description">{{ $product->description }}</textarea>
                                 @if ($errors->has('description'))
                                     <span class="text-danger">{{ $errors->first('description') }}</span>
                                 @endif
@@ -112,7 +121,7 @@
                         </div>
 
                         <div class="mb-3 row">
-                            <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Add Product">
+                            <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Update">
                         </div>
 
                     </form>

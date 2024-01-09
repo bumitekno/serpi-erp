@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\ProductPos\app\Http\Requests\EditProductRequest;
 use Modules\ProductPos\app\Http\Requests\StoreProductRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ProductPosController extends Controller
 {
@@ -17,10 +18,13 @@ class ProductPosController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:create-product|edit-product|delete-product', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-product|edit-product|delete-product|import-product|export-product|download-product', ['only' => ['index', 'show']]);
         $this->middleware('permission:create-product', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-product', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete-product', ['only' => ['destroy']]);
+        $this->middleware('permission:import-product', ['only' => ['import']]);
+        $this->middleware('permission:export-product', ['only' => ['export']]);
+        $this->middleware('permission:download-product', ['only' => ['download']]);
     }
 
 
@@ -29,7 +33,7 @@ class ProductPosController extends Controller
      */
     public function index()
     {
-        return view('productpos::index')->with(['products' => ProductPos::latest()->paginate(3)]);
+        return view('productpos::index')->with(['products' => ProductPos::latest()->paginate(10)]);
     }
 
     /**
@@ -70,8 +74,9 @@ class ProductPosController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show(ProductPos $product)
+    public function show($id)
     {
+        $product = ProductPos::find($id);
         return view('productpos::show')->with([
             'product' => $product
         ]);
@@ -80,20 +85,45 @@ class ProductPosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductPos $product)
+    public function edit($id)
     {
         return view('productpos::edit')->with([
-            'product' => $product
+            'product' => ProductPos::find($id)
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(EditProductRequest $request, ProductPos $product): RedirectResponse
+    public function update(EditProductRequest $request, $id): RedirectResponse
     {
         //
-        $product->update($request->all());
+
+        $product = ProductPos::find($id);
+
+        $input = $request->all();
+
+        $data_send = [
+            'name' => $input['name'],
+            'code_product' => $input['code_product'],
+            'category' => $input['category'],
+            'description' => $input['description']
+        ];
+
+        if ($request->hasFile('image_product')) {
+
+            if (!empty($product->image_product)) {
+                if (Storage::disk('public')->exists($product->image_product))
+                    Storage::disk('public')->delete($product->image_product);
+            }
+
+            $imageName = time() . '.' . $request->image_product->extension();
+            $path = $request->file('image_product')->storeAs('/upload/product/images', $imageName, 'public');
+            $data_send['image_product'] = $path;
+        }
+
+        $product->update($data_send);
+
         return redirect()->back()
             ->withSuccess('Product is updated successfully.');
     }
@@ -104,8 +134,32 @@ class ProductPosController extends Controller
     public function destroy($id)
     {
         //
-        ProductPos::find($id)->delete();
+        $product = ProductPos::find($id);
+        if (!empty($product->image_product)) {
+            if (Storage::disk('public')->exists($product->image_product))
+                Storage::disk('public')->delete($product->image_product);
+        }
+        $product->delete();
         return redirect()->route('productpos.index')
             ->withSuccess('Product is deleted successfully.');
+    }
+
+    /** import product */
+    public function import()
+    {
+
+    }
+
+    /** export */
+    public function export()
+    {
+
+    }
+
+    /** download */
+
+    public function download()
+    {
+
     }
 }

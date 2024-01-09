@@ -39,7 +39,10 @@ class PermissionSeeder extends Seeder
         $permissions_module_product = [
             'create-product',
             'edit-product',
-            'delete-product'
+            'delete-product',
+            'import-product',
+            'export-product',
+            'download-product'
         ];
 
         // Looping and Inserting Array's Permissions Module Users into Permission Table
