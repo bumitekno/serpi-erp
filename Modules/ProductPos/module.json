@@ -1,0 +1,11 @@
+{
+    "name": "ProductPos",
+    "alias": "productpos",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ProductPos\\app\\Providers\\ProductPosServiceProvider"
+    ],
+    "files": []
+}
