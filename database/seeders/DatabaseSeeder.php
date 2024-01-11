@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use Modules\Roles\database\seeders\RolesDatabaseSeeder;
 use Modules\Roles\database\seeders\PermissionSeeder;
 use Modules\Users\database\seeders\UsersDatabaseSeeder;
+use Modules\ProductPos\database\seeders\ProductPosDatabaseSeeder;
+use Modules\CategoryProduct\database\seeders\CategoryProductDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,7 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PermissionSeeder::class,
             RolesDatabaseSeeder::class,
-            UsersDatabaseSeeder::class
+            UsersDatabaseSeeder::class,
+            CategoryProductDatabaseSeeder::class,
+            ProductPosDatabaseSeeder::class,
         ]);
     }
 }

@@ -99,7 +99,7 @@
                                             <div class="menu-content d-flex align-items-center px-3">
                                                 <!--begin::Avatar-->
                                                 <div class="symbol symbol-50px me-5">
-                                                    <img alt="Logo" src="assets/media/avatars/150-26.jpg" />
+                                                    <span class="text-white">ERP</span>
                                                 </div>
                                                 <!--end::Avatar-->
                                                 <!--begin::Username-->
@@ -184,7 +184,7 @@
                     <div class="header-brand">
                         <!--begin::Logo-->
                         <a href="{{ route('dashboard') }}">
-                            <img alt="Logo" src="assets/media/logos/logo-1-dark.svg" class="h-25px h-lg-25px" />
+                            <span class="text-white fs-2tx fw-bolder">ERP</span>
                         </a>
                         <!--end::Logo-->
                         <!--begin::Aside minimize-->

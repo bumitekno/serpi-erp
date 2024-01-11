@@ -5,6 +5,7 @@ namespace Modules\ProductPos\app\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\ProductPos\Database\factories\ProductPosFactory;
+use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -31,6 +32,13 @@ class ProductPos extends Model
         'price_purchase',
         'stock_qty',
     ];
+
+    /** with category */
+
+    public function category_product()
+    {
+        return $this->belongsTo(CategoryProduct::class, 'category', 'id');
+    }
 
     protected static function newFactory(): ProductPosFactory
     {

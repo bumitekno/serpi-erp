@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->string('code_product')->unique();
             $table->string('name')->nullable();
-            $table->string('category')->nullable();
+            $table->foreignId('category')->nullable();
             $table->string('price_sell')->nullable();
             $table->string('price_purchase')->nullable();
             $table->string('stock_qty')->nullable();

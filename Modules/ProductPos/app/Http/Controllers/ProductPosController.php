@@ -4,6 +4,7 @@ namespace Modules\ProductPos\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\ProductPos\app\Http\Requests\EditProductRequest;
 use Modules\ProductPos\app\Http\Requests\StoreProductRequest;
@@ -33,7 +34,7 @@ class ProductPosController extends Controller
      */
     public function index()
     {
-        return view('productpos::index')->with(['products' => ProductPos::latest()->paginate(10)]);
+        return view('productpos::index')->with(['products' => ProductPos::with('category_product')->latest()->paginate(10)]);
     }
 
     /**
@@ -41,7 +42,7 @@ class ProductPosController extends Controller
      */
     public function create()
     {
-        return view('productpos::create');
+        return view('productpos::create', ['category_product' => CategoryProduct::query()->get()]);
     }
 
     /**
@@ -76,7 +77,7 @@ class ProductPosController extends Controller
      */
     public function show($id)
     {
-        $product = ProductPos::find($id);
+        $product = ProductPos::with('category_product')->find($id);
         return view('productpos::show')->with([
             'product' => $product
         ]);
@@ -88,7 +89,8 @@ class ProductPosController extends Controller
     public function edit($id)
     {
         return view('productpos::edit')->with([
-            'product' => ProductPos::find($id)
+            'product' => ProductPos::with('category_product')->find($id),
+            'category_product' => CategoryProduct::query()->get()
         ]);
     }
 

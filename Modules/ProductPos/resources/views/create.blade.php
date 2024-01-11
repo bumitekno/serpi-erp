@@ -42,8 +42,13 @@
                         <div class="mb-3 row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Category</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control @error('category') is-invalid @enderror"
-                                    id="name" name="category" value="{{ old('category') }}">
+                                <select class="form-select @error('category') is-invalid @enderror" data-control="select2"
+                                    data-placeholder="Select an option category" name="category">
+                                    <option></option>
+                                    @foreach ($category_product as $category)
+                                        <option value="{{ $category->id }}"> {{ $category->name }} </option>
+                                    @endforeach
+                                </select>
                                 @if ($errors->has('category'))
                                     <span class="text-danger">{{ $errors->first('category') }}</span>
                                 @endif
@@ -56,11 +61,11 @@
                             <!--end::Label-->
                             <div class="col-md-6">
                                 <div class="image-input image-input-outline" data-kt-image-input="true"
-                                    style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                    style="background-image: url('https://fakeimg.pl/100x100')">
                                     <!--begin::Preview existing avatar-->
 
                                     <div class="image-input-wrapper w-125px h-125px"
-                                        style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                        style="background-image: url('https://fakeimg.pl/100x100')">
                                     </div>
 
                                     <!--end::Preview existing avatar-->

@@ -21,11 +21,9 @@
                         <div class="col-md-6" style="line-height: 35px;">
                             <div class="symbol-label symbol symbol-circle symbol-150px">
                                 @if (!empty($product->image_product))
-                                    <img src="{{ Storage::url($product->image_product) }}" alt="Emma Smith"
-                                        class="w-100" />
+                                    <img src="{{ Storage::url($product->image_product) }}" alt="Product" class="w-100" />
                                 @else
-                                    <img src="{{ asset('assets/media/avatars/150-1.jpg') }}" alt="Emma Smith"
-                                        class="w-100" />
+                                    <img src="https://fakeimg.pl/100x100" alt="Product" class="w-100" />
                                 @endif
                             </div>
                         </div>
@@ -51,7 +49,7 @@
                         <label for="name" class="col-md-4 col-form-label text-md-end text-start"><strong>Category
                                 :</strong></label>
                         <div class="col-md-6" style="line-height: 35px;">
-                            {{ $product->category }}
+                            {{ $product->category_product?->name }}
                         </div>
                     </div>
 

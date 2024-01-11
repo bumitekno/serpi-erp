@@ -1,5 +1,9 @@
 {
     "Users": true,
     "Roles": true,
-    "ProductPos": true
+    "ProductPos": true,
+    "CategoryProduct": true,
+    "UnitProduct": true,
+    "Warehouse": true,
+    "Stock": true
 }

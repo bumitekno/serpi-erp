@@ -102,7 +102,7 @@ class UsersController extends Controller
     {
 
         if ($user->hasRole('Superadmin')) {
-            if ($user->id != auth()->user()->id) {
+            if ($user->id != Auth::user()->id) {
                 abort(403, 'USER DOES NOT HAVE THE RIGHT PERMISSIONS');
             }
         }
@@ -161,8 +161,8 @@ class UsersController extends Controller
         if (!empty($user)) {
 
             // About if user is Super Admin or User ID belongs to Auth User
-            if ($user->hasRole('Superadmin') || $user->id == auth()->user()->id) {
-                abort(403, 'USER DOES NOT HAVE THE RIGHT PERMISSIONS');
+            if ($user->hasRole('Superadmin') || $user->id == Auth::user()->id) {
+                return response()->json(['message' => 'USER DOES NOT HAVE THE RIGHT PERMISSIONS', 'redirect' => route('users.index')], 403);
             }
 
             $user->syncRoles([]);

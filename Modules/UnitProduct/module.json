@@ -1,0 +1,11 @@
+{
+    "name": "UnitProduct",
+    "alias": "unitproduct",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\UnitProduct\\app\\Providers\\UnitProductServiceProvider"
+    ],
+    "files": []
+}

@@ -38,7 +38,7 @@
             <!--begin::Content-->
             <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
                 <!--begin::Logo-->
-                <a href="{{ url('/') }}" class="mb-12">
+                <a href="{{ url('/') }}" class="mb-12 d-none">
                     <img alt="Logo" src="{{ asset('assets/media/logos/logo-2.svg') }}" class="h-40px" />
                 </a>
                 <!--end::Logo-->
@@ -49,7 +49,7 @@
                         <!--begin::Heading-->
                         <div class="text-center mb-10">
                             <!--begin::Title-->
-                            <h1 class="text-dark mb-3">Sign In to Serpi</h1>
+                            <h1 class="text-dark mb-3">ERP </h1>
                             <!--end::Title-->
                             <!--begin::Link-->
                             <div class="text-gray-400 fw-bold fs-4 d-none">New Here?

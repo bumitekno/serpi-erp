@@ -1,0 +1,11 @@
+{
+    "name": "CategoryProduct",
+    "alias": "categoryproduct",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CategoryProduct\\app\\Providers\\CategoryProductServiceProvider"
+    ],
+    "files": []
+}
