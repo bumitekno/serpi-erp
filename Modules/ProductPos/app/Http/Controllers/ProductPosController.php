@@ -9,6 +9,11 @@ use Modules\ProductPos\app\Models\ProductPos;
 use Modules\ProductPos\app\Http\Requests\EditProductRequest;
 use Modules\ProductPos\app\Http\Requests\StoreProductRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Modules\ProductPos\app\Http\Controllers\ProductPosExportController;
+use Modules\ProductPos\app\Http\Controllers\ProductPostSheetController;
+use Modules\ProductPos\app\Http\Controllers\ProductPostImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductPosController extends Controller
 {
@@ -23,7 +28,7 @@ class ProductPosController extends Controller
         $this->middleware('permission:create-product', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-product', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete-product', ['only' => ['destroy']]);
-        $this->middleware('permission:import-product', ['only' => ['import']]);
+        $this->middleware('permission:import-product', ['only' => ['importview']]);
         $this->middleware('permission:export-product', ['only' => ['export']]);
         $this->middleware('permission:download-product', ['only' => ['download']]);
     }
@@ -146,22 +151,58 @@ class ProductPosController extends Controller
             ->withSuccess('Product is deleted successfully.');
     }
 
-    /** import product */
-    public function import()
-    {
+    /**
+     * Display a listing of the resource.
+     */
 
+    public function importview()
+    {
+        return view('productpos::import');
     }
+
+
+    /** import product */
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+
+        try {
+
+            (new ProductPostImport)->import($file, null, \Maatwebsite\Excel\Excel::XLSX);
+
+            return response()->json([
+                'message' => 'Data Product berhasil diimport',
+                'status' => true,
+            ], 200);
+
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+
+            foreach ($failures as $failure) {
+                $failure->row(); // row that went wrong
+                $failure->attribute(); // either heading key (if using heading row concern) or column index
+                $failure->errors(); // Actual error messages from Laravel validator
+                $failure->values(); // The values of the row that has failed.
+                $error_tampil = '' . $failure->errors()[0] . 'pada baris ke-' . $failure->row() . '';
+            }
+
+            return response()->json([
+                'message' => $error_tampil
+            ], 302);
+        }
+    }
+
 
     /** export */
     public function export()
     {
-
+        return Excel::download(new ProductPosExportController, 'product-export.xlsx');
     }
 
     /** download */
 
     public function download()
     {
-
+        return Excel::download(new ProductPostSheetController, 'product-template.xlsx');
     }
 }

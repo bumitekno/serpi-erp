@@ -66,9 +66,9 @@
 @endcanany
 
 @canany(['create-category-product', 'edit-category-product', 'delete-category-product', 'create-product',
-    'edit-product', 'delete-product'])
+    'edit-product', 'delete-product', 'import-product', 'export-product'])
     <div data-kt-menu-trigger="click"
-        class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') || request()->is('categoryproduct*') ? 'show' : '' }} ">
+        class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') || request()->is('categoryproduct*') || request()->is('tools-productpos*') ? 'show' : '' }} ">
         <span class="menu-link">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen051.svg-->
@@ -101,7 +101,7 @@
                     </a>
                 </div>
             @endcanany
-            @canany(['create-unit-product', 'edit-unit-product', 'delete-unit-product'])
+            @canany(['create-unit-product', 'edit-unit-product', 'delete-unit-product', 'export-product', 'import-product'])
                 <div class="menu-item">
                     <a class="menu-link {{ request()->is('unitproduct*') ? 'active' : '' }}"
                         href="{{ route('unitproduct.index') }}">
@@ -114,7 +114,7 @@
             @endcanany
             @canany(['create-product', 'edit-product', 'delete-product'])
                 <div class="menu-item">
-                    <a class="menu-link {{ request()->is('productpos*') ? 'active' : '' }} "
+                    <a class="menu-link {{ request()->is('productpos*') || request()->is('tools-productpos*') ? 'active' : '' }} "
                         href="{{ route('productpos.index') }}">
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
