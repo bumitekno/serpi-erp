@@ -136,6 +136,18 @@
                 </div>
             @endcanany
 
+            @canany(['create-location', 'edit-location', 'delete-location'])
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('location*') ? 'active' : '' }} "
+                        href="{{ route('location.index') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Location</span>
+                    </a>
+                </div>
+            @endcanany
+
             @canany(['create-stock', 'edit-stock', 'delete-stock'])
                 <div class="menu-item">
                     <a class="menu-link {{ request()->is('stock*') ? 'active' : '' }} " href="{{ route('stock.index') }}">

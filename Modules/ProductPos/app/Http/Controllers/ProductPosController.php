@@ -37,9 +37,15 @@ class ProductPosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('productpos::index')->with(['products' => ProductPos::with('category_product')->latest()->paginate(10)]);
+        if (!empty($request->search)) {
+            $product = ProductPos::with('category_product')->where('name', 'like', '%' . $request->search . '%')->latest()->paginate(10);
+        } else {
+            $product = ProductPos::with('category_product')->latest()->paginate(10);
+        }
+
+        return view('productpos::index')->with(['products' => $product, 'keyword' => $request->search]);
     }
 
     /**

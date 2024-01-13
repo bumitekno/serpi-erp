@@ -16,7 +16,7 @@ use Modules\ProductPos\app\Http\Controllers\ProductPosController;
 
 Route::group([], function () {
     Route::resource('productpos', ProductPosController::class)->names('productpos');
-
+    Route::post('productpos/search', [ProductPosController::class, 'index'])->name('productpos.search');
     Route::prefix('tools-productpos')->group(function () {
         Route::post('import', [ProductPosController::class, 'import'])->name('tools-productpos.import');
         Route::get('export', [ProductPosController::class, 'export'])->name('tools-productpos.export');
