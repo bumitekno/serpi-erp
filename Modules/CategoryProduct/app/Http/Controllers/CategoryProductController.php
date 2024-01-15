@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Modules\CategoryProduct\app\Http\Requests\StoreCategoryProduct;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryProductController extends Controller
 {
@@ -56,7 +57,7 @@ class CategoryProductController extends Controller
             'name' => $input['name'],
         ];
         if ($request->hasFile('image_category')) {
-            $imageName = time() . '.' . $request->image_product->extension();
+            $imageName = time() . '.' . $request->image_category->extension();
             $path = $request->file('image_category')->storeAs('/upload/category/images', $imageName, 'public');
             $data_send['image_category'] = $path;
         }
@@ -71,7 +72,7 @@ class CategoryProductController extends Controller
      */
     public function show($id)
     {
-        return view('categoryproduct::show');
+        return view('categoryproduct::show')->with(['category' => CategoryProduct::find($id)]);
     }
 
     /**
@@ -79,7 +80,7 @@ class CategoryProductController extends Controller
      */
     public function edit($id)
     {
-        return view('categoryproduct::edit');
+        return view('categoryproduct::edit')->with(['category' => CategoryProduct::find($id)]);
     }
 
     /**
@@ -88,6 +89,24 @@ class CategoryProductController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         //
+        $category = CategoryProduct::find($id);
+        $input = $request->all();
+        $data_send = [
+            'name' => $input['name'],
+        ];
+        if ($request->hasFile('image_category')) {
+
+            if (!empty($category->image_category)) {
+                if (Storage::disk('public')->exists($category->image_category))
+                    Storage::disk('public')->delete($category->image_category);
+            }
+            $imageName = time() . '.' . $request->image_category->extension();
+            $path = $request->file('image_category')->storeAs('/upload/category/images', $imageName, 'public');
+            $data_send['image_category'] = $path;
+        }
+        $category->update($data_send);
+        return redirect()->route('categoryproduct.index')
+            ->withSuccess('New category is change successfully.');
     }
 
     /**

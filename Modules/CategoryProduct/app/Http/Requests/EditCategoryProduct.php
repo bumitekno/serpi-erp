@@ -4,7 +4,7 @@ namespace Modules\CategoryProduct\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCategoryProduct extends FormRequest
+class EditCategoryProduct extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,7 +13,7 @@ class StoreCategoryProduct extends FormRequest
     {
         return [
             //
-            'name' => 'required|string|max:250|unique:category_product,name',
+            'name' => 'required|string|max:250|unique:category_product,name,' . $this->id,
             'image_category' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ];
     }

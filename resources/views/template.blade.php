@@ -99,14 +99,16 @@
                                             <div class="menu-content d-flex align-items-center px-3">
                                                 <!--begin::Avatar-->
                                                 <div class="symbol symbol-50px me-5">
-                                                    <span class="text-white">ERP</span>
+                                                    <div class="symbol symbol-50px">
+                                                        <img src="assets/media/avatars/150-26.jpg" alt="" />
+                                                    </div>
                                                 </div>
                                                 <!--end::Avatar-->
                                                 <!--begin::Username-->
                                                 <div class="d-flex flex-column">
                                                     <div class="fw-bolder d-flex align-items-center fs-5">
                                                         {{ empty(Auth()->user()->name) ? '-' : Auth()->user()->name }}
-
+                                                        {{ empty(Auth()->user()->getRoleNames())? '-': Auth()->user()->getRoleNames()->first() }}
                                                     </div>
                                                     <a href="#"
                                                         class="fw-bold text-muted text-hover-primary fs-7">{{ empty(Auth()->user()->email) ? '-' : Auth()->user()->email }}</a>
