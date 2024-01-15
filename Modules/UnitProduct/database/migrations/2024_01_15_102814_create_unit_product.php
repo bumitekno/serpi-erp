@@ -10,9 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('permissions', function (Blueprint $table) {
-            $table->string('module');     // For MySQL 8.0 use string('module', 125);
-            $table->string('group_modules');
+        Schema::create('unit_product', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('permissions', function (Blueprint $table) {
-
-        });
+        Schema::dropIfExists('unit_product');
     }
 };

@@ -23,31 +23,48 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <div class="col-md-12">
-                            <table class="table table-row-bordered">
+                        <div class="col-md-8">
+                            <table class="table @error('permissions') is-invalid @enderror table-row-bordered"
+                                id="kt_table_roles">
                                 <thead>
                                     <tr>
-                                        <th>Permission Module</th>
+                                        <th>Group </th>
+                                        <th>Modules </th>
+                                        <th>Permission </th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                @foreach ($modules as $module)
+                                @foreach ($group_modules as $groups)
                                     <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
                                         <td>
-                                            <h3>{{ Str::title(Str::replace('_', ' ', $module['module'])) }}</h3>
+                                            <h3>{{ Str::title(Str::replace('_', ' ', $groups['group_modules'])) }}</h3>
                                         </td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
-                                    @foreach (\Spatie\Permission\Models\Permission::where('module', $module['module'])->get() as $perm)
-                                        <tr>
-                                            <td><span class="p-3">
-                                                    {{ Str::title(Str::replace('-', ' ', $perm->name)) }} </span></td>
-                                            <td><input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
-                                                    {{ $role->hasPermissionTo($perm->name) ? 'checked' : null }} disabled />
+                                    @foreach (\Spatie\Permission\Models\Permission::select('module', 'group_modules')->distinct()->where('group_modules', $groups['group_modules'])->orderBy('group_modules')->get() as $module)
+                                        <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
+                                            <td></td>
+                                            <td>
+                                                <h3>{{ Str::title(Str::replace('_', ' ', $module['module'])) }}
+                                                </h3>
                                             </td>
+                                            <td></td>
                                         </tr>
+                                        @foreach (\Spatie\Permission\Models\Permission::where('module', $module['module'])->get() as $perm)
+                                            <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
+                                                <td colspan="2"></td>
+                                                <td> <span class="p-3">
+                                                        {{ Str::title(Str::replace('-', ' ', $perm->name)) }} </span>
+                                                </td>
+                                                <td><input type="checkbox" name="permissions[]" value="{{ $perm->id }}"
+                                                        {{ $role->hasPermissionTo($perm->name) ? 'checked' : null }}
+                                                        disabled />
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endforeach
                                 @endforeach
-
                             </table>
                         </div>
                     </div>

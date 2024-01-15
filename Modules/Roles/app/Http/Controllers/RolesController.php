@@ -36,7 +36,7 @@ class RolesController extends Controller
     public function create()
     {
         return view('roles::create')->with([
-            'modules' => Permission::select('module')->distinct()->orderBy('module')->get()->toArray(),
+            'group_modules' => Permission::select('group_modules')->distinct()->orderBy('group_modules')->get()->toArray(),
         ]);
     }
 
@@ -62,7 +62,7 @@ class RolesController extends Controller
     {
         return view('roles::show')->with([
             'role' => $role,
-            'modules' => Permission::select('module')->distinct()->orderBy('module')->get()->toArray(),
+            'group_modules' => Permission::select('group_modules')->distinct()->orderBy('group_modules')->get()->toArray(),
         ]);
     }
 
@@ -81,7 +81,7 @@ class RolesController extends Controller
 
         return view('roles::edit', [
             'role' => $role,
-            'modules' => Permission::select('module')->distinct()->orderBy('module')->get()->toArray(),
+            'group_modules' => Permission::select('group_modules')->distinct()->orderBy('group_modules')->get()->toArray(),
             'rolePermissions' => $rolePermissions
         ]);
     }
