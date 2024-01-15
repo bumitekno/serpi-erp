@@ -16,4 +16,5 @@ use Modules\CategoryProduct\app\Http\Controllers\CategoryProductController;
 
 Route::group([], function () {
     Route::resource('categoryproduct', CategoryProductController::class)->names('categoryproduct');
+    Route::post('categoryproduct/search', [CategoryProductController::class, 'index'])->name('categoryproduct.search');
 });
