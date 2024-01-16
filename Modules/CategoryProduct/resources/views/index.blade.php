@@ -114,7 +114,7 @@
                     </tbody>
                 </table>
             </div>
-            {{ $category->links }}
+            {{ empty($category->links) ? '' : $category->links }}
         </div>
     </div>
 @endsection

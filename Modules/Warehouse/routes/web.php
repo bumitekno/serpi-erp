@@ -16,4 +16,5 @@ use Modules\Warehouse\app\Http\Controllers\WarehouseController;
 
 Route::group([], function () {
     Route::resource('warehouse', WarehouseController::class)->names('warehouse');
+    Route::post('warehouse/search', [WarehouseController::class, 'index'])->name('warehouse.search');
 });

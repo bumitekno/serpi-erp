@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\UnitProduct\app\Models\UnitProduct;
+use Modules\UnitProduct\app\Http\Requests\StoreUnitProductRequest;
+use Modules\UnitProduct\app\Http\Requests\EditUnitProductRequest;
 
 
 class UnitProductController extends Controller
@@ -18,7 +20,7 @@ class UnitProductController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:create-unit-product|edit-unit-product|delete-category-product', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-unit-product|edit-unit-product|delete-unit-product', ['only' => ['index', 'show']]);
         $this->middleware('permission:create-unit-product', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-unit-product', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete-unit-product', ['only' => ['destroy']]);
@@ -35,7 +37,7 @@ class UnitProductController extends Controller
             $unitproduct = UnitProduct::latest()->paginate(10);
         }
 
-        return view('unitproduct::index')->with(['unit' => $unitproduct]);
+        return view('unitproduct::index')->with(['unit' => $unitproduct, 'keyword' => $request->search]);
     }
 
     /**
@@ -49,9 +51,16 @@ class UnitProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreUnitProductRequest $request): RedirectResponse
     {
         //
+        $input = $request->all();
+        $data_send = [
+            'name' => $input['name'],
+        ];
+        UnitProduct::create($data_send);
+        return redirect()->route('unitproduct.index')
+            ->withSuccess('New Unit is added successfully.');
     }
 
     /**
@@ -59,7 +68,7 @@ class UnitProductController extends Controller
      */
     public function show($id)
     {
-        return view('unitproduct::show');
+        return view('unitproduct::show')->with(['unit' => UnitProduct::find($id)]);
     }
 
     /**
@@ -67,15 +76,22 @@ class UnitProductController extends Controller
      */
     public function edit($id)
     {
-        return view('unitproduct::edit');
+        return view('unitproduct::edit')->with(['unit' => UnitProduct::find($id)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(EditUnitProductRequest $request, $id): RedirectResponse
     {
         //
+        $edit = UnitProduct::find($id);
+        $data_send = [
+            'name' => $request->name,
+        ];
+        $edit->update($data_send);
+        return redirect()->route('unitproduct.index')
+            ->withSuccess('New Unit is change successfully.');
     }
 
     /**
@@ -84,5 +100,11 @@ class UnitProductController extends Controller
     public function destroy($id)
     {
         //
+        $destory = UnitProduct::find($id);
+        $destory->delete();
+
+        return redirect()->route('unitproduct.index')
+            ->withSuccess('New Unit is delete successfully.');
+
     }
 }

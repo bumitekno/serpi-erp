@@ -3,6 +3,7 @@
 namespace Modules\Warehouse\database\seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Warehouse\app\Models\Warehouse;
 
 class WarehouseDatabaseSeeder extends Seeder
 {
@@ -12,5 +13,15 @@ class WarehouseDatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call([]);
+        Warehouse::create([
+            'code' => '00001',
+            'name' => 'Gudang 1'
+        ]);
+
+        Warehouse::create([
+            'code' => '00002',
+            'name' => 'Gudang 2'
+        ]);
+
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\CategoryProduct\app\Http\Requests;
+namespace Modules\Warehouse\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditCategoryProduct extends FormRequest
+class StoreWarehouseRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,8 +13,8 @@ class EditCategoryProduct extends FormRequest
     {
         return [
             //
-            'name' => 'required|string|max:250|unique:category_product,name,' . $this->segment(2),
-            'image_category' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+            'name' => 'required|string|max:250|unique:warehouse,name',
+            'code' => 'required|string|max:250|unique:warehouse,code'
         ];
     }
 

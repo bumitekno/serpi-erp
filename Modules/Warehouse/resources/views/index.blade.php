@@ -7,7 +7,7 @@
                 Warehouse List
             </div>
             <div class="float-end">
-                <form name="search" action="#" method="POST" id="form-search">
+                <form name="search" action="{{ route('warehouse.search') }}" method="POST" id="form-search">
                     @csrf
                     <div class="d-flex align-items-center position-relative my-1">
 
@@ -31,6 +31,72 @@
             </div>
         </div>
         <div class="card-body">
+            @can('create-warehouse')
+                <a href="{{ route('warehouse.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
+                    New Warehouse </a>
+            @endcan
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Code </th>
+                            <th>Name</th>
+                            <th class="text-end min-w-125px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-bold">
+                        @forelse ($warehouse as $warehouse)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $warehouse->code ?? '-' }}</td>
+                                <td>{{ Str::title($warehouse->name ?? '-') }}</td>
+                                <td class="text-end">
+                                    <form action="{{ route('warehouse.destroy', $warehouse->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <div class="py-5">
+                                            <a href="{{ route('warehouse.show', $warehouse->id) }}"
+                                                class="btn btn-default btn-primary btn-icon-split">
+                                                <span class="icon text-white-50">
+                                                    <i class="fas fa-eye"></i>
+                                                </span>
+                                            </a>
+
+                                            @can('edit-warehouse')
+                                                <a href="{{ route('warehouse.edit', $warehouse->id) }}"
+                                                    class="btn btn-default btn-warning btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-edit"></i>
+                                                    </span>
+                                                </a>
+                                            @endcan
+
+                                            @can('delete-warehouse')
+                                                <button type="submit"
+                                                    onclick ="return confirm('Do you want to delete this user?')"
+                                                    class="btn btn-default btn-danger btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-trash"></i>
+                                                    </span>
+                                                </button>
+                                            @endcan
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <td colspan="4">
+                                <span class="text-danger">
+                                    <strong>No Warehouse Found!</strong>
+                                </span>
+                            </td>
+                        @endforelse
+
+                    </tbody>
+                </table>
+            </div>
+            {{ empty($warehouse->links) ? '' : $warehouse->links }}
         </div>
     </div>
 @endsection

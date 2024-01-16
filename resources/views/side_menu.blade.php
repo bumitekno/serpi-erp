@@ -66,9 +66,10 @@
 @endcanany
 
 @canany(['create-category-product', 'edit-category-product', 'delete-category-product', 'create-product',
-    'edit-product', 'delete-product', 'import-product', 'export-product'])
+    'edit-product', 'delete-product', 'import-product', 'export-product', 'create-unitproduct', 'edit-unitproduct',
+    'delete-unitproduct', 'create-warehouse', 'edit-warehouse', 'delete-warehouse'])
     <div data-kt-menu-trigger="click"
-        class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') || request()->is('categoryproduct*') || request()->is('tools-productpos*') ? 'show' : '' }} ">
+        class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') || request()->is('categoryproduct*') || request()->is('tools-productpos*') || request()->is('unitproduct*') || request()->is('warehouse*') ? 'show' : '' }} ">
         <span class="menu-link">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen051.svg-->

@@ -16,4 +16,5 @@ use Modules\UnitProduct\app\Http\Controllers\UnitProductController;
 
 Route::group([], function () {
     Route::resource('unitproduct', UnitProductController::class)->names('unitproduct');
+    Route::post('unitproduct/search', [UnitProductController::class, 'index'])->name('unitproduct.search');
 });
