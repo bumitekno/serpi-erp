@@ -14,17 +14,15 @@
                 </div>
                 <div class="card-body">
                     <div class=" mb-3 row">
-                        <label for="code"
-                            class="col-md-4 col-form-label text-md-end text-start"><strong>Code:</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
-                            {{ Str::title($warehouse->code) }}
+                        <label for="code" class="col-lg-4 fw-bold text-muted text-end"><strong>Code:</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ Str::title($warehouse->code) }} </span>
                         </div>
                     </div>
                     <div class=" mb-3 row">
-                        <label for="name"
-                            class="col-md-4 col-form-label text-md-end text-start"><strong>Name:</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
-                            {{ Str::title($warehouse->name) }}
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Name:</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ Str::title($warehouse->name) }} </span>
                         </div>
                     </div>
                 </div>

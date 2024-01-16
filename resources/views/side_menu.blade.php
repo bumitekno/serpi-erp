@@ -67,9 +67,17 @@
 
 @canany(['create-category-product', 'edit-category-product', 'delete-category-product', 'create-product',
     'edit-product', 'delete-product', 'import-product', 'export-product', 'create-unitproduct', 'edit-unitproduct',
-    'delete-unitproduct', 'create-warehouse', 'edit-warehouse', 'delete-warehouse'])
+    'delete-unitproduct', 'create-warehouse', 'edit-warehouse', 'delete-warehouse', 'create-location', 'edit-location',
+    'delete-location'])
     <div data-kt-menu-trigger="click"
-        class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') || request()->is('categoryproduct*') || request()->is('tools-productpos*') || request()->is('unitproduct*') || request()->is('warehouse*') ? 'show' : '' }} ">
+        class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') ||
+        request()->is('categoryproduct*') ||
+        request()->is('tools-productpos*') ||
+        request()->is('unitproduct*') ||
+        request()->is('warehouse*') ||
+        request()->is('location*')
+            ? 'show'
+            : '' }} ">
         <span class="menu-link">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen051.svg-->
@@ -163,3 +171,50 @@
         </div>
     </div>
 @endcanany
+@canany(['create-purchase', 'edit-purchase', 'delete-purchase'])
+    <div class="menu-item">
+        <a class="menu-link {{ request()->is('purchase*') ? 'active' : '' }}" href="{{ route('purchase.index') }}">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+            <span class="menu-title">Purchase</span>
+        </a>
+    </div>
+@endcan
+
+@canany(['create-sales', 'edit-sales', 'delete-sales'])
+    <div class="menu-item">
+        <a class="menu-link {{ request()->is('sales*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+            <span class="menu-title">Sales</span>
+        </a>
+    </div>
+@endcan

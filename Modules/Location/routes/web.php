@@ -16,4 +16,6 @@ use Modules\Location\app\Http\Controllers\LocationController;
 
 Route::group([], function () {
     Route::resource('location', LocationController::class)->names('location');
+    Route::post('location/store', [LocationController::class, 'store'])->name('location.store');
+    Route::post('location', [LocationController::class, 'index'])->name('location.search');
 });

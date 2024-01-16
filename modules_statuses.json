@@ -6,5 +6,7 @@
     "UnitProduct": true,
     "Warehouse": true,
     "Stock": true,
-    "Location": true
+    "Location": true,
+    "Purchase": true,
+    "Sales": true
 }

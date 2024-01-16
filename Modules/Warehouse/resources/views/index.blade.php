@@ -74,7 +74,7 @@
 
                                             @can('delete-warehouse')
                                                 <button type="submit"
-                                                    onclick ="return confirm('Do you want to delete this user?')"
+                                                    onclick ="return confirm('Do you want to delete this warehouse?')"
                                                     class="btn btn-default btn-danger btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-trash"></i>

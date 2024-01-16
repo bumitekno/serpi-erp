@@ -16,9 +16,8 @@
                 <div class="card-body">
 
                     <div class="mb-3 row">
-                        <label for="avatar"
-                            class="col-md-4 col-form-label text-md-end text-start"><strong>Image:</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
+                        <label for="avatar" class="col-lg-4 fw-bold text-muted text-end"><strong>Image:</strong></label>
+                        <div class="col-md-8">
                             <div class="symbol-label symbol symbol-circle symbol-150px">
                                 @if (!empty($product->image_product))
                                     <img src="{{ Storage::url($product->image_product) }}" alt="Product" class="w-100" />
@@ -30,34 +29,33 @@
                     </div>
 
                     <div class=" mb-3 row">
-                        <label for="name"
-                            class="col-md-4 col-form-label text-md-end text-start"><strong>Name:</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
-                            {{ $product->name }}
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Name:</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product->name }} </span>
                         </div>
                     </div>
 
                     <div class=" mb-3 row">
-                        <label for="name" class="col-md-4 col-form-label text-md-end text-start"><strong>Code Product
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Code Product
                                 :</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
-                            {{ $product->code_product }}
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product->code_product }} </span>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="name" class="col-md-4 col-form-label text-md-end text-start"><strong>Category
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Category
                                 :</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
-                            {{ $product->category_product?->name }}
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product->category_product?->name }} </span>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
                         <label for="description"
-                            class="col-md-4 col-form-label text-md-end text-start"><strong>Description:</strong></label>
-                        <div class="col-md-6" style="line-height: 35px;">
-                            {{ $product->description }}
+                            class="col-lg-4 fw-bold text-muted text-end"><strong>Description:</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product->description }} </span>
                         </div>
                     </div>
 

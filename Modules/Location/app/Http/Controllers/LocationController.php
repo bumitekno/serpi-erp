@@ -5,16 +5,38 @@ namespace Modules\Location\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Modules\Location\app\Models\Location;
+use Modules\Location\app\Http\Requests\StoreLocationRequest;
+use Modules\Location\app\Http\Requests\EditLocationRequest;
 
 class LocationController extends Controller
 {
+
+    /**
+     * Instantiate a new ProductController instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:create-location|edit-location|delete-location', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-location', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-location', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-location', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('location::index');
+
+        if (!empty($request->search)) {
+            $location = Location::where('name_location', 'like', '%' . $request->search . '%')->latest()->paginate(10);
+        } else {
+            $location = Location::latest()->paginate(10);
+        }
+
+        return view('location::index')->with(['location' => $location, 'keyword' => $request->search]);
     }
 
     /**
@@ -28,9 +50,18 @@ class LocationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreLocationRequest $request): RedirectResponse
     {
         //
+        $input = $request->all();
+        $data_send = [
+            'name_location' => $input['name'],
+            'contact' => $input['contact'],
+            'address' => $input['address']
+        ];
+        Location::create($data_send);
+        return redirect()->route('location.index')
+            ->withSuccess('New Location is added successfully.');
     }
 
     /**
@@ -38,7 +69,7 @@ class LocationController extends Controller
      */
     public function show($id)
     {
-        return view('location::show');
+        return view('location::show')->with(['location' => Location::find($id)]);
     }
 
     /**
@@ -46,15 +77,24 @@ class LocationController extends Controller
      */
     public function edit($id)
     {
-        return view('location::edit');
+        return view('location::edit')->with(['location' => Location::find($id)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(EditLocationRequest $request, $id): RedirectResponse
     {
         //
+        $input = $request->all();
+        $data_send = [
+            'name_location' => $input['name'],
+            'contact' => empty($input['contact']) ? '' : $input['contact'],
+            'address' => empty($input['address']) ? '' : $input['address']
+        ];
+        Location::find($id)->update($data_send);
+        return redirect()->route('location.index')
+            ->withSuccess('New Location is Change successfully.');
     }
 
     /**
@@ -63,5 +103,9 @@ class LocationController extends Controller
     public function destroy($id)
     {
         //
+        $destroy = Location::find($id);
+        $destroy->delete();
+        return redirect()->route('location.index')
+            ->withSuccess('New Location is delete successfully.');
     }
 }

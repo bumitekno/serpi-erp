@@ -18,7 +18,7 @@ class WarehouseController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:create-warehouset|edit-warehouse|delete-warehouse', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-warehouse|edit-warehouse|delete-warehouse', ['only' => ['index', 'show']]);
         $this->middleware('permission:create-warehouse', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-warehouse', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete-warehouse', ['only' => ['destroy']]);
