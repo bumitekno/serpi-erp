@@ -16,4 +16,5 @@ use Modules\Stock\app\Http\Controllers\StockController;
 
 Route::group([], function () {
     Route::resource('stock', StockController::class)->names('stock');
+    Route::post('stock', [StockController::class, 'index'])->name('stock.search');
 });

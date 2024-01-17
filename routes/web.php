@@ -22,4 +22,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::prefix('home')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('dashboard');
+    Route::get('module/{module}', [HomeController::class, 'checkroute'])->middleware('auth')->name('checkroute');
 });

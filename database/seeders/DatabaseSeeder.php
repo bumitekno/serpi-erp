@@ -11,6 +11,7 @@ use Modules\ProductPos\database\seeders\ProductPosDatabaseSeeder;
 use Modules\CategoryProduct\database\seeders\CategoryProductDatabaseSeeder;
 use Modules\UnitProduct\database\seeders\UnitProductDatabaseSeeder;
 use Modules\Warehouse\database\seeders\WarehouseDatabaseSeeder;
+use Modules\Stock\database\seeders\StockDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
             CategoryProductDatabaseSeeder::class,
             ProductPosDatabaseSeeder::class,
             UnitProductDatabaseSeeder::class,
-            WarehouseDatabaseSeeder::class
+            WarehouseDatabaseSeeder::class,
+            StockDatabaseSeeder::class
         ]);
     }
 }

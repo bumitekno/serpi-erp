@@ -95,7 +95,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Product Management</span>
+            <span class="menu-title">Inventory Management</span>
             <span class="menu-arrow"></span>
         </span>
         <div class="menu-sub menu-sub-accordion">
