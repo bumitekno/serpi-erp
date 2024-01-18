@@ -1,7 +1,12 @@
 @extends('purchase::layouts.master')
-
 @section('content')
-    <h1>Hello World</h1>
-
-    <p>Module: {!! config('purchase.name') !!}</p>
+    <div class="card">
+        <div class="card-header mt-3">
+            <div class="float-start">
+                Purchase Order
+            </div>
+            <div class="float-end">
+            </div>
+        </div>
+    </div>
 @endsection

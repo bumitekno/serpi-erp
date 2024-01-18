@@ -58,6 +58,8 @@
                             <th>Image </th>
                             <th>Name</th>
                             <th>Category</th>
+                            <th>Unit Price Purchase</th>
+                            <th>Unit Price Sell</th>
                             <th>Description</th>
                             <th class="text-end min-w-125px">Action</th>
                         </tr>
@@ -85,6 +87,10 @@
                                 </td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->category_product?->name }}</td>
+                                <td>{{ empty($product->price_purchase) ? 0 : number_format($product->price_purchase, 0, ',', '.') }}
+                                </td>
+                                <td>{{ empty($product->price_sell) ? 0 : number_format($product->price_sell, 0, ',', '.') }}
+                                </td>
                                 <td>
                                     @if (strlen($product->description) > 100)
                                         {{ substr($product->description, 0, 100) }}

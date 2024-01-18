@@ -70,8 +70,12 @@
                             </div>
                             <!--begin::Actions-->
                             <div class="d-flex justify-content-end">
-                                <button type="reset" class="btn btn-light btn-active-light-primary me-2"
-                                    data-kt-menu-dismiss="true" data-kt-customer-table-filter="reset">Reset</button>
+                                @if (!empty($keyword) || !empty($filter_location) || !empty($filter_warehouse))
+                                    <a href="{{ route('stock.index') }}"
+                                        class="btn btn-bg-danger btn-icon-white btn-text-white me-2"><i
+                                            class="fas fa-trash"></i>
+                                        Reset </a>
+                                @endif
                                 <button type="submit" class="btn btn-primary" data-kt-menu-dismiss="true"
                                     data-kt-customer-table-filter="filter">Apply</button>
                             </div>
@@ -87,6 +91,10 @@
             @can('create-stock')
                 <a href="{{ route('stock.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
                     New Stock </a>
+                <a href="#" class="btn btn-primary btn-sm my-2"><i class="bi bi-plus-circle"></i>
+                    Stock Opname </a>
+                <a href="#" class="btn btn-warning btn-sm my-2"><i class="bi bi-plus-circle"></i>
+                    Transfer Warehouse </a>
             @endcan
 
             <div class="table-responsive">
@@ -101,6 +109,7 @@
                             <th> Unit </th>
                             <th> Warehouse</th>
                             <th> Location </th>
+                            <th>Expired Date </th>
                             <th class="text-end">Action</th>
                         </tr>
                     </thead>
@@ -129,6 +138,8 @@
                                 <td>{{ $stock->units?->name ?? '-' }}</td>
                                 <td>{{ $stock->warehouse?->name ?? '-' }}</td>
                                 <td>{{ $stock->location?->name_location ?? '-' }}</td>
+                                <td>{{ empty($stock->date_expired) ? '-' : \Carbon\Carbon::parse($stock->date_expired)->translatedFormat('l, j F Y') }}
+                                </td>
 
                                 <td class="text-end">
                                     <form action="{{ route('stock.destroy', $stock->id) }}" method="post">

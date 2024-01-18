@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Modules\Stock\app\Models\Stock;
 use Modules\Warehouse\app\Models\Warehouse;
 use Modules\Location\app\Models\Location;
+use Modules\UnitProduct\app\Models\UnitProduct;
+use Modules\ProductPos\app\Models\ProductPos;
 
 class StockController extends Controller
 {
@@ -68,7 +70,12 @@ class StockController extends Controller
      */
     public function create()
     {
-        return view('stock::create');
+        return view('stock::create')->with([
+            'unit' => UnitProduct::query()->get(),
+            'product' => ProductPos::query()->get(),
+            'warehouse' => Warehouse::query()->get(),
+            'location' => Location::query()->get()
+        ]);
     }
 
     /**
@@ -77,6 +84,59 @@ class StockController extends Controller
     public function store(Request $request): RedirectResponse
     {
         //
+        $request->validate([
+            'addmore' => 'required|array',
+            'addmore.product.*' => 'sometimes|required',
+            'addmore.units.*' => 'sometimes|required|unique:stock,id_unit',
+            'addmore.stockmin.*' => 'sometimes|required',
+            'location' => 'required',
+            'warehouse' => 'required'
+        ]);
+
+        $exits = false;
+
+        foreach ($request->addmore['product'] as $key => $val) {
+
+            $check_product_stock = Stock::where(
+                [
+                    'id_product' => $val,
+                    'id_unit' => $request->addmore['units'][$key],
+                    'id_location' => $request->location,
+                    'id_warehouse' => $request->warehouse
+                ]
+            )->first();
+
+            if (!empty($check_product_stock)) {
+                $exits = true;
+            }
+
+            $post_created = [
+                'id_product' => $val,
+                'id_unit' => $request->addmore['units'][$key],
+                'stock_min' => $request->addmore['stockmin'][$key],
+                'id_location' => $request->location,
+                'id_warehouse' => $request->warehouse
+            ];
+
+            if (!empty($request->addmore['stocklast'][$key])) {
+                $post_created['stock_last'] = $request->addmore['stocklast'][$key];
+            }
+
+            if (!empty($request->addmore['expired'][$key])) {
+                $post_created['date_expired'] = \Carbon\Carbon::parse($request->addmore['expired'][$key]);
+            }
+
+            if ($exits == false)
+                Stock::create($post_created);
+        }
+
+        if ($exits == false) {
+            return redirect()->route('stock.index')
+                ->withSuccess('New Stock is added successfully.');
+        } else {
+            return redirect()->back()
+                ->with(['error' => 'New Stock is added failed.']);
+        }
     }
 
     /**
@@ -84,7 +144,8 @@ class StockController extends Controller
      */
     public function show($id)
     {
-        return view('stock::show');
+        $stock_product = Stock::with(['products', 'location', 'warehouse', 'units'])->find($id);
+        return view('stock::show')->with(['stock' => $stock_product]);
     }
 
     /**
@@ -92,7 +153,14 @@ class StockController extends Controller
      */
     public function edit($id)
     {
-        return view('stock::edit');
+        $stock_product = Stock::with(['products', 'location', 'warehouse', 'units'])->find($id);
+        return view('stock::edit')->with([
+            'stock' => $stock_product,
+            'warehouse' => Warehouse::query()->get(),
+            'location' => Location::query()->get(),
+            'unit' => UnitProduct::query()->get(),
+            'product' => ProductPos::query()->get(),
+        ]);
     }
 
     /**
@@ -101,6 +169,25 @@ class StockController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         //
+        $request->validate([
+            'location' => 'required',
+            'warehouse' => 'required',
+            'product' => 'required',
+            'unit' => 'required|unique:stock,id_unit,' . $id,
+            'stockmin' => 'required'
+        ]);
+
+        Stock::find($id)->update([
+            'id_product' => $request->product,
+            'id_unit' => $request->unit,
+            'id_location' => $request->location,
+            'id_warehouse' => $request->warehouse,
+            'stock_min' => $request->stockmin
+        ]);
+
+        return redirect()->route('stock.index')
+            ->withSuccess('New Stock is change successfully.');
+
     }
 
     /**
@@ -109,5 +196,10 @@ class StockController extends Controller
     public function destroy($id)
     {
         //
+
+        Stock::find($id)->delete();
+
+        return redirect()->route('stock.index')
+            ->withSuccess('New Stock is delete successfully.');
     }
 }
