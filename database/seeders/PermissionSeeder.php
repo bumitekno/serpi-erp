@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Roles\database\seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -38,6 +38,41 @@ class PermissionSeeder extends Seeder
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'users', 'group_modules' => 'user']);
         }
 
+        //module master 
+        $permissions_module_customer = [
+            'create-customer',
+            'edit-customer',
+            'delete-customer'
+        ];
+
+        // Looping and Inserting Array's Permissions Module customer into Permission Table
+        foreach ($permissions_module_customer as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'customer', 'group_modules' => 'master']);
+        }
+
+        // module supplier
+        $permissions_module_supplier = [
+            'create-supplier',
+            'edit-supplier',
+            'delete-supplier'
+        ];
+
+        // Looping and Inserting Array's Permissions Module supplier into Permission Table
+        foreach ($permissions_module_supplier as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'supplier', 'group_modules' => 'master']);
+        }
+
+        //module departement
+        $permissions_module_departement = [
+            'create-departement',
+            'edit-departement',
+            'delete-departement'
+        ];
+
+        // Looping and Inserting Array's Permissions Module supplier into Permission Table
+        foreach ($permissions_module_departement as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'departement', 'group_modules' => 'master']);
+        }
 
         //module product
         $permissions_module_product = [
@@ -53,7 +88,6 @@ class PermissionSeeder extends Seeder
         foreach ($permissions_module_product as $permission) {
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'product', 'group_modules' => 'inventory']);
         }
-
 
         // module category product
         $permission_module_category = [

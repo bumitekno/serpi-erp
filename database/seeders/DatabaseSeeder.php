@@ -4,8 +4,11 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\CustomerSeeder;
+use Database\Seeders\SupplierSeeder;
+use Database\Seeders\DepartementSeeder;
+use Database\Seeders\PermissionSeeder;
 use Modules\Roles\database\seeders\RolesDatabaseSeeder;
-use Modules\Roles\database\seeders\PermissionSeeder;
 use Modules\Users\database\seeders\UsersDatabaseSeeder;
 use Modules\ProductPos\database\seeders\ProductPosDatabaseSeeder;
 use Modules\CategoryProduct\database\seeders\CategoryProductDatabaseSeeder;
@@ -21,6 +24,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            CustomerSeeder::class,
+            SupplierSeeder::class,
+            DepartementSeeder::class,
             PermissionSeeder::class,
             RolesDatabaseSeeder::class,
             UsersDatabaseSeeder::class,

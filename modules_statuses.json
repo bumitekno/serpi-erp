@@ -8,5 +8,8 @@
     "Stock": true,
     "Location": true,
     "Purchase": true,
-    "Sales": true
+    "Sales": true,
+    "Customer": true,
+    "Supplier": true,
+    "Departement": true
 }
