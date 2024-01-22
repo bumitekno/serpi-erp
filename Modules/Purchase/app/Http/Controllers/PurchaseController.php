@@ -5,9 +5,14 @@ namespace Modules\Purchase\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Modules\ProductPos\app\Models\ProductPos;
 use Modules\Purchase\app\Models\TransactionPurchase;
 use Modules\Purchase\app\Models\TransactionPurchaseItem;
+use App\Models\MethodPayment;
+use App\Models\Supplier;
+use App\Models\Departement;
 use Modules\Stock\app\Models\Stock;
+use Modules\UnitProduct\app\Models\UnitProduct;
 
 class PurchaseController extends Controller
 {
@@ -60,11 +65,19 @@ class PurchaseController extends Controller
             $nextInvoiceNumber = 'PO-' . date('Y') . '-0001';
         }
 
-        $stock_product = Stock::with(['products', 'location', 'warehouse', 'units'])->get();
+        $product = ProductPos::query()->get();
+        $stockunit = UnitProduct::query()->get();
+        $method_payment = MethodPayment::query()->get();
+        $supplier = Supplier::query()->get();
+        $departement = Departement::query()->get();
 
         return view('purchase::create')->with([
             'ponumber' => $nextInvoiceNumber,
-            'stockproduct' => $stock_product
+            'product' => $product,
+            'method_payment' => $method_payment,
+            'supplier' => $supplier,
+            'departement' => $departement,
+            'unit' => $stockunit
         ]);
     }
 
@@ -74,6 +87,8 @@ class PurchaseController extends Controller
     public function store(Request $request): RedirectResponse
     {
         //
+
+        dd($request->all());
     }
 
     /**

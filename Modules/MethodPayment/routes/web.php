@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Sales\app\Http\Controllers\SalesController;
+use Modules\MethodPayment\app\Http\Controllers\MethodPaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +15,5 @@ use Modules\Sales\app\Http\Controllers\SalesController;
 */
 
 Route::group([], function () {
-    Route::resource('sales', SalesController::class)->names('sales');
-    Route::get('add-cart/{id}', [SalesController::class, 'addToCart'])->name('sales.addcart');
-    Route::get('clear-cart', [SalesController::class, 'clearCart'])->name('sales.clearcart');
+    Route::resource('methodpayment', MethodPaymentController::class)->names('methodpayment');
 });

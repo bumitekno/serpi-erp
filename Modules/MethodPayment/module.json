@@ -1,0 +1,11 @@
+{
+    "name": "MethodPayment",
+    "alias": "methodpayment",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MethodPayment\\app\\Providers\\MethodPaymentServiceProvider"
+    ],
+    "files": []
+}

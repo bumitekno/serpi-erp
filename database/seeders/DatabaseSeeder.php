@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\CustomerSeeder;
 use Database\Seeders\SupplierSeeder;
 use Database\Seeders\DepartementSeeder;
+use Database\Seeders\MethodPaymentSeeder;
 use Database\Seeders\PermissionSeeder;
 use Modules\Roles\database\seeders\RolesDatabaseSeeder;
 use Modules\Users\database\seeders\UsersDatabaseSeeder;
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             CustomerSeeder::class,
             SupplierSeeder::class,
             DepartementSeeder::class,
+            MethodPaymentSeeder::class,
             PermissionSeeder::class,
             RolesDatabaseSeeder::class,
             UsersDatabaseSeeder::class,
