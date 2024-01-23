@@ -17,5 +17,9 @@ use Modules\Sales\app\Http\Controllers\SalesController;
 Route::group([], function () {
     Route::resource('sales', SalesController::class)->names('sales');
     Route::get('add-cart/{id}', [SalesController::class, 'addToCart'])->name('sales.addcart');
+    Route::get('delete-cart/{id}', [SalesController::class, 'deletecart'])->name('sales.deletecart');
     Route::get('clear-cart', [SalesController::class, 'clearCart'])->name('sales.clearcart');
+    Route::get('filter/{filter}', [SalesController::class, 'create'])->name('sales.filter');
+    Route::get('search/{keyword}', [SalesController::class, 'create'])->name('sales.search');
+    Route::post('scanbarcode', [SalesController::class, 'scancart'])->name('sales.scancart');
 });
