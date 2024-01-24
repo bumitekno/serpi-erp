@@ -22,4 +22,7 @@ Route::group([], function () {
     Route::get('filter/{filter}', [SalesController::class, 'create'])->name('sales.filter');
     Route::get('search/{keyword}', [SalesController::class, 'create'])->name('sales.search');
     Route::post('scanbarcode', [SalesController::class, 'scancart'])->name('sales.scancart');
+    Route::post('customer/store', [SalesController::class, 'storecustomer'])->name('sales.storecustomer');
+    Route::post('discount-cart', [SalesController::class, 'updateDiscount'])->name('sales.updateDiscount');
+    Route::post('tax-cart', [SalesController::class, 'updatetax'])->name('sales.updatetax');
 });

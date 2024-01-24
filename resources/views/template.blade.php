@@ -290,7 +290,7 @@
                                     {{ $message }}
                                 </div>
                             @endif
-
+                            @stack('modals')
                             @yield('content')
                         </div>
                     </div>

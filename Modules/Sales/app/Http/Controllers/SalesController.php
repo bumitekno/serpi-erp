@@ -17,6 +17,7 @@ use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SalesController extends Controller
 {
@@ -54,24 +55,23 @@ class SalesController extends Controller
      */
     public function create(Request $request)
     {
-
         //filter category
         if (!empty($request->segment(2))) {
             if ($request->segment(1) == 'filter') {
                 if ($request->segment(2) == 'all' || $request->segment(2) == 'create') {
-                    $product = ProductPos::with('category_product')->paginate(10);
+                    $product = ProductPos::with('category_product')->paginate(12);
                 } else {
-                    $product = ProductPos::with('category_product')->where('category', '=', $request->segment(2))->paginate(10);
+                    $product = ProductPos::with('category_product')->where('category', '=', $request->segment(2))->paginate(12);
                 }
             } else if ($request->segment(1) == 'search') {
                 $keyword = Str::replace('%20', '', $request->segment(2));
-                $product = ProductPos::with('category_product')->where('name', 'like', '%' . $keyword . '%')->paginate(10);
+                $product = ProductPos::with('category_product')->where('name', 'like', '%' . $keyword . '%')->paginate(12);
             } else if ($request->segment(1) == 'sales') {
-                $product = ProductPos::with('category_product')->paginate(10);
+                $product = ProductPos::with('category_product')->paginate(12);
             }
 
         } else {
-            $product = ProductPos::with('category_product')->paginate(10);
+            $product = ProductPos::with('category_product')->paginate(12);
         }
 
         $stockunit = UnitProduct::query()->get();
@@ -103,12 +103,17 @@ class SalesController extends Controller
             $nextInvoiceNumber = 'SO-' . date('Y') . '-0001';
         }
 
+        $discount_cart = empty(Session::get('discount')) ? 0 : Session::get('discount');
+        $tax_cart = empty(Session::get('tax')) ? 0 : Session::get('tax');
+
         // calc total cart 
         $total_cart = 0;
+        $subtotal = 0;
         if (!empty($cart)) {
             foreach ($cart as $key => $item) {
-                $total_cart += $cart[$key]['price_unit'] * $cart[$key]['qty'];
+                $subtotal += $cart[$key]['price_unit'] * $cart[$key]['qty'];
             }
+            $total_cart = $subtotal - $discount_cart + $tax_cart;
         }
 
         return view('sales::create')->with([
@@ -121,10 +126,14 @@ class SalesController extends Controller
             'departement_default' => $departement_default,
             'date_transaction' => $date_transaction,
             'unit' => $stockunit,
-            'cart' => $cart,
+            'cart' => collect($cart)->sortByDesc('code_product'),
+            'subtotal_cart' => $subtotal,
             'total_cart' => $total_cart,
+            'discount_cart' => $discount_cart,
+            'tax_cart' => $tax_cart,
             'category_product' => $category_product,
-            'keyword' => empty($keyword) ? '' : $keyword
+            'keyword' => empty($keyword) ? '' : $keyword,
+            'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name
         ]);
     }
 
@@ -143,12 +152,13 @@ class SalesController extends Controller
                 "name_product" => $product->name,
                 "price_unit" => $product->price_sell,
                 "unit_id" => UnitProduct::first()?->id,
+                "image_product" => $product->image_product,
                 "qty" => 1,
             );
         }
 
         Session::put('cart', $cart);
-        Session::flash('success', 'Item successfully added to basket!');
+        Session::flash('success', 'Item successfully added to Cart!');
         return redirect()->back();
     }
 
@@ -204,19 +214,36 @@ class SalesController extends Controller
         }
         //put back in session array without deleted item
         Session::put('cart', $cart);
-        Session::flash('success', 'Item successfully remove from basket!');
+        Session::flash('success', 'Item successfully remove from Cart !');
         //then you can redirect or whatever you need
         return redirect()->back();
     }
 
     /** clear cart */
 
-    public function clearCart(Request $carddata)
+    public function clearCart(Request $request)
     {
         Session::put('cart', []);
-        Session::flash('success', 'Keranjang telah di kosongkan !');
+        Session::flash('success', 'Cart has been emptied !');
         return redirect()->back();
     }
+
+    /** update discount cart */
+    public function updateDiscount(Request $request)
+    {
+        Session::put('discount', empty($request->discount) ? 0 : Str::replace('.', '', $request->discount));
+        Session::flash('success', 'Discount has been add successfully !');
+        return redirect()->back();
+    }
+
+    /** update discount cart */
+    public function updatetax(Request $request)
+    {
+        Session::put('tax', empty($request->tax) ? 0 : Str::replace('.', '', $request->tax));
+        Session::flash('success', 'Tax has been add successfully !');
+        return redirect()->back();
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -224,6 +251,28 @@ class SalesController extends Controller
     public function store(Request $request): RedirectResponse
     {
         //
+    }
+
+    /** store new customer  */
+
+    public function storecustomer(Request $request)
+    {
+        $request->validate([
+            'name_input' => 'required',
+            'email_input' => 'required|unique:customer,email',
+            'contact_input' => 'required',
+            'address_input' => 'required',
+        ]);
+
+        Customer::create([
+            'code' => Str::random(5),
+            'name' => $request->name_input,
+            'email' => $request->email_input,
+            'contact' => $request->contact_input,
+            'address' => $request->address_input
+        ]);
+        Session::flash('success', ' Customer ' . $request->name . 'is  add successfuly.');
+        return redirect()->back();
     }
 
     /**
