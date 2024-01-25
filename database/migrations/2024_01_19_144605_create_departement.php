@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->string('email')->nullable();
             $table->string('image')->nullable();
             $table->text('address')->nullable();
+            $table->foreignId('id_warehouse')->nullable();
+            $table->foreignId('id_location')->nullable();
             $table->timestamps();
         });
     }

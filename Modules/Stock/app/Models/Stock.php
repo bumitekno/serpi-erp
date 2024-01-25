@@ -17,7 +17,7 @@ class Stock extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $table = 'stock';
+    protected $table = 'stock_unit_product';
 
     protected $guarded = [];
     protected $guard_name = 'web';
@@ -31,7 +31,8 @@ class Stock extends Model
         'id_warehouse',
         'id_location',
         'stock_min',
-        'stock_last',
+        'qty_convert',
+        'stock_max',
         'date_expired',
         'sold_out'
     ];

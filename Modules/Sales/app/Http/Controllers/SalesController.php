@@ -11,6 +11,7 @@ use Modules\Sales\app\Models\TransactionSales;
 use Modules\Sales\app\Models\TransactionSalesItem;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\UnitProduct\app\Models\UnitProduct;
+use Modules\Stock\app\Models\Stock;
 use App\Models\MethodPayment;
 use App\Models\Departement;
 use Modules\CategoryProduct\app\Models\CategoryProduct;
@@ -86,21 +87,21 @@ class SalesController extends Controller
 
         $date_transaction = Carbon::now()->format('Y-m-d');
 
-
         $record = TransactionSales::latest()->first();
+
         $cart = empty(Session::get('cart')) ? [] : Session::get('cart');
 
         if (!empty($record)) {
             $expNum = explode('-', $record->code_transaction);
             //check first day in a year
-            if (date('l', strtotime(date('Y-01-01')))) {
-                $nextInvoiceNumber = 'SO-' . date('Y') . '-0001';
+            if (date('Y-01-01') == date('Y-m-d')) {
+                $nextInvoiceNumber = 'SO-' . date('Y') . '-1';
             } else {
                 //increase 1 with last invoice number
                 $nextInvoiceNumber = $expNum[0] . '-' . $expNum[1] . '-' . $expNum[2] + 1;
             }
         } else {
-            $nextInvoiceNumber = 'SO-' . date('Y') . '-0001';
+            $nextInvoiceNumber = 'SO-' . date('Y') . '-1';
         }
 
         $discount_cart = empty(Session::get('discount')) ? 0 : Session::get('discount');
@@ -111,7 +112,7 @@ class SalesController extends Controller
         $subtotal = 0;
         if (!empty($cart)) {
             foreach ($cart as $key => $item) {
-                $subtotal += $cart[$key]['price_unit'] * $cart[$key]['qty'];
+                $subtotal += $cart[$key]['subtotal'];
             }
             $total_cart = $subtotal - $discount_cart + $tax_cart;
         }
@@ -138,28 +139,42 @@ class SalesController extends Controller
     }
 
     /** add cart */
-    public function addToCart(Request $request, $id)
+    public function addToCart(Request $request, $id, $departement)
     {
         $product = ProductPos::with('category_product')->where('id', '=', $id)->first();
+        $departement = Departement::where('id', '=', $departement)->first();
         $cart = Session::get('cart');
 
         if (!empty($cart[$product['id']])) {
             $cart[$product['id']]['qty'] += 1;
         } else {
+            $id_unit = UnitProduct::first();
+
             $cart[$product->id] = array(
                 "id" => $product->id,
                 "code_product" => $product->code_product,
                 "name_product" => $product->name,
                 "price_unit" => $product->price_sell,
-                "unit_id" => UnitProduct::first()?->id,
+                "unit_id" => $id_unit?->id,
+                "unit_name" => $id_unit?->name,
                 "image_product" => $product->image_product,
                 "qty" => 1,
+                "subtotal" => $product->price_sell * 1,
+                'location' => $departement?->id_location
             );
         }
 
         Session::put('cart', $cart);
         Session::flash('success', 'Item successfully added to Cart!');
         return redirect()->back();
+    }
+
+    /** Edit cart */
+    public function editcart($id)
+    {
+        $cart = Session::get('cart');
+        $show = collect($cart)->where('id', $id)->first();
+        return response()->json(['data' => $show]);
     }
 
     /** Scan Barcode */
@@ -171,13 +186,16 @@ class SalesController extends Controller
             if (!empty($cart[$product['id']])) {
                 $cart[$product['id']]['qty'] += 1;
             } else {
+                $id_unit = UnitProduct::first();
                 $cart[$product->id] = array(
                     "id" => $product->id,
                     "code_product" => $product->code_product,
                     "name_product" => $product->name,
                     "price_unit" => $product->price_sell,
-                    "unit_id" => UnitProduct::first()?->id,
+                    "unit_id" => $id_unit?->id,
+                    "unit_name" => $id_unit?->name,
                     "qty" => 1,
+                    "subtotal" => $product->price_sell * 1
                 );
             }
             Session::put('cart', $cart);
@@ -187,8 +205,8 @@ class SalesController extends Controller
         }
     }
 
-    /** update cart */
-    public function updateCart(Request $cartdata)
+    /** update cart All */
+    public function updateCartAll(Request $cartdata)
     {
         $cart = Session::get('cart');
 
@@ -201,6 +219,47 @@ class SalesController extends Controller
         }
         Session::put('cart', $cart);
         return redirect()->back();
+    }
+
+    /** edit cart by id  */
+    public function updatecart(Request $request)
+    {
+        $cart = Session::get('cart');
+        if (!empty($cart[$request->id_cart])) {
+            if ($request->qty_cart > 0) {
+                $unit = UnitProduct::where('id', $request->units_cart)->first();
+                if (!empty($unit)) {
+                    //convert satuan unit menyebabkan subtotal berubah 
+                    $stock_unit = Stock::where(['id_product' => $request->id_cart, 'id_unit' => $unit?->id, 'id_location' => $cart[$request->id_cart]['location']])->first();
+                    if (!empty($stock_unit)) {
+                        $cart[$request->id_cart]['unit_id'] = $unit?->id;
+                        $cart[$request->id_cart]['unit_name'] = $unit?->name;
+                        $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                        $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $stock_unit->qty_convert;
+                        $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
+                        $notif = 'success';
+                    } else {
+                        $message = ' Stock Unit ' . $cart[$request->id_cart]['name_product'] . ' ' . $unit?->name . '  not found .';
+                        $notif = 'error';
+                        $unitdefault = UnitProduct::first();
+                        $cart[$request->id_cart]['unit_id'] = $unitdefault?->id;
+                        $cart[$request->id_cart]['unit_name'] = $unitdefault?->name;
+                        $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                    }
+                } else {
+                    $message = $cart[$request->id_cart]['name_product'] . ' Unit not found .';
+                    $notif = 'error';
+                }
+            } else {
+                unset($cart[$request->id_cart]);
+                $message = $cart[$request->id_cart]['name_product'] . ' has been delete data successfully.';
+                $notif = 'success';
+            }
+
+            Session::put('cart', $cart);
+            Session::flash($notif, $message);
+            return redirect()->back();
+        }
     }
 
     /** delete cart item by id */
@@ -251,6 +310,56 @@ class SalesController extends Controller
     public function store(Request $request): RedirectResponse
     {
         //
+        $discount_cart = empty(Session::get('discount')) ? 0 : Session::get('discount');
+        $tax_cart = empty(Session::get('tax')) ? 0 : Session::get('tax');
+        $cart = Session::get('cart');
+        $transaction = [
+            'code_transaction' => $request->number_invoice,
+            'date_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('Y-m-d'),
+            'time_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('H:i:s'),
+            'date_due' => Carbon::createFromFormat('d/m/Y', $request->due_date_transaction)->format('Y-m-d'),
+            'amount' => $request->total_payment,
+            'note' => $request->notes,
+            'id_method_payment' => $request->methodpayment,
+            'id_departement' => $request->departement_invoice,
+            'id_user' => Auth::user()->id,
+            'id_customer' => $request->customer_invoice,
+            'discount_amount' => $discount_cart,
+            'tax_amount' => $tax_cart,
+            'status' => $request->methodpayment == 3 ? false : true
+        ];
+
+        $create_transaction = TransactionSales::create($transaction);
+
+        if (!empty($cart) && !empty($create_transaction)) {
+            foreach ($cart as $key => $val) {
+                $item_sales = [
+                    'id_product' => $cart[$key]['id'],
+                    'id_unit' => $cart[$key]['unit_id'],
+                    'qty' => $cart[$key]['qty'],
+                    'price_sales' => $cart[$key]['price_unit'],
+                    'id_transaction_sales' => $create_transaction->id
+                ];
+                $create_item_sales = TransactionSalesItem::create($item_sales);
+                //update stock last product 
+                $checkStocklast = ProductPos::find(['id' => $create_item_sales->id_product]);
+                if (!empty($checkStocklast->stock_last)) {
+                    $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
+                }
+
+            }
+        }
+
+        if (!empty($create_transaction) && !empty($create_item_sales)) {
+            Session::put('tax', 0);
+            Session::put('discount', 0);
+            Session::put('cart', []);
+            Session::flash('success', 'Transaction is successfully !');
+        } else {
+            Session::flash('error', 'Transaction is failed !');
+        }
+
+        return redirect()->back();
     }
 
     /** store new customer  */

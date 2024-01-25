@@ -107,9 +107,10 @@
                             <th> Code</th>
                             <th> Name</th>
                             <th> Unit </th>
+                            <th> QTY</th>
                             <th> Warehouse</th>
                             <th> Location </th>
-                            <th>Expired Date </th>
+                            <th> Expired Date </th>
                             <th class="text-end">Action</th>
                         </tr>
                     </thead>
@@ -136,6 +137,7 @@
                                 <td>{{ $stock->products?->code_product ?? '-' }}</td>
                                 <td>{{ Str::title($stock->products?->name ?? '-') }}</td>
                                 <td>{{ $stock->units?->name ?? '-' }}</td>
+                                <td>{{ $stock->qty_convert ?? '-' }}</td>
                                 <td>{{ $stock->warehouse?->name ?? '-' }}</td>
                                 <td>{{ $stock->location?->name_location ?? '-' }}</td>
                                 <td>{{ empty($stock->date_expired) ? '-' : \Carbon\Carbon::parse($stock->date_expired)->translatedFormat('l, j F Y') }}

@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->foreignId('category')->nullable();
             $table->string('price_sell')->nullable();
             $table->string('price_purchase')->nullable();
-            $table->string('stock_qty')->nullable();
+            $table->string('stock_last')->nullable();
             $table->text('description')->nullable();
             $table->string('image_product')->nullable();
             $table->timestamps();

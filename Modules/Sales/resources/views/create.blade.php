@@ -196,11 +196,104 @@
 @endpush
 
 @push('modals')
+    <div class="modal fade" tabindex="-1" id="kt_modal_edit_cart">
+        <div class="modal-dialog">
+            <form id="kt_docs_formvalidation_text_c" class="form" action="{{ route('sales.updatecart') }}"
+                autocomplete="off" method="POST">
+                @csrf
+
+                <input type="hidden" name="id_cart" class="form-control form-control-solid mb-3 mb-lg-0" readonly />
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal Edit Cart Product </h5>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-2x"></span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-3 row">
+                            <!--begin::Label-->
+                            <label class="col-md-4 col-form-label text-md-end text-start">Name</label>
+                            <!--end::Label-->
+                            <div class="col-md-8">
+                                <!--begin::Input-->
+                                <input type="text" name="name_cart"
+                                    class="form-control form-control-solid mb-3 mb-lg-0" readonly />
+                                <!--end::Input-->
+                            </div>
+                        </div>
+                        <!--end::Input group-->
+
+                        <div class="fv-row mb-3 row ">
+                            <!--begin::Label-->
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Price
+                                Unit</label>
+                            <!--end::Label-->
+                            <div class="col-md-8">
+                                <!--begin::Input-->
+                                <input type="text" name="price_cart"
+                                    class="form-control form-control-solid mb-3 mb-lg-0" readonly />
+                                <!--end::Input-->
+                            </div>
+                        </div>
+                        <!--end::Input group-->
+
+                        <div class="mb-3 row fv-row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Unit</label>
+                            <div class="col-md-8">
+                                <select class="form-select" data-control="select2" data-placeholder="Select Unit"
+                                    name="units_cart" required="required">
+                                    <option></option>
+                                    @foreach ($unit as $units)
+                                        <option value="{{ $units->id }}">
+                                            {{ $units->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="fv-row mb-3 row ">
+                            <!--begin::Label-->
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">QTY
+                            </label>
+                            <!--end::Label-->
+                            <div class="col-md-8">
+                                <!--begin::Input-->
+                                <input type="number" name="qty_cart" class="form-control  mb-3 mb-lg-0" required />
+                                <!--end::Input-->
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endpush
+
+@push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_payment">
         <div class="modal-dialog">
             <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('sales.store') }}"
                 autocomplete="off" method="POST">
                 @csrf
+
+                <input type="hidden" name="number_invoice">
+                <input type="hidden" name="date_invoice">
+                <input type="hidden" name="customer_invoice">
+                <input type="hidden" name="departement_invoice">
 
                 <div class="modal-content">
                     <div class="modal-header">
@@ -360,7 +453,7 @@
                                     class="col-md-4 col-form-label text-md-end text-start">Departement</label>
                                 <div class="col-md-8">
                                     <select class="form-select @error('departement') is-invalid @enderror"
-                                        data-control="select2" data-placeholder="Select Departement" name="customer">
+                                        data-control="select2" data-placeholder="Select Departement" name="departement">
                                         <option></option>
                                         @foreach ($departement as $departements)
                                             <option value="{{ $departements->id }}"
@@ -446,7 +539,7 @@
                             <!--begin::Card body-->
                             <div class="card-body d-flex justify-content-center text-center flex-column p-8">
                                 <!--begin::Name-->
-                                <a href="{{ route('sales.addcart', $products->id) }}"
+                                <a href="javascript:;" data-id="{{ $products->id }}" id="addcart"
                                     class="text-gray-800 text-hover-primary d-flex flex-column">
                                     <!--begin::Image-->
                                     <div class="symbol symbol-100px mb-5">
@@ -569,12 +662,15 @@
                                     <div class="d-flex flex-row-fluid align-items-center flex-wrap my-lg-0 me-2">
                                         <!--begin::Title-->
                                         <div class="flex-grow-1 my-lg-0 my-2 me-2">
-                                            <a href="javascript:;"
-                                                class="text-gray-800 fw-bolder text-hover-primary fs-6">{{ Str::title($cart[$key]['name_product']) }}</a>
+                                            <a href="javascript:;" id="editcart" data-id="{{ $cart[$key]['id'] }}"
+                                                class="text-gray-800 fw-bolder text-hover-primary fs-6"> <i
+                                                    class="bi bi-pencil-square text-warning"></i>
+                                                {{ Str::title($cart[$key]['name_product']) }}</a>
                                             <span
                                                 class="text-muted fw-bold d-block pt-1">{{ empty($cart[$key]['price_unit']) ? 0 : number_format($cart[$key]['price_unit'], 0, ',', '.') }}</span>
                                             <span class="text-gray-800 fw-bolder">x</span>
-                                            <span class="text-gray-800 fw-bolder">{{ $cart[$key]['qty'] }}</span>
+                                            <span class="text-gray-800 fw-bolder me-2">{{ $cart[$key]['qty'] }}</span>
+                                            <span class="text-gray-800 "> ( {{ $cart[$key]['unit_name'] }} ) </span>
                                         </div>
                                         <!--end::Title-->
                                         <!--begin::Section-->
@@ -582,7 +678,7 @@
 
                                             <div class="me-6">
                                                 <span
-                                                    class="text-gray-800 fw-bolder">{{ number_format($cart[$key]['price_unit'] * $cart[$key]['qty'], 0, ',', '.') }}</span>
+                                                    class="text-gray-800 fw-bolder">{{ number_format($cart[$key]['subtotal'], 0, ',', '.') }}</span>
                                             </div>
 
                                             <a href="{{ route('sales.deletecart', $cart[$key]['id']) }}"
@@ -669,23 +765,26 @@
         </div>
         <!--end::Col-->
     </div>
-    <div class="g-5 gx-xxl-8 text-center py-10">
-        <a href="javascript:;" class="btn btn-info py-6 mb-3"> <i class="bi bi-arrow-down-up"></i> Call
-            Transaction </a>
-        <a href="javascript:;" class="btn btn-danger py-6 mb-3"> <i class="bi bi-save2-fill"></i> Save
-            Transaction </a>
-        <a href="javascript:;" class="btn btn-warning py-6 mb-3" data-bs-toggle="modal"
-            data-bs-target="#kt_modal_discount">
-            <i class="bi bi-cash-stack"></i> Discount
-        </a>
-        <a href="javascript:;" class="btn btn-dark  py-6 mb-3" data-bs-toggle="modal" data-bs-target="#kt_modal_tax">
-            <i class="bi bi-cash-stack"></i> Tax
-        </a>
-        <a href="javascrip:;" class="btn btn-primary  py-6 mb-3 " data-bs-toggle="modal"
-            data-bs-target="#kt_modal_payment">
-            <i class="bi bi-credit-card"></i> Pay
-            Now</a>
-    </div>
+    @if (!empty($cart) && count($cart) > 0)
+        <div class="g-5 gx-xxl-8 text-center py-10">
+            <a href="javascript:;" class="btn btn-info py-6 mb-3"> <i class="bi bi-arrow-down-up"></i> Call
+                Transaction </a>
+            <a href="javascript:;" class="btn btn-danger py-6 mb-3"> <i class="bi bi-save2-fill"></i> Save
+                Transaction </a>
+            <a href="javascript:;" class="btn btn-warning py-6 mb-3" data-bs-toggle="modal"
+                data-bs-target="#kt_modal_discount">
+                <i class="bi bi-cash-stack"></i> Discount
+            </a>
+            <a href="javascript:;" class="btn btn-dark  py-6 mb-3" data-bs-toggle="modal"
+                data-bs-target="#kt_modal_tax">
+                <i class="bi bi-cash-stack"></i> Tax
+            </a>
+            <a href="javascrip:;" class="btn btn-primary  py-6 mb-3 " data-bs-toggle="modal"
+                data-bs-target="#kt_modal_payment" id="buttonpayment">
+                <i class="bi bi-credit-card"></i> Pay
+                Now</a>
+        </div>
+    @endif
 @endsection
 @push('scripts')
     <script type="text/javascript">
@@ -913,6 +1012,21 @@
             }
         });
 
+        /** inject payment  **/
+        $('body').on('click', '#buttonpayment', function() {
+
+            var no_invoive = $('input[name=ponumber]').val();
+            var customer_invoce = $('select[name=customer] option:selected').val();
+            var date_invoice = $('input[name=date_transaction]').val();
+            var departement_invoice = $('select[name=departement] option:selected').val();
+
+            $('input[name=number_invoice]').val(no_invoive);
+            $('input[name=date_invoice]').val(date_invoice);
+            $('input[name=customer_invoice]').val(customer_invoce);
+            $('input[name=departement_invoice]').val(departement_invoice);
+
+        });
+
         const formpaymenet = document.getElementById('kt_docs_formvalidation_text_p');
         var validatorpayment = FormValidation.formValidation(
             formpaymenet, {
@@ -984,6 +1098,65 @@
                         }, 2000);
                     }
                 });
+            }
+        });
+
+        //add cart 
+        $('body').on('click', 'a#addcart', function() {
+            var id_product = $(this).data('id');
+            var id_departement = $('select[name="departement"] option:selected').val();
+
+            var urld = "{{ route('sales.addcart', ['id' => ':id', 'departement' => ':departement']) }}";
+            urld = urld.replace(':id', id_product).replace(':departement', id_departement);
+            window.location.href = urld;
+        });
+
+        // ajax show Edit Cart 
+        $('body').on('click', 'a#editcart', function() {
+            var id_cart = $(this).data('id');
+            var urld = "{{ route('sales.editcart', ['id' => ':id']) }}";
+            urld = urld.replace(':id', id_cart);
+            $.ajax({
+                type: "GET",
+                url: urld,
+                contentType: "application/json;",
+                cache: false,
+                processData: false,
+                dataType: "json",
+                success: function(data) {
+
+                    let df = formatNumber(data.data.price_unit);
+
+                    $('input[name="name_cart"]').val(data.data.name_product);
+                    $('input[name="price_cart"]').val(df);
+                    $('select[name="units_cart"]').select2();
+                    $('select[name="units_cart"]').val(data.data.unit_id).trigger("change");
+                    $('input[name="qty_cart"]').val(data.data.qty);
+                    $('input[name="id_cart"]').val(data.data.id);
+
+                    $('#kt_modal_edit_cart').modal('show');
+
+                },
+                error: function(errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        });
+
+        //charge 
+        $('body').on('keyup', 'input[name=amount_payment]', function(e) {
+            if (e.target.value.length > 0) {
+                var replace_currency = e.target.value.replace(/\D/g, "");
+                var total_payment = $('input[name=total_payment]').data('currency');
+                var change = parseInt(replace_currency) - parseInt(total_payment);
+                if (change > 0) {
+                    var dfc = formatNumber(change.toString());
+                    $('input[name="change"]').attr('data-currency', change.toString());
+                    $('input[name="change"]').val(dfc);
+                }
+            } else {
+                $('input[name="change"]').val(0);
+                $('input[name="change"]').attr('data-currency', 0);
             }
         });
     </script>

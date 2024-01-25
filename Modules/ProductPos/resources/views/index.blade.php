@@ -60,6 +60,7 @@
                             <th>Category</th>
                             <th>Unit Price Purchase</th>
                             <th>Unit Price Sell</th>
+                            <th>Stock Last </th>
                             <th>Description</th>
                             <th class="text-end min-w-125px">Action</th>
                         </tr>
@@ -91,6 +92,7 @@
                                 </td>
                                 <td>{{ empty($product->price_sell) ? 0 : number_format($product->price_sell, 0, ',', '.') }}
                                 </td>
+                                <td>{{ $product?->stock_last }}</td>
                                 <td>
                                     @if (strlen($product->description) > 100)
                                         {{ substr($product->description, 0, 100) }}

@@ -290,6 +290,13 @@
                                     {{ $message }}
                                 </div>
                             @endif
+
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-danger text-center" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @endif
+
                             @stack('modals')
                             @yield('content')
                         </div>

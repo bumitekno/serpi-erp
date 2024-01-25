@@ -16,6 +16,7 @@ use Modules\CategoryProduct\database\seeders\CategoryProductDatabaseSeeder;
 use Modules\UnitProduct\database\seeders\UnitProductDatabaseSeeder;
 use Modules\Warehouse\database\seeders\WarehouseDatabaseSeeder;
 use Modules\Stock\database\seeders\StockDatabaseSeeder;
+use Modules\Location\database\seeders\LocationDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
             CustomerSeeder::class,
             SupplierSeeder::class,
             DepartementSeeder::class,
+            LocationDatabaseSeeder::class,
             MethodPaymentSeeder::class,
             PermissionSeeder::class,
             RolesDatabaseSeeder::class,

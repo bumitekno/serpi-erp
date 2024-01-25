@@ -26,7 +26,9 @@ class Departement extends Model
         'contact',
         'email',
         'image',
-        'address'
+        'address',
+        'id_warehouse',
+        'id_location'
     ];
 
     public function getActivitylogOptions(): LogOptions

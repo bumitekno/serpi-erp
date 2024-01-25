@@ -51,7 +51,7 @@
                         @endif
                     </div>
                 </div>
-                
+
                 <div class="mb-3 row">
                     <label for="name" class="col-md-4 col-form-label text-md-end text-start">Location</label>
                     <div class="col-md-4">
@@ -74,7 +74,8 @@
                                 <th>Product</th>
                                 <th>Unit</th>
                                 <th>Stock Min </th>
-                                <th>Stock Last </th>
+                                <th>Stock Max </th>
+                                <th>QTY Convert </th>
                                 <th>Date Expired </th>
                                 <th>Action</th>
                             </tr>
@@ -116,8 +117,19 @@
                                         <span class="text-danger">{{ $errors->first('addmore.stockmin.*') }}</span>
                                     @endif
                                 </td>
-                                <td><input type="number" name="addmore[stocklast][]" class="form-control"
-                                        placeholder="Stock Last">
+                                <td><input type="number" name="addmore[stockmax][]"
+                                        class="form-control @error('addmore.stockmax.*') is-invalid @enderror"
+                                        placeholder="Stock Max">
+                                    @if ($errors->has('addmore.stockmax.*'))
+                                        <span class="text-danger">{{ $errors->first('addmore.stockmax.*') }}</span>
+                                    @endif
+                                </td>
+                                <td><input type="number" name="addmore[qty_convert][]"
+                                        class="form-control @error('addmore.qty_convert.*') is-invalid @enderror"
+                                        placeholder="Qty Convert">
+                                    @if ($errors->has('addmore.qty_convert.*'))
+                                        <span class="text-danger">{{ $errors->first('addmore.qty_convert.*') }}</span>
+                                    @endif
                                 </td>
 
                                 <td><input type="date" name="addmore[expired][]" class="form-control"

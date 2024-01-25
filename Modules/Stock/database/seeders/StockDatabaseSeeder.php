@@ -19,8 +19,9 @@ class StockDatabaseSeeder extends Seeder
             'id_unit' => 1,
             'id_warehouse' => 1,
             'id_location' => 1,
-            'stock_min' => 1000,
-            'stock_last' => 1000,
+            'stock_min' => 10,
+            'stock_max' => 1000,
+            'qty_convert' => 1,
             'date_expired' => Carbon::now()->addDays(50),
             'sold_out' => false
         ]);

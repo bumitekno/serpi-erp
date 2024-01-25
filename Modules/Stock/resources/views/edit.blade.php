@@ -115,6 +115,29 @@
                 </div>
 
                 <div class="mb-3 row">
+                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Max</label>
+                    <div class="col-md-4">
+                        <input type="number" name="stockmax" class="form-control @error('stockmax') is-invalid @enderror"
+                            placeholder="Stock Max" value="{{ $stock->stock_max }}">
+                        @if ($errors->has('stockmax'))
+                            <span class="text-danger">{{ $errors->first('stockmax') }}</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">QTY Convert</label>
+                    <div class="col-md-4">
+                        <input type="number" name="qty_convert"
+                            class="form-control @error('qty_convert') is-invalid @enderror" placeholder="Qty Convert"
+                            value="{{ $stock->qty_convert }}">
+                        @if ($errors->has('qty_convert'))
+                            <span class="text-danger">{{ $errors->first('qty_convert') }}</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
                     <label for="name" class="col-md-4 col-form-label text-md-end text-start">Expired Date</label>
                     <div class="col-md-4">
                         <input type="date" name="expired" class="form-control " placeholder="Expired"

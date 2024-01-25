@@ -30,7 +30,7 @@ class ProductPos extends Model
         'image_product',
         'price_sell',
         'price_purchase',
-        'stock_qty',
+        'stock_last'
     ];
 
     /** with category */

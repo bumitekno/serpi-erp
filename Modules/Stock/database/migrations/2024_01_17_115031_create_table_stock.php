@@ -10,14 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('stock', function (Blueprint $table) {
+        Schema::create('stock_unit_product', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_product')->nullable();
             $table->foreignId('id_unit')->nullable();
             $table->foreignId('id_warehouse')->nullable();
             $table->foreignId('id_location')->nullable();
             $table->string('stock_min')->nullable();
-            $table->string('stock_last')->nullable();
+            $table->string('stock_max')->nullable();
+            $table->string('qty_convert')->nullable();
             $table->date('date_expired')->nullable();
             $table->boolean('sold_out')->default(false);
             $table->timestamps();
@@ -29,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('stock');
+        Schema::dropIfExists('stock_unit_product');
     }
 };

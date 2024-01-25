@@ -20,7 +20,9 @@ class DepartementSeeder extends Seeder
             'name' => 'Departement 1',
             'contact' => '627861766171',
             'email' => 'departement@example.com',
-            'address' => 'Jakarta'
+            'address' => 'Jakarta',
+            'id_warehouse' => 1,
+            'id_location' => 1
         ]);
     }
 }
