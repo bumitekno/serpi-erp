@@ -27,4 +27,8 @@ Route::group([], function () {
     Route::post('discount-cart', [SalesController::class, 'updateDiscount'])->name('sales.updateDiscount');
     Route::post('tax-cart', [SalesController::class, 'updatetax'])->name('sales.updatetax');
     Route::post('update-cart', [SalesController::class, 'updatecart'])->name('sales.updatecart');
+    Route::get('change/customer/{customer}', [SalesController::class, 'changeCust'])->name('sales.changecust');
+    Route::get('change/departement/{departement}', [SalesController::class, 'changeDepart'])->name('sales.changedepart');
+    Route::get('struck/print/small/{id}', [SalesController::class, 'printsmall'])->name('sales.printsmall');
+    Route::post('sales/saved/transaction', [SalesController::class, 'temptransaction'])->name('sales.temptransaction');
 });

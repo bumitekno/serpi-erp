@@ -380,6 +380,35 @@
     </div>
 @endpush
 
+@push('modals')
+    <div class="modal face" tabindex="-1" id="kt_modal_call">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal Transaction Saved </h5>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <span class="svg-icon svg-icon-2x"></span>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <!--begin::Input group-->
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+@endpush
+
 @section('content')
     <div class="row g-5 g-xl-8">
         <div class="col-xl-12">
@@ -765,11 +794,15 @@
         </div>
         <!--end::Col-->
     </div>
-    @if (!empty($cart) && count($cart) > 0)
-        <div class="g-5 gx-xxl-8 text-center py-10">
-            <a href="javascript:;" class="btn btn-info py-6 mb-3"> <i class="bi bi-arrow-down-up"></i> Call
-                Transaction </a>
-            <a href="javascript:;" class="btn btn-danger py-6 mb-3"> <i class="bi bi-save2-fill"></i> Save
+
+    <div class="g-5 gx-xxl-8 text-center py-10">
+        <a href="javascript:;" class="btn btn-info py-6 mb-3" data-bs-toggle="modal" data-bs-target="#kt_modal_call"
+            id="buttoncall"> <i class="bi bi-arrow-down-up"></i> Call
+            Transaction </a>
+
+        @if (!empty($cart) && count($cart) > 0)
+            <a href="javascript:;" class="btn btn-danger py-6 mb-3" id="savedtrans"> <i class="bi bi-save2-fill"></i>
+                Save
                 Transaction </a>
             <a href="javascript:;" class="btn btn-warning py-6 mb-3" data-bs-toggle="modal"
                 data-bs-target="#kt_modal_discount">
@@ -783,8 +816,8 @@
                 data-bs-target="#kt_modal_payment" id="buttonpayment">
                 <i class="bi bi-credit-card"></i> Pay
                 Now</a>
-        </div>
-    @endif
+        @endif
+    </div>
 @endsection
 @push('scripts')
     <script type="text/javascript">
@@ -1101,6 +1134,21 @@
             }
         });
 
+        //change customer 
+
+        $('body').on('change', 'select[name=customer]', function(e) {
+            var urld = "{{ route('sales.changecust', ['customer' => ':id']) }}";
+            urld = urld.replace(':id', e.target.value);
+            window.location.href = urld;
+        });
+
+        //change departement 
+        $('body').on('change', 'select[name=departement]', function(e) {
+            var urld = "{{ route('sales.changedepart', ['departement' => ':id']) }}";
+            urld = urld.replace(':id', e.target.value);
+            window.location.href = urld;
+        });
+
         //add cart 
         $('body').on('click', 'a#addcart', function() {
             var id_product = $(this).data('id');
@@ -1158,6 +1206,48 @@
                 $('input[name="change"]').val(0);
                 $('input[name="change"]').attr('data-currency', 0);
             }
+        });
+
+        //saved transaction 
+        $("body").on('click', '#savedtrans', function(e) {
+
+            var no_invoive = $('input[name=ponumber]').val();
+            var customer_invoce = $('select[name=customer] option:selected').val();
+            var date_invoice = $('input[name=date_transaction]').val();
+            var departement_invoice = $('select[name=departement] option:selected').val();
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "you want to save this transaction!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Save it!"
+            }).then(function(result) {
+                if (result.value) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('sales.temptransaction') }}",
+                        contentType: "application/json;",
+                        cache: false,
+                        processData: false,
+                        dataType: "json",
+                        data: JSON.stringify({
+                            "no_invoice": no_invoive,
+                            "customer": customer_invoce,
+                            "departement": departement_invoice,
+                            "date_invoice": date_invoice
+                        }),
+                        success: function(data) {
+
+                        },
+                        error: function(errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+
+                }
+            });
         });
     </script>
 @endpush

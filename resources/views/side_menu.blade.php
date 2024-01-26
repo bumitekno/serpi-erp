@@ -163,7 +163,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">Stock </span>
+                        <span class="menu-title">Stock Unit </span>
                     </a>
                 </div>
             @endcanany

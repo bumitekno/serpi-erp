@@ -43,9 +43,9 @@ class SalesController extends Controller
     {
 
         if (!empty($request->search)) {
-            $transaction = TransactionSales::where('code_transaction', 'like', '%' . $request->search . '%')->latest()->paginate(10);
+            $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->where('code_transaction', 'like', '%' . $request->search . '%')->where('saved_trans', '=', '0')->latest()->paginate(10);
         } else {
-            $transaction = TransactionSales::latest()->paginate(10);
+            $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->where('saved_trans', '=', '0')->latest()->paginate(10);
         }
 
         return view('sales::index')->with(['transaction' => $transaction]);
@@ -80,10 +80,10 @@ class SalesController extends Controller
         $category_product = CategoryProduct::query()->get();
 
         $customer = Customer::query()->get();
-        $customer_default = Customer::first()?->id;
+        $customer_default = empty(Session::get('customer')) ? Customer::first()?->id : Session::get('customer');
 
         $departement = Departement::query()->get();
-        $departement_default = Departement::first()?->id;
+        $departement_default = empty(Session::get('departement')) ? Departement::first()?->id : Session::get('departement');
 
         $date_transaction = Carbon::now()->format('Y-m-d');
 
@@ -138,6 +138,22 @@ class SalesController extends Controller
         ]);
     }
 
+    /** change customer  */
+    public function changeCust($customer)
+    {
+        Session::put('customer', $customer);
+        Session::flash('success', 'Customer is change successfully');
+        return redirect()->back();
+    }
+
+    /** change departement  */
+    public function changeDepart($departement)
+    {
+        Session::put('departement', $departement);
+        Session::flash('success', 'Departement is change successfully');
+        return redirect()->back();
+    }
+
     /** add cart */
     public function addToCart(Request $request, $id, $departement)
     {
@@ -147,6 +163,7 @@ class SalesController extends Controller
 
         if (!empty($cart[$product['id']])) {
             $cart[$product['id']]['qty'] += 1;
+            $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
         } else {
             $id_unit = UnitProduct::first();
 
@@ -185,6 +202,7 @@ class SalesController extends Controller
             $cart = Session::get('cart');
             if (!empty($cart[$product['id']])) {
                 $cart[$product['id']]['qty'] += 1;
+                $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
             } else {
                 $id_unit = UnitProduct::first();
                 $cart[$product->id] = array(
@@ -318,7 +336,8 @@ class SalesController extends Controller
             'date_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('Y-m-d'),
             'time_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('H:i:s'),
             'date_due' => Carbon::createFromFormat('d/m/Y', $request->due_date_transaction)->format('Y-m-d'),
-            'amount' => $request->total_payment,
+            'total_transaction' => Str::replace('.', '', $request->total_payment),
+            'amount' => Str::replace('.', '', $request->amount_payment),
             'note' => $request->notes,
             'id_method_payment' => $request->methodpayment,
             'id_departement' => $request->departement_invoice,
@@ -326,7 +345,8 @@ class SalesController extends Controller
             'id_customer' => $request->customer_invoice,
             'discount_amount' => $discount_cart,
             'tax_amount' => $tax_cart,
-            'status' => $request->methodpayment == 3 ? false : true
+            'status' => $request->methodpayment == 3 ? false : true,
+            'saved_trans' => false
         ];
 
         $create_transaction = TransactionSales::create($transaction);
@@ -342,11 +362,11 @@ class SalesController extends Controller
                 ];
                 $create_item_sales = TransactionSalesItem::create($item_sales);
                 //update stock last product 
-                $checkStocklast = ProductPos::find(['id' => $create_item_sales->id_product]);
-                if (!empty($checkStocklast->stock_last)) {
+                $checkStocklast = ProductPos::find($create_item_sales->id_product);
+                if (!empty($checkStocklast->stock_last) && $checkStocklast->stock_last > 0) {
                     $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
+                    $checkStocklast->update(['stock_last' => $updatelast]);
                 }
-
             }
         }
 
@@ -354,11 +374,20 @@ class SalesController extends Controller
             Session::put('tax', 0);
             Session::put('discount', 0);
             Session::put('cart', []);
+            Session::remove('customer');
+            Session::remove('departement');
             Session::flash('success', 'Transaction is successfully !');
+            return redirect()->route('sales.printsmall', $create_transaction->id);
         } else {
             Session::flash('error', 'Transaction is failed !');
+            return redirect()->back();
         }
+    }
 
+    /** temp save transaction  */
+    public function temptransaction(Request $request): RedirectResponse
+    {
+        dd($request->all());
         return redirect()->back();
     }
 
@@ -389,7 +418,17 @@ class SalesController extends Controller
      */
     public function show($id)
     {
-        return view('sales::show');
+        $information = TransactionSales::with(['customer', 'methodpayment', 'departement'])->find($id);
+        $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
+        return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information]);
+    }
+
+    /** print struk small */
+    public function printsmall($id)
+    {
+        $information = TransactionSales::with(['customer', 'methodpayment', 'departement'])->find($id);
+        $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
+        return view('sales::printsmall')->with(['transaction' => $information, 'detail_transaction' => $detail_information]);
     }
 
     /**

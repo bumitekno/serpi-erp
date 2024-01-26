@@ -107,7 +107,7 @@
                             <th> Code</th>
                             <th> Name</th>
                             <th> Unit </th>
-                            <th> QTY</th>
+                            <th> Convert (QTY) </th>
                             <th> Warehouse</th>
                             <th> Location </th>
                             <th> Expired Date </th>

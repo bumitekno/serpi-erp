@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Sales\Database\factories\TransactionSalesFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use App\Models\Customer;
+use App\Models\User;
+use App\Models\Departement;
+use App\Models\MethodPayment;
 
 class TransactionSales extends Model
 {
@@ -36,8 +40,25 @@ class TransactionSales extends Model
         'id_user',
         'id_method_payment',
         'note',
-        'adjustment_amount'
+        'adjustment_amount',
+        'total_transaction',
+        'saved_trans'
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'id_customer', 'id');
+    }
+
+    public function methodpayment()
+    {
+        return $this->belongsTo(MethodPayment::class, 'id_method_payment', 'id');
+    }
+
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class, 'id_departement', 'id');
+    }
 
     protected static function newFactory(): TransactionSalesFactory
     {

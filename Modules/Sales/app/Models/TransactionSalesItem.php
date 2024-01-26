@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Sales\Database\factories\TransactionSalesItemFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Modules\ProductPos\app\Models\ProductPos;
+use Modules\UnitProduct\app\Models\UnitProduct;
 
 class TransactionSalesItem extends Model
 {
@@ -21,6 +23,16 @@ class TransactionSalesItem extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [];
+
+    public function products()
+    {
+        return $this->belongsTo(ProductPos::class, 'id_product', 'id');
+    }
+
+    public function units()
+    {
+        return $this->belongsTo(UnitProduct::class, 'id_unit', 'id');
+    }
 
     protected static function newFactory(): TransactionSalesItemFactory
     {
