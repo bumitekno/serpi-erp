@@ -31,4 +31,7 @@ Route::group([], function () {
     Route::get('change/departement/{departement}', [SalesController::class, 'changeDepart'])->name('sales.changedepart');
     Route::get('struck/print/small/{id}', [SalesController::class, 'printsmall'])->name('sales.printsmall');
     Route::post('sales/saved/transaction', [SalesController::class, 'temptransaction'])->name('sales.temptransaction');
+    Route::get('list/trans/saved', [SalesController::class, 'ajax_trans_saved'])->name('sales.list-saved');
+    Route::get('call/saved/transaction/{id}', [SalesController::class, 'choose_transaction'])->name('sales.choose_transaction');
+    Route::get('delete/saved/transaction/{id}', [SalesController::class, 'removeTrans'])->name('sales.removeTrans');
 });

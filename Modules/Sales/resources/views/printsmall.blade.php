@@ -169,9 +169,12 @@
             <div>{{ $transaction->customer?->email }}</div>
             <div class="hr"></div>
             <br>
+            <div>Invoice : {{ $transaction->code_transaction }}</div>
+            <br>
             <div class="payment">
                 <div>Payment : {{ $transaction->methodpayment?->name }}</div>
                 <div>Status : {{ $transaction->status == 1 ? 'Paid' : 'Pending ' }}</div>
+
             </div>
             <br>
             <div class="date_time_con">

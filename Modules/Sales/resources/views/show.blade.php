@@ -15,6 +15,11 @@
                     <a href="{{ route('sales.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
                         New Sales </a>
                 @endcan
+                <!--begin::Action-->
+                @if ($transaction->status != 1 && $transaction->note != 'cancel')
+                    <a href="#" class="btn btn-sm btn-success">Pay Now</a>
+                @endif
+                <!--end::Action-->
             </div>
         </div>
 
@@ -37,11 +42,7 @@
                                 @endif
                             </a>
                             <!--end::Logo-->
-                            <!--begin::Action-->
-                            @if ($transaction->status != 1)
-                                <a href="#" class="btn btn-sm btn-success">Pay Now</a>
-                            @endif
-                            <!--end::Action-->
+
                         </div>
                         <!--end::Top-->
                         <!--begin::Wrapper-->
@@ -278,6 +279,7 @@
                         <div class="mb-6">
                             <div class="fw-bold text-gray-600 fs-7">Note:</div>
                             <div class="fw-bolder text-gray-800 fs-6">
+                                {{ empty($transaction->note) ? '-' : $transaction->note }}
                             </div>
                         </div>
                         <!--end::Item-->

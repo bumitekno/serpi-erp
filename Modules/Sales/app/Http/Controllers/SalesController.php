@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class SalesController extends Controller
 {
@@ -85,11 +86,12 @@ class SalesController extends Controller
         $departement = Departement::query()->get();
         $departement_default = empty(Session::get('departement')) ? Departement::first()?->id : Session::get('departement');
 
-        $date_transaction = Carbon::now()->format('Y-m-d');
+        $date_transaction = empty(Session::get('date_trans')) ? Carbon::now()->format('Y-m-d') : Session::get('date_trans');
 
         $record = TransactionSales::latest()->first();
 
         $cart = empty(Session::get('cart')) ? [] : Session::get('cart');
+        $edit_trans = empty(Session::get('edit')) ? false : Session::get('edit');
 
         if (!empty($record)) {
             $expNum = explode('-', $record->code_transaction);
@@ -118,7 +120,7 @@ class SalesController extends Controller
         }
 
         return view('sales::create')->with([
-            'ponumber' => $nextInvoiceNumber,
+            'ponumber' => empty(Session::get('ponumber')) ? $nextInvoiceNumber : Session::get('ponumber'),
             'product' => $product,
             'method_payment' => $method_payment,
             'customer' => $customer,
@@ -134,7 +136,8 @@ class SalesController extends Controller
             'tax_cart' => $tax_cart,
             'category_product' => $category_product,
             'keyword' => empty($keyword) ? '' : $keyword,
-            'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name
+            'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name,
+            'edit_trans' => $edit_trans
         ]);
     }
 
@@ -331,26 +334,145 @@ class SalesController extends Controller
         $discount_cart = empty(Session::get('discount')) ? 0 : Session::get('discount');
         $tax_cart = empty(Session::get('tax')) ? 0 : Session::get('tax');
         $cart = Session::get('cart');
+
+        //check transaction saved 
+        $trans = TransactionSales::where('code_transaction', $request->number_invoice);
+        $transFind = $trans->first();
+        if (!empty($transFind)) {
+
+            //drop transaction sales item exist
+            TransactionSalesItem::where('id_transaction_sales', $transFind->id)->delete();
+
+            if (!empty($cart)) {
+                foreach ($cart as $key => $val) {
+                    $item_sales = [
+                        'id_product' => $cart[$key]['id'],
+                        'id_unit' => $cart[$key]['unit_id'],
+                        'qty' => $cart[$key]['qty'],
+                        'price_sales' => $cart[$key]['price_unit'],
+                        'id_transaction_sales' => $transFind->id
+                    ];
+                    $create_item_sales = TransactionSalesItem::create($item_sales);
+                    //update stock last product 
+                    $checkStocklast = ProductPos::find($create_item_sales->id_product);
+                    if (!empty($checkStocklast->stock_last) && $checkStocklast->stock_last > 0) {
+                        $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
+                        $checkStocklast->update(['stock_last' => $updatelast]);
+                    }
+                }
+            }
+
+            $transaction = [
+                'code_transaction' => $request->number_invoice,
+                'date_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('Y-m-d'),
+                'time_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('H:i:s'),
+                'date_due' => Carbon::createFromFormat('d/m/Y', $request->due_date_transaction)->format('Y-m-d'),
+                'total_transaction' => Str::replace('.', '', $request->total_payment),
+                'amount' => Str::replace('.', '', $request->amount_payment),
+                'note' => $request->notes,
+                'id_method_payment' => $request->methodpayment,
+                'id_departement' => $request->departement_invoice,
+                'id_user' => Auth::user()->id,
+                'id_customer' => $request->customer_invoice,
+                'discount_amount' => $discount_cart,
+                'tax_amount' => $tax_cart,
+                'status' => $request->methodpayment == 3 ? false : true,
+                'saved_trans' => false
+            ];
+
+            $create_transaction = $trans->update($transaction);
+            $id = $transFind->id;
+
+        } else {
+
+            $transaction = [
+                'code_transaction' => $request->number_invoice,
+                'date_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('Y-m-d'),
+                'time_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('H:i:s'),
+                'date_due' => Carbon::createFromFormat('d/m/Y', $request->due_date_transaction)->format('Y-m-d'),
+                'total_transaction' => Str::replace('.', '', $request->total_payment),
+                'amount' => Str::replace('.', '', $request->amount_payment),
+                'note' => $request->notes,
+                'id_method_payment' => $request->methodpayment,
+                'id_departement' => $request->departement_invoice,
+                'id_user' => Auth::user()->id,
+                'id_customer' => $request->customer_invoice,
+                'discount_amount' => $discount_cart,
+                'tax_amount' => $tax_cart,
+                'status' => $request->methodpayment == 3 ? false : true,
+                'saved_trans' => false
+            ];
+
+            $create_transaction = TransactionSales::create($transaction);
+
+            if (!empty($cart) && !empty($create_transaction)) {
+                foreach ($cart as $key => $val) {
+                    $item_sales = [
+                        'id_product' => $cart[$key]['id'],
+                        'id_unit' => $cart[$key]['unit_id'],
+                        'qty' => $cart[$key]['qty'],
+                        'price_sales' => $cart[$key]['price_unit'],
+                        'id_transaction_sales' => $create_transaction->id
+                    ];
+                    $create_item_sales = TransactionSalesItem::create($item_sales);
+                    //update stock last product 
+                    $checkStocklast = ProductPos::find($create_item_sales->id_product);
+                    if (!empty($checkStocklast->stock_last) && $checkStocklast->stock_last > 0) {
+                        $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
+                        $checkStocklast->update(['stock_last' => $updatelast]);
+                    }
+                }
+            }
+
+            $id = $create_transaction->id;
+        }
+
+        if (!empty($create_transaction) && !empty($create_item_sales)) {
+            Session::put('tax', 0);
+            Session::put('discount', 0);
+            Session::put('cart', []);
+            Session::remove('customer');
+            Session::remove('departement');
+            Session::remove('date_trans');
+            Session::remove('ponumber');
+            Session::remove('edit');
+            Session::flash('success', 'Transaction is successfully !');
+            return redirect()->route('sales.printsmall', $id);
+        } else {
+            Session::flash('error', 'Transaction is failed !');
+            return redirect()->back();
+        }
+    }
+
+    /** temp save transaction  */
+    public function temptransaction(Request $request)
+    {
+
+        $discount_cart = empty(Session::get('discount')) ? 0 : Session::get('discount');
+        $tax_cart = empty(Session::get('tax')) ? 0 : Session::get('tax');
+        $cart = Session::get('cart');
+
         $transaction = [
-            'code_transaction' => $request->number_invoice,
+            'code_transaction' => $request->no_invoice,
             'date_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('Y-m-d'),
             'time_sales' => Carbon::createFromFormat('d/m/Y', $request->date_invoice)->format('H:i:s'),
-            'date_due' => Carbon::createFromFormat('d/m/Y', $request->due_date_transaction)->format('Y-m-d'),
-            'total_transaction' => Str::replace('.', '', $request->total_payment),
-            'amount' => Str::replace('.', '', $request->amount_payment),
-            'note' => $request->notes,
-            'id_method_payment' => $request->methodpayment,
-            'id_departement' => $request->departement_invoice,
+            'total_transaction' => Str::replace('.', '', $request->totalpayment),
+            'id_departement' => $request->departement,
+            'id_customer' => $request->customer,
             'id_user' => Auth::user()->id,
-            'id_customer' => $request->customer_invoice,
+            'saved_trans' => true,
             'discount_amount' => $discount_cart,
             'tax_amount' => $tax_cart,
-            'status' => $request->methodpayment == 3 ? false : true,
-            'saved_trans' => false
         ];
 
-        $create_transaction = TransactionSales::create($transaction);
+        //drop transaction sales item exist
+        $trans = TransactionSales::where('code_transaction', $request->no_invoice)->first();
+        if (!empty($trans)) {
+            TransactionSalesItem::where('id_transaction_sales', $trans->id)->delete();
+            $trans->delete();
+        }
 
+        $create_transaction = TransactionSales::create($transaction);
         if (!empty($cart) && !empty($create_transaction)) {
             foreach ($cart as $key => $val) {
                 $item_sales = [
@@ -361,12 +483,6 @@ class SalesController extends Controller
                     'id_transaction_sales' => $create_transaction->id
                 ];
                 $create_item_sales = TransactionSalesItem::create($item_sales);
-                //update stock last product 
-                $checkStocklast = ProductPos::find($create_item_sales->id_product);
-                if (!empty($checkStocklast->stock_last) && $checkStocklast->stock_last > 0) {
-                    $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
-                    $checkStocklast->update(['stock_last' => $updatelast]);
-                }
             }
         }
 
@@ -376,19 +492,72 @@ class SalesController extends Controller
             Session::put('cart', []);
             Session::remove('customer');
             Session::remove('departement');
-            Session::flash('success', 'Transaction is successfully !');
-            return redirect()->route('sales.printsmall', $create_transaction->id);
+            Session::remove('date_trans');
+            Session::remove('ponumber');
+            return response()->json(['reload' => true, 'message' => 'Transaction saved is successfully'], 200);
         } else {
-            Session::flash('error', 'Transaction is failed !');
-            return redirect()->back();
+            return response()->json(['reload' => false, 'message' => 'Transaction saved is failed'], 403);
         }
     }
 
-    /** temp save transaction  */
-    public function temptransaction(Request $request): RedirectResponse
+    /** choose save transaction */
+    public function choose_transaction($id)
     {
-        dd($request->all());
+        $information = TransactionSales::where('id', $id)->first();
+        $detail = TransactionSalesItem::where('id_transaction_sales', $information?->id)->get();
+        $departement = Departement::where('id', '=', $information->id_departement)->first();
+
+        if (!empty($information) && !empty($detail)) {
+            Session::put('customer', $information->id_customer);
+            Session::put('departement', $information->id_departement);
+            Session::put('date_trans', $information->date_sales);
+            Session::put('tax', $information->tax_amount);
+            Session::put('discount', $information->discount_amount);
+            Session::put('ponumber', $information->code_transaction);
+            Session::remove('cart');
+            $cart = [];
+            foreach ($detail as $detail) {
+                $id_unit = UnitProduct::where('id', $detail->id_unit)->first();
+                $product = ProductPos::with('category_product')->where('id', '=', $detail->id_product)->first();
+                $cart[$detail->id_product] = [
+                    "id" => $detail->id_product,
+                    "code_product" => $product->code_product,
+                    "name_product" => $product->name,
+                    "price_unit" => $product->price_sell,
+                    "unit_id" => $id_unit?->id,
+                    "unit_name" => $id_unit?->name,
+                    "image_product" => $product->image_product,
+                    "qty" => $detail->qty,
+                    "subtotal" => $product->price_sell * $detail->qty,
+                    'location' => $departement?->id_location
+                ];
+            }
+            Session::put('cart', $cart);
+            Session::flash('success', 'Transaction saved is call successfull !');
+        } else {
+            Session::flash('error', 'Transaction saved is call failed !');
+        }
         return redirect()->back();
+    }
+
+    /** ajax transaction saved */
+    public function ajax_trans_saved(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = TransactionSales::with('customer')->where('saved_trans', '=', '1')->latest()->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('customer', function ($row) {
+                    return $row->customer?->name;
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="javascript:void(0)" class="choose-saved btn btn-primary btn-sm me-3" data-transid="' . $row->id . '"> <i class="bi bi-eyedropper"></i> Choose</a>';
+                    $btn .= '<a href="javascript:void(0)" class="delete-saved btn btn-danger btn-sm" data-transid="' . $row->id . '"> <i class="bi bi-x"></i>  Delete</a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /** store new customer  */
@@ -436,7 +605,43 @@ class SalesController extends Controller
      */
     public function edit($id)
     {
-        return view('sales::edit');
+        $information = TransactionSales::where('id', $id)->first();
+        $detail = TransactionSalesItem::where('id_transaction_sales', $information?->id)->get();
+        $departement = Departement::where('id', '=', $information->id_departement)->first();
+
+        if (!empty($information) && !empty($detail)) {
+            Session::put('customer', $information->id_customer);
+            Session::put('departement', $information->id_departement);
+            Session::put('date_trans', $information->date_sales);
+            Session::put('tax', $information->tax_amount);
+            Session::put('discount', $information->discount_amount);
+            Session::put('ponumber', $information->code_transaction);
+            Session::remove('cart');
+            $cart = [];
+            foreach ($detail as $detail) {
+                $id_unit = UnitProduct::where('id', $detail->id_unit)->first();
+                $product = ProductPos::with('category_product')->where('id', '=', $detail->id_product)->first();
+                $cart[$detail->id_product] = [
+                    "id" => $detail->id_product,
+                    "code_product" => $product->code_product,
+                    "name_product" => $product->name,
+                    "price_unit" => $product->price_sell,
+                    "unit_id" => $id_unit?->id,
+                    "unit_name" => $id_unit?->name,
+                    "image_product" => $product->image_product,
+                    "qty" => $detail->qty,
+                    "subtotal" => $product->price_sell * $detail->qty,
+                    'location' => $departement?->id_location
+                ];
+            }
+            Session::put('cart', $cart);
+            Session::put('edit', true);
+            Session::flash('success', ' Edit Transaction' . $information->code_transaction);
+        } else {
+            Session::flash('error', ' Edit Transaction call failed !');
+        }
+
+        return redirect()->route('sales.create');
     }
 
     /**
@@ -453,5 +658,48 @@ class SalesController extends Controller
     public function destroy($id)
     {
         //
+        $trans = TransactionSales::find($id);
+        $trans->note = 'cancel';
+        $trans->status = false;
+        $trans->save();
+        $departement = Departement::where('id', $trans->id_departement)->first();
+        $transitem = TransactionSalesItem::where('id_transaction_sales', $trans->id)->get();
+        if (!empty($transitem)) {
+            foreach ($transitem as $item) {
+                $checkStocklast = ProductPos::find($item->id_product);
+
+                $unit = Stock::where(['id_product' => $item->id_product, 'id_warehouse' => $departement->id_warehouse, 'id_location' => $departement->id_location])->first();
+
+                if (!empty($checkStocklast->stock_last) && !empty($unit)) {
+                    $updatelast = intval($checkStocklast->stock_last) + intval($unit->qty_convert);
+                    $checkStocklast->stock_last = $updatelast;
+                    $checkStocklast->save();
+                }
+            }
+        }
+
+        Session::flash('success', ' Transaction ' . $trans->code_transaction . 'has been cancel  successfuly.');
+        return redirect()->back();
+    }
+
+    /** remove delete trans saved */
+    public function removeTrans($id)
+    {
+        Session::put('tax', 0);
+        Session::put('discount', 0);
+        Session::put('cart', []);
+        Session::remove('customer');
+        Session::remove('departement');
+        Session::remove('date_trans');
+        Session::remove('ponumber');
+        $trans = TransactionSales::where('id', $id)->first();
+        if (!empty($trans)) {
+            TransactionSalesItem::where('id_transaction_sales', $trans->id)->delete();
+            $trans->delete();
+
+            return response()->json(['reload' => true, 'message' => 'Remove Transaction is successfully !'], 200);
+        } else {
+            return response()->json(['reload' => false, 'message' => 'Remove Transaction is failed !'], 403);
+        }
     }
 }

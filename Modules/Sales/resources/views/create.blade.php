@@ -397,7 +397,32 @@
 
                 <div class="modal-body">
                     <!--begin::Input group-->
-
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1 mb-3 ">
+                        <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none">
+                                <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2"
+                                    rx="1" transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
+                                <path
+                                    d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                    fill="black"></path>
+                            </svg>
+                        </span>
+                        <input type="text" data-kt-docs-table-filter="search"
+                            class="form-control form-control-solid w-250px ps-15" placeholder="Search Trans Saved " />
+                    </div>
+                    <!--end::Search-->
+                    <table class="table align-middle table-row-dashed fs-6 gy-5" id="table-saved">
+                        <thead>
+                            <th>Invoice</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Customer</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
 
                 <div class="modal-footer">
@@ -652,7 +677,7 @@
                             <span class="fw-bolder text-dark">Latest Cart</span>
                             <span class="text-muted mt-1 fw-bold fs-7">Cart Item </span>
                         </h3>
-                        @if (!empty($cart))
+                        @if (!empty($cart) && count($cart) > 0)
                             <div class="card-toolbar">
                                 <a href="{{ route('sales.clearcart') }}"
                                     class="btn btn-danger btn-icon-white btn-text-white  mb-3"
@@ -730,6 +755,10 @@
                                 </div>
 
                             @empty
+
+                                <center><img src="{{ asset('assets/media/illustrations/cashir.jpg') }}"
+                                        class="h-200px text-center w-200px mb-3" /></center>
+
                                 <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
                                     <!--begin::Svg Icon | path: icons/duotune/general/gen048.svg-->
                                     <span class="svg-icon svg-icon-2hx svg-icon-danger me-4">
@@ -780,7 +809,8 @@
                                 </label>
                                 <div
                                     class="col-md-12 @if ($total_cart > 0) bg-primary @else bg-danger @endif text-end text-md-end">
-                                    <span class="fs-large text-white">
+                                    <span class="fs-large text-white" data-currency="{{ $total_cart }}"
+                                        id="totalpayment">
                                         {{ number_format($total_cart, 0, ',', '.') }}
                                     </span>
                                 </div>
@@ -796,14 +826,19 @@
     </div>
 
     <div class="g-5 gx-xxl-8 text-center py-10">
-        <a href="javascript:;" class="btn btn-info py-6 mb-3" data-bs-toggle="modal" data-bs-target="#kt_modal_call"
-            id="buttoncall"> <i class="bi bi-arrow-down-up"></i> Call
-            Transaction </a>
+        @if ($edit_trans == false)
+            <a href="javascript:;" class="btn btn-info py-6 mb-3" data-bs-toggle="modal" data-bs-target="#kt_modal_call"
+                id="buttoncall"> <i class="bi bi-arrow-down-up"></i> Call
+                Transaction </a>
+        @endif
 
         @if (!empty($cart) && count($cart) > 0)
-            <a href="javascript:;" class="btn btn-danger py-6 mb-3" id="savedtrans"> <i class="bi bi-save2-fill"></i>
-                Save
-                Transaction </a>
+            @if ($edit_trans == false)
+                <a href="javascript:;" class="btn btn-danger py-6 mb-3" id="savedtrans"> <i
+                        class="bi bi-save2-fill"></i>
+                    Save
+                    Transaction </a>
+            @endif
             <a href="javascript:;" class="btn btn-warning py-6 mb-3" data-bs-toggle="modal"
                 data-bs-target="#kt_modal_discount">
                 <i class="bi bi-cash-stack"></i> Discount
@@ -820,6 +855,7 @@
     </div>
 @endsection
 @push('scripts')
+    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -1215,6 +1251,7 @@
             var customer_invoce = $('select[name=customer] option:selected').val();
             var date_invoice = $('input[name=date_transaction]').val();
             var departement_invoice = $('select[name=departement] option:selected').val();
+            var totalpayment = $('#totalpayment').data('currency');
 
             Swal.fire({
                 title: "Are you sure?",
@@ -1224,7 +1261,6 @@
                 confirmButtonText: "Yes, Save it!"
             }).then(function(result) {
                 if (result.value) {
-
                     $.ajax({
                         type: "POST",
                         url: "{{ route('sales.temptransaction') }}",
@@ -1236,18 +1272,117 @@
                             "no_invoice": no_invoive,
                             "customer": customer_invoce,
                             "departement": departement_invoice,
-                            "date_invoice": date_invoice
+                            "date_invoice": date_invoice,
+                            "total_payment": totalpayment
                         }),
                         success: function(data) {
-
+                            if (data.reload == true) {
+                                Swal.fire("", data.message, "success").then(function(e) {
+                                    window.location.reload();
+                                });
+                            }
                         },
                         error: function(errMsg) {
-                            console.log(errMsg);
+
+                            Swal.fire("", errMsg.message, "error");
                         }
                     });
 
                 }
             });
+        });
+
+
+        var table = $('#table-saved').DataTable({
+            processing: true,
+            responsive: true,
+            info: !1,
+            bDestroy: true,
+            serverSide: true,
+            order: [
+                [0, 'desc']
+            ],
+            ajax: "{{ route('sales.list-saved') }}",
+            columns: [{
+                    data: 'code_transaction',
+                    name: 'code_transaction'
+                },
+                {
+                    data: 'date_sales',
+                    name: 'date_sales'
+                },
+                {
+                    data: 'time_sales',
+                    name: 'time_sales'
+                },
+                {
+                    data: 'customer',
+                    name: 'customer'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+
+        //list transaction saved 
+        $('body').on('click', '#buttoncall', function() {
+
+
+            var handleSearchDatatable = function() {
+                const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
+                filterSearch.addEventListener('keyup', function(e) {
+                    table.search(e.target.value).draw();
+                });
+            }
+
+            handleSearchDatatable();
+        });
+
+        //call transid
+        $('body').on('click', '.choose-saved', function() {
+            var transd = $(this).data('transid');
+            var urld = "{{ route('sales.choose_transaction', ['id' => ':id']) }}";
+            urld = urld.replace(':id', transd);
+            window.location.href = urld;
+        });
+
+        //delete trans save delete
+        $('body').on('click', '.delete-saved', function() {
+            var transd = $(this).data('transid');
+            var urld = "{{ route('sales.removeTrans', ['id' => ':id']) }}";
+            urld = urld.replace(':id', transd);
+            Swal.fire({
+                title: "Are you sure?",
+                text: "you want to delete this transaction!",
+                icon: "danger",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Delete it!"
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajax({
+                        type: "GET",
+                        url: urld,
+                        contentType: "application/json;",
+                        cache: false,
+                        processData: false,
+                        success: function(data) {
+                            if (data.reload == true) {
+                                Swal.fire("", data.message, "success").then(function(e) {
+                                    window.location.reload();
+                                });
+                            }
+                        },
+                        error: function(errMsg) {
+
+                            Swal.fire("", errMsg.message, "error");
+                        }
+                    });
+                }
+            })
         });
     </script>
 @endpush
