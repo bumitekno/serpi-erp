@@ -52,6 +52,32 @@
                     </div>
 
                     <div class="mb-3 row">
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Stock Min
+                                :</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product?->stock_min }} </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Stock Max
+                                :</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product?->stock_max }} </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Expired Date
+                                :</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800">
+                                {{ empty($product->date_expired) ? '-' : \Carbon\Carbon::parse($product->date_expired)->translatedFormat('d F Y') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
                         <label for="description"
                             class="col-lg-4 fw-bold text-muted text-end"><strong>Description:</strong></label>
                         <div class="col-lg-8">

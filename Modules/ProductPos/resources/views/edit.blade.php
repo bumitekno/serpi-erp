@@ -119,6 +119,41 @@
                         </div>
 
                         <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Min</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control @error('stockmin') is-invalid @enderror"
+                                    id="stockmin" name="stockmin" value="{{ $product->stock_min }}">
+                                @if ($errors->has('stockmin'))
+                                    <span class="text-danger">{{ $errors->first('stockmin') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Max</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control @error('stockmax') is-invalid @enderror"
+                                    id="stockmax" name="stockmax" value="{{ $product->stock_max }}">
+                                @if ($errors->has('stockmax'))
+                                    <span class="text-danger">{{ $errors->first('stockmax') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Expired
+                                Date</label>
+                            <div class="col-md-6">
+                                <input type="date"
+                                    class="form-control @error('expired') is-invalid @enderror kt_datepicker"
+                                    id="expired" name="expired" value="{{ $product->date_expired }}">
+                                @if ($errors->has('expired'))
+                                    <span class="text-danger">{{ $errors->first('expired') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
                             <label for="description"
                                 class="col-md-4 col-form-label text-md-end text-start">Description</label>
                             <div class="col-md-6">
@@ -139,3 +174,10 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(".kt_datepicker").flatpickr({
+            dateFormat: "d/m/Y",
+        });
+    </script>
+@endpush

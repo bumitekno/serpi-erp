@@ -3,6 +3,7 @@
 namespace Modules\ProductPos\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Modules\ProductPos\app\Models\ProductPos;
@@ -78,6 +79,15 @@ class ProductPosController extends Controller
             $data_send['image_product'] = $path;
         }
 
+        if (!empty($request->stockmin))
+            $data_send['stock_min'] = $request->stockmin;
+
+        if (!empty($request->stockmax))
+            $data_send['stock_max'] = $request->stockmax;
+
+        if (!empty($expired))
+            $data_send['date_expired'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
+
         ProductPos::create($data_send);
         return redirect()->route('productpos.index')
             ->withSuccess('New product is added successfully.');
@@ -134,6 +144,15 @@ class ProductPosController extends Controller
             $path = $request->file('image_product')->storeAs('/upload/product/images', $imageName, 'public');
             $data_send['image_product'] = $path;
         }
+
+        if (!empty($request->stockmin))
+            $data_send['stock_min'] = $request->stockmin;
+
+        if (!empty($request->stockmax))
+            $data_send['stock_max'] = $request->stockmax;
+
+        if (!empty($expired))
+            $data_send['date_expired'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
 
         $product->update($data_send);
 
