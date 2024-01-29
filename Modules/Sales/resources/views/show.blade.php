@@ -1,6 +1,53 @@
 @extends('sales::layouts.master')
+@push('modals')
+    <div class="modal fade" tabindex="-1" id="kt_modal_1">
+        <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('sales.pay_credit') }}" autocomplete="off"
+            method="POST">
+            @csrf
+            <input type="hidden" name="id_trans" value="{{ $transaction->id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal Pay Credit</h5>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-2x"></span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Date Credit
+                            </label>
+                            <div class="col-md-4">
+                                <input type="date" name="date_transaction" class="form-control kt_datepicker text-start"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start"> Amount
+                            </label>
+                            <div class="col-md-4">
+                                <input type="text" name="amount_transaction" class="form-control text-start" required
+                                    data-type="currency" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+@endpush
 @section('content')
-    <div class="card">
+    <div class="card mb-3 ">
         <div class="card-header mt-3">
             <div class="float-start">
                 Sales Order Information
@@ -17,7 +64,8 @@
                 @endcan
                 <!--begin::Action-->
                 @if ($transaction->status != 1 && $transaction->note != 'cancel')
-                    <a href="#" class="btn btn-sm btn-success">Pay Now</a>
+                    <a href="javascript:;" class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                        data-bs-target="#kt_modal_1">Pay Now</a>
                 @endif
                 <!--end::Action-->
             </div>
@@ -232,7 +280,13 @@
                                             <!--end::Code-->
                                             <!--begin::Label-->
                                             <div class="text-end fw-bolder fs-6 text-gray-800">
-                                                {{ number_format($transaction->amount - $transaction->total_transaction, 0, ',', '.') }}
+                                                @php
+                                                    $charge = $transaction->amount - $transaction->total_transaction;
+                                                    if ($charge < 0) {
+                                                        $charge = 0;
+                                                    }
+                                                @endphp
+                                                {{ number_format($charge, 0, ',', '.') }}
                                             </div>
                                             <!--end::Label-->
                                         </div>
@@ -292,9 +346,44 @@
         </div>
         <!--end::Body-->
     </div>
+
+    <div class="card">
+        <div class="card-header mt-3">
+            <div class="float-start">
+                Credit Information
+            </div>
+            <div class="card-body p-lg-20">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date Credit</th>
+                                <th> Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($credit_transaction as $credit)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($credit->date_credit)->translatedFormat('d F Y') }}</td>
+                                    <td>{{ number_format($credit->amount, 0, ',', '.') }}</td>
+                                </tr>
+                            @empty
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('scripts')
-    <script>
+    <script type="text/javascript">
+        $(".kt_datepicker").flatpickr({
+            dateFormat: "d/m/Y",
+            defaultDate: new Date()
+        });
         var afterPrint = function() {
             window.close();
         };
@@ -319,5 +408,80 @@
             });
         }
         window.onafterprint = afterPrint;
+
+        function formatNumber(n) {
+            // format number 1000000 to 1,234,567
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }
+
+        function formatCurrency(input, blur) {
+            // appends $ to value, validates decimal side
+            // and puts cursor back in right position.
+
+            // get input value
+            var input_val = input.val();
+
+            // don't validate empty input
+            if (input_val === "") {
+                return;
+            }
+
+            // original length
+            var original_len = input_val.length;
+
+            // initial caret position 
+            var caret_pos = input.prop("selectionStart");
+
+            // check for decimal
+            if (input_val.indexOf(",") >= 0) {
+
+                // get position of first decimal
+                // this prevents multiple decimals from
+                // being entered
+                var decimal_pos = input_val.indexOf(",");
+
+                // split number by decimal point
+                var left_side = input_val.substring(0, decimal_pos);
+                var right_side = input_val.substring(decimal_pos);
+
+                // add commas to left side of number
+                left_side = formatNumber(left_side);
+
+                // validate right side
+                right_side = formatNumber(right_side);
+
+                // On blur make sure 2 numbers after decimal
+                if (blur === "blur") {
+                    right_side += "00";
+                }
+
+                // Limit decimal to only 2 digits
+                right_side = right_side.substring(0, 2);
+
+                // join number by .
+                input_val = left_side + "," + right_side;
+
+            } else {
+                // no decimal entered
+                // add commas to number
+                // remove all non-digits
+                input_val = formatNumber(input_val);
+                input_val = input_val;
+            }
+
+            // send updated string to input
+            input.val(input_val);
+
+            // put caret back in the right position
+            var updated_len = input_val.length;
+            caret_pos = updated_len - original_len + caret_pos;
+            input[0].setSelectionRange(caret_pos, caret_pos);
+        }
+
+        $("input[data-type='currency']").on({
+            keyup: function() {
+                formatCurrency($(this));
+            }
+        });
     </script>
 @endpush

@@ -599,9 +599,9 @@
                                     <div class="symbol symbol-100px mb-5">
                                         @if (!empty($products->image_product))
                                             <img src="{{ Storage::url($products->image_product) }}" alt="Product"
-                                                class="w-100" />
+                                                class="w-100 h-150px" />
                                         @else
-                                            <img src="https://fakeimg.pl/100x100" alt="Product" class="w-100" />
+                                            <img src="https://fakeimg.pl/100x150" alt="Product" class="w-100 h-150px" />
                                         @endif
                                     </div>
                                     <!--end::Image-->

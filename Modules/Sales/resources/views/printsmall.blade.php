@@ -258,7 +258,14 @@
                         <tr>
                             <td colspan="3"></td>
                             <td>Changes</td>
-                            <td> {{ number_format($transaction->amount - $transaction->total_transaction, 0, ',', '.') }}
+                            <td>
+                                @php
+                                    $charge = $transaction->amount - $transaction->total_transaction;
+                                    if ($charge < 0) {
+                                        $charge = 0;
+                                    }
+                                @endphp
+                                {{ number_format($charge, 0, ',', '.') }}
                             </td>
                         </tr>
                     </tfoot>

@@ -34,4 +34,5 @@ Route::group([], function () {
     Route::get('list/trans/saved', [SalesController::class, 'ajax_trans_saved'])->name('sales.list-saved');
     Route::get('call/saved/transaction/{id}', [SalesController::class, 'choose_transaction'])->name('sales.choose_transaction');
     Route::get('delete/saved/transaction/{id}', [SalesController::class, 'removeTrans'])->name('sales.removeTrans');
+    Route::post('pay/credit/due', [SalesController::class, 'pay_credit'])->name('sales.pay_credit');
 });

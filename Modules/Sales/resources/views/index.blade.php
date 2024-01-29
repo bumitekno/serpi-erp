@@ -15,19 +15,16 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-
                 <table class="table align-middle table-row-dashed fs-6 gy-5">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th> Code </th>
                             <th> Date</th>
-                            <th> Time </th>
                             <th> Total</th>
                             <th> Amount</th>
                             <th> Customer </th>
                             <th> Departement </th>
-                            <th> Note </th>
                             <th> Method</th>
                             <th> Status </th>
                             <th> Due Date </th>
@@ -41,8 +38,7 @@
                                 <td>{{ empty($transactions->code_transaction) ? '-' : $transactions->code_transaction }}
                                 </td>
                                 <td>{{ empty($transactions->date_sales) ? '-' : \Carbon\Carbon::parse($transactions->date_sales)->translatedFormat('d F Y') }}
-                                </td>
-                                <td>{{ empty($transactions->time_sales) ? '-' : \Carbon\Carbon::parse($transactions->time_sales)->translatedFormat('H:i:s') }}
+                                    {{ empty($transactions->time_sales) ? '-' : \Carbon\Carbon::parse($transactions->time_sales)->translatedFormat('H:i:s') }}
                                 </td>
                                 <td>{{ empty($transactions->total_transaction) ? 0 : number_format($transactions->total_transaction, 0, ',', '.') }}
                                 </td>
@@ -50,10 +46,20 @@
                                 </td>
                                 <td>{{ empty($transactions->customer) ? '-' : $transactions->customer?->name }}</td>
                                 <td>{{ empty($transactions->departement) ? '-' : $transactions->departement?->name }}</td>
-                                <td>{{ empty($transactions->note) ? '-' : $transactions->note }}</td>
+
                                 <td>{{ empty($transactions->methodpayment) ? '-' : $transactions->methodpayment?->name }}
                                 </td>
-                                <td>{{ $transactions->status == 1 ? 'Paid' : 'Pending ' }}</td>
+                                @if ($transactions->status == 1)
+                                    <td>
+                                        <span class="badge badge-light-success">Paid</span>
+                                    </td>
+                                @else
+                                    @if ($transactions->note == 'cancel')
+                                        <td><span class="badge badge-light-danger">Cancel</span></td>
+                                    @else
+                                        <td><span class="badge badge-light-warning">Pending</span></td>
+                                    @endif
+                                @endif
                                 <td>{{ empty($transactions->date_due) ? '-' : \Carbon\Carbon::parse($transactions->date_due)->translatedFormat('d F Y') }}
                                 </td>
                                 <td class="text-end ">

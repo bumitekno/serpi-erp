@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Modules\Sales\app\Models\TransactionSales;
 use Modules\Sales\app\Models\TransactionSalesItem;
+use Modules\Sales\app\Models\SalesCredit;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\UnitProduct\app\Models\UnitProduct;
 use Modules\Stock\app\Models\Stock;
@@ -431,11 +431,11 @@ class SalesController extends Controller
             Session::put('tax', 0);
             Session::put('discount', 0);
             Session::put('cart', []);
+            Session::put('edit', false);
             Session::remove('customer');
             Session::remove('departement');
             Session::remove('date_trans');
             Session::remove('ponumber');
-            Session::remove('edit');
             Session::flash('success', 'Transaction is successfully !');
             return redirect()->route('sales.printsmall', $id);
         } else {
@@ -490,10 +490,12 @@ class SalesController extends Controller
             Session::put('tax', 0);
             Session::put('discount', 0);
             Session::put('cart', []);
+            Session::put('edit', false);
             Session::remove('customer');
             Session::remove('departement');
             Session::remove('date_trans');
             Session::remove('ponumber');
+
             return response()->json(['reload' => true, 'message' => 'Transaction saved is successfully'], 200);
         } else {
             return response()->json(['reload' => false, 'message' => 'Transaction saved is failed'], 403);
@@ -514,6 +516,7 @@ class SalesController extends Controller
             Session::put('tax', $information->tax_amount);
             Session::put('discount', $information->discount_amount);
             Session::put('ponumber', $information->code_transaction);
+            Session::put('edit', false);
             Session::remove('cart');
             $cart = [];
             foreach ($detail as $detail) {
@@ -589,7 +592,8 @@ class SalesController extends Controller
     {
         $information = TransactionSales::with(['customer', 'methodpayment', 'departement'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
-        return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information]);
+        $credit_information = SalesCredit::where('id_transaction_sales', $information->id)->get();
+        return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'credit_transaction' => $credit_information]);
     }
 
     /** print struk small */
@@ -598,6 +602,61 @@ class SalesController extends Controller
         $information = TransactionSales::with(['customer', 'methodpayment', 'departement'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
         return view('sales::printsmall')->with(['transaction' => $information, 'detail_transaction' => $detail_information]);
+    }
+
+    /** pay_credit */
+    public function pay_credit(Request $request)
+    {
+        $information = TransactionSales::where('id', $request->id_trans)->first();
+        if (!empty($information)) {
+            $total_transaction = $information->total_transaction;
+            $total_credit = SalesCredit::where('id_transaction_sales', $information->id)->sum('amount');
+            // check pembayaran lebih besar dari nilai kredit 
+            $replace_currency = Str::replace('.', '', $request->amount_transaction);
+
+            if ($replace_currency == $total_transaction) {
+
+                TransactionSales::where('id', $request->id_trans)->update(['amount' => $replace_currency, 'status' => true, 'note' => '']);
+
+                SalesCredit::create([
+                    'date_credit' => Carbon::createFromFormat('d/m/Y', $request->date_transaction)->format('Y-m-d'),
+                    'amount' => $replace_currency,
+                    'status' => true,
+                    'method_due' => true,
+                    'id_transaction_sales' => $information->id
+                ]);
+
+                Session::flash('success', 'Payment Credit for due method is successfully.');
+                return redirect()->back();
+
+            } else {
+
+                if ($replace_currency > $total_transaction) {
+
+                    Session::flash('error', 'the amount credit value is greater than the transaction value, please for correct it! ');
+                    return redirect()->back();
+
+                } else {
+
+                    $create_reduce = $total_transaction - $total_credit;
+
+                    // update lunas jika tidak ada sisa kredit tagihan 
+                    if ($create_reduce == 0) {
+                        TransactionSales::where('id', $$information->id)->update(['amount' => $total_credit, 'status' => true, 'note' => '']);
+                    }
+
+                    SalesCredit::create([
+                        'date_credit' => Carbon::createFromFormat('d/m/Y', $request->date_transaction)->format('Y-m-d'),
+                        'amount' => $replace_currency,
+                        'status' => true,
+                        'method_due' => true,
+                        'id_transaction_sales' => $information->id
+                    ]);
+                    Session::flash('success', 'Payment Credit for due method is successfully.');
+                    return redirect()->back();
+                }
+            }
+        }
     }
 
     /**
