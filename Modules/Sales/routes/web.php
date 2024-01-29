@@ -29,10 +29,11 @@ Route::group([], function () {
     Route::post('update-cart', [SalesController::class, 'updatecart'])->name('sales.updatecart');
     Route::get('change/customer/{customer}', [SalesController::class, 'changeCust'])->name('sales.changecust');
     Route::get('change/departement/{departement}', [SalesController::class, 'changeDepart'])->name('sales.changedepart');
-    Route::get('struck/print/small/{id}', [SalesController::class, 'printsmall'])->name('sales.printsmall');
+    Route::get('struck/print/small/{id}/{route}', [SalesController::class, 'printsmall'])->name('sales.printsmall');
     Route::post('sales/saved/transaction', [SalesController::class, 'temptransaction'])->name('sales.temptransaction');
     Route::get('list/trans/saved', [SalesController::class, 'ajax_trans_saved'])->name('sales.list-saved');
     Route::get('call/saved/transaction/{id}', [SalesController::class, 'choose_transaction'])->name('sales.choose_transaction');
     Route::get('delete/saved/transaction/{id}', [SalesController::class, 'removeTrans'])->name('sales.removeTrans');
     Route::post('pay/credit/due', [SalesController::class, 'pay_credit'])->name('sales.pay_credit');
+    Route::post('sales/history/filter', [SalesController::class, 'index'])->name('sales.filter-history');
 });

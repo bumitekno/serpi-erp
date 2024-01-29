@@ -53,8 +53,8 @@
                 Sales Order Information
             </div>
             <div class="float-end">
-                <a href="{{ url()->previous() }}" class="btn btn-sm btn-dark my-2 ">Back</a>
-                <a href="{{ route('sales.printsmall', $transaction->id) }}" target="_blank"
+                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-dark my-2 ">Back</a>
+                <a href="{{ route('sales.printsmall', ['id' => $transaction->id, 'route' => 'history']) }}" target="_blank"
                     class="btn btn-sm btn-info my-2 ">Print receipt
                     (small) </a>
                 <a href="javascript:;" class="btn btn-sm btn-info my-2 " onclick="printDiv()">Print receipt (large) </a>

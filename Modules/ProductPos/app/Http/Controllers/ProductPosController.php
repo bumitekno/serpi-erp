@@ -86,7 +86,13 @@ class ProductPosController extends Controller
             $data_send['stock_max'] = $request->stockmax;
 
         if (!empty($expired))
-            $data_send['date_expired'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
+            $data_send['date_expired'] = Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
+
+        if (!empty($request->enabled)) {
+            $data_send['enabled'] = 1;
+        } else {
+            $data_send['enabled'] = 0;
+        }
 
         ProductPos::create($data_send);
         return redirect()->route('productpos.index')
@@ -151,8 +157,14 @@ class ProductPosController extends Controller
         if (!empty($request->stockmax))
             $data_send['stock_max'] = $request->stockmax;
 
-        if (!empty($expired))
+        if (!empty($request->expired))
             $data_send['date_expired'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
+
+        if (!empty($request->enabled)) {
+            $data_send['enabled'] = 1;
+        } else {
+            $data_send['enabled'] = 0;
+        }
 
         $product->update($data_send);
 

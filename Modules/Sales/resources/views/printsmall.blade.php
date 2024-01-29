@@ -286,7 +286,11 @@
         }
 
         var afterPrint = function() {
-            window.location.href = "{{ route('sales.create') }}";
+            @if ($route == 'new')
+                window.location.href = "{{ route('sales.create') }}";
+            @else
+                window.location.href = "{{ route('sales.show', $transaction->id) }}";
+            @endif
         };
 
         var beforeprint = function() {

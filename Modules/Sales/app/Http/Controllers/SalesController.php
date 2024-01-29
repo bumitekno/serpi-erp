@@ -49,7 +49,7 @@ class SalesController extends Controller
             $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->where('saved_trans', '=', '0')->latest()->paginate(10);
         }
 
-        return view('sales::index')->with(['transaction' => $transaction]);
+        return view('sales::index')->with(['transaction' => $transaction, 'keyword' => $request->search]);
     }
 
     /**
@@ -61,19 +61,19 @@ class SalesController extends Controller
         if (!empty($request->segment(2))) {
             if ($request->segment(1) == 'filter') {
                 if ($request->segment(2) == 'all' || $request->segment(2) == 'create') {
-                    $product = ProductPos::with('category_product')->paginate(12);
+                    $product = ProductPos::with('category_product')->where('enabled', '1')->paginate(12);
                 } else {
-                    $product = ProductPos::with('category_product')->where('category', '=', $request->segment(2))->paginate(12);
+                    $product = ProductPos::with('category_product')->where('enabled', '1')->where('category', '=', $request->segment(2))->paginate(12);
                 }
             } else if ($request->segment(1) == 'search') {
                 $keyword = Str::replace('%20', '', $request->segment(2));
-                $product = ProductPos::with('category_product')->where('name', 'like', '%' . $keyword . '%')->paginate(12);
+                $product = ProductPos::with('category_product')->where('enabled', '1')->where('name', 'like', '%' . $keyword . '%')->paginate(12);
             } else if ($request->segment(1) == 'sales') {
-                $product = ProductPos::with('category_product')->paginate(12);
+                $product = ProductPos::with('category_product')->where('enabled', '1')->paginate(12);
             }
 
         } else {
-            $product = ProductPos::with('category_product')->paginate(12);
+            $product = ProductPos::with('category_product')->where('enabled', '1')->paginate(12);
         }
 
         $stockunit = UnitProduct::query()->get();
@@ -137,7 +137,8 @@ class SalesController extends Controller
             'category_product' => $category_product,
             'keyword' => empty($keyword) ? '' : $keyword,
             'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name,
-            'edit_trans' => $edit_trans
+            'edit_trans' => $edit_trans,
+
         ]);
     }
 
@@ -437,7 +438,7 @@ class SalesController extends Controller
             Session::remove('date_trans');
             Session::remove('ponumber');
             Session::flash('success', 'Transaction is successfully !');
-            return redirect()->route('sales.printsmall', $id);
+            return redirect()->route('sales.printsmall', ['id' => $id, 'route' => 'new']);
         } else {
             Session::flash('error', 'Transaction is failed !');
             return redirect()->back();
@@ -597,11 +598,11 @@ class SalesController extends Controller
     }
 
     /** print struk small */
-    public function printsmall($id)
+    public function printsmall($id, $route)
     {
         $information = TransactionSales::with(['customer', 'methodpayment', 'departement', 'operator'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
-        return view('sales::printsmall')->with(['transaction' => $information, 'detail_transaction' => $detail_information]);
+        return view('sales::printsmall')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'route' => $route]);
     }
 
     /** pay_credit */

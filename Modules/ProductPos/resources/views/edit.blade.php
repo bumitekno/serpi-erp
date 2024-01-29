@@ -154,6 +154,20 @@
                         </div>
 
                         <div class="mb-3 row">
+
+                            <label class="form-check-label col-md-4 col-form-label text-md-end text-start"
+                                for="flexSwitch20x30">
+                                Enabled
+                            </label>
+
+                            <div class="form-check form-switch form-check-custom form-check-solid col-md-6">
+                                <input class="form-check-input h-20px w-30px" type="checkbox" name="enabled"
+                                    @if ($product->enabled == 1) checked="checked" @endif value="1"
+                                    id="flexSwitch20x30" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
                             <label for="description"
                                 class="col-md-4 col-form-label text-md-end text-start">Description</label>
                             <div class="col-md-6">
