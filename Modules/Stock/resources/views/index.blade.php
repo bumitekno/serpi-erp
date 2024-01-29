@@ -110,7 +110,6 @@
                             <th> Convert (QTY) </th>
                             <th> Warehouse</th>
                             <th> Location </th>
-                            <th> Expired Date </th>
                             <th class="text-end">Action</th>
                         </tr>
                     </thead>
@@ -140,8 +139,6 @@
                                 <td>{{ $stock->qty_convert ?? '-' }}</td>
                                 <td>{{ $stock->warehouse?->name ?? '-' }}</td>
                                 <td>{{ $stock->location?->name_location ?? '-' }}</td>
-                                <td>{{ empty($stock->date_expired) ? '-' : \Carbon\Carbon::parse($stock->date_expired)->translatedFormat('l, j F Y') }}
-                                </td>
 
                                 <td class="text-end">
                                     <form action="{{ route('stock.destroy', $stock->id) }}" method="post">

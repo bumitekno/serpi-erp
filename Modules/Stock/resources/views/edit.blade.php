@@ -103,27 +103,6 @@
                         @endif
                     </div>
                 </div>
-                <div class="mb-3 row">
-                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Minimal</label>
-                    <div class="col-md-4">
-                        <input type="number" name="stockmin" class="form-control @error('stockmin') is-invalid @enderror"
-                            placeholder="Stock Min" value="{{ $stock->stock_min }}">
-                        @if ($errors->has('stockmin'))
-                            <span class="text-danger">{{ $errors->first('stockmin') }}</span>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="mb-3 row">
-                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Max</label>
-                    <div class="col-md-4">
-                        <input type="number" name="stockmax" class="form-control @error('stockmax') is-invalid @enderror"
-                            placeholder="Stock Max" value="{{ $stock->stock_max }}">
-                        @if ($errors->has('stockmax'))
-                            <span class="text-danger">{{ $errors->first('stockmax') }}</span>
-                        @endif
-                    </div>
-                </div>
 
                 <div class="mb-3 row">
                     <label for="name" class="col-md-4 col-form-label text-md-end text-start">QTY Convert</label>
@@ -138,24 +117,9 @@
                 </div>
 
                 <div class="mb-3 row">
-                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Expired Date</label>
-                    <div class="col-md-4">
-                        <input type="date" name="expired" class="form-control " placeholder="Expired"
-                            value="{{ $stock->date_expired }}" id="kt_datepicker_1">
-                    </div>
-                </div>
-
-                <div class="mb-3 row">
                     <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Save">
                 </div>
             </form>
         </div>
     </div>
 @endsection
-@push('scripts')
-    <script>
-        $("#kt_datepicker_1").flatpickr({
-            dateFormat: "d/m/Y",
-        });
-    </script>
-@endpush

@@ -87,9 +87,7 @@ class StockController extends Controller
         $request->validate([
             'addmore' => 'required|array',
             'addmore.product.*' => 'sometimes|required',
-            'addmore.units.*' => 'sometimes|required|unique:stock_unit_product,id_unit',
             'addmore.qty_convert.*' => 'sometimes|required',
-            'addmore.stockmin.*' => 'sometimes|required',
             'location' => 'required',
             'warehouse' => 'required'
         ]);
@@ -114,16 +112,11 @@ class StockController extends Controller
             $post_created = [
                 'id_product' => $val,
                 'id_unit' => $request->addmore['units'][$key],
-                'stock_min' => $request->addmore['stockmin'][$key],
                 'qty_convert' => $request->addmore['qty_convert'][$key],
-                'stock_max' => empty($request->addmore['stockmax'][$key]) ? null : $request->addmore['stockmax'][$key],
                 'id_location' => $request->location,
                 'id_warehouse' => $request->warehouse
             ];
 
-            if (!empty($request->addmore['expired'][$key])) {
-                $post_created['date_expired'] = \Carbon\Carbon::parse($request->addmore['expired'][$key]);
-            }
 
             if ($exits == false)
                 Stock::create($post_created);
@@ -172,8 +165,6 @@ class StockController extends Controller
             'location' => 'required',
             'warehouse' => 'required',
             'product' => 'required',
-            'unit' => 'required|unique:stock_unit_product,id_unit,' . $id,
-            'stockmin' => 'required',
             'qty_convert' => 'required'
         ]);
 
@@ -182,13 +173,8 @@ class StockController extends Controller
             'id_unit' => $request->unit,
             'id_location' => $request->location,
             'id_warehouse' => $request->warehouse,
-            'stock_min' => $request->stockmin,
             'qty_convert' => $request->qty_convert
         ];
-
-        if (!empty($request->stockmax)) {
-            $data_send['stock_max'] = $request->stockmax;
-        }
 
         Stock::find($id)->update($data_send);
 
