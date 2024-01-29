@@ -362,7 +362,7 @@
                         <div class="mb-3 row fv-row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Notes </label>
                             <div class="col-md-8">
-                                <textarea name="notes" class="form-control "></textarea>
+                                <textarea name="notes" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
@@ -573,7 +573,8 @@
                     placeholder="Search Product" value="{{ $keyword }}">
 
                 @if (!empty($keyword))
-                    <a href="{{ url()->previous() }}" class="btn btn-danger btn-icon-white btn-text-white ps-5 w-120px">
+                    <a href="{{ route('sales.create') }}"
+                        class="btn btn-danger btn-icon-white btn-text-white ps-5 w-120px">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-x" viewBox="0 0 16 16">
@@ -675,7 +676,7 @@
 
                         <h3 class="card-title align-items-start flex-column">
                             <span class="fw-bolder text-dark">Latest Cart</span>
-                            <span class="text-muted mt-1 fw-bold fs-7">Cart Item </span>
+                            <span class="text-muted mt-1 fw-bold fs-7"> {{ count($cart) }} Item </span>
                         </h3>
                         @if (!empty($cart) && count($cart) > 0)
                             <div class="card-toolbar">
@@ -1096,8 +1097,10 @@
 
         });
 
+
+
         const formpaymenet = document.getElementById('kt_docs_formvalidation_text_p');
-        var validatorpayment = FormValidation.formValidation(
+        const validatorpayment = FormValidation.formValidation(
             formpaymenet, {
                 fields: {
                     'methodpayment': {
@@ -1126,6 +1129,16 @@
             }
         );
 
+        //method payment 
+
+        $('body').on('change', 'select[name=methodpayment]', function(e) {
+            if (e.target.val > 1) {
+
+            } else {
+
+            }
+        });
+
         // submit payment 
 
         const submitButtonpay = document.getElementById('kt_docs_formvalidation_text_submit_payment');
@@ -1144,6 +1157,11 @@
                         // Disable button to avoid multiple click
                         submitButtonpay.disabled = true;
 
+                        var replace_currency = $('input[name=amount_payment]').val().replace(/\D/g, "");
+                        var total_payment = $('input[name=total_payment]').data('currency');
+                        var change = parseInt(replace_currency) - parseInt(total_payment);
+
+
                         // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                         setTimeout(function() {
                             // Remove loading indication
@@ -1152,23 +1170,39 @@
                             // Enable button
                             submitButtonpay.disabled = false;
 
-                            // Show popup confirmation
-                            Swal.fire({
-                                text: "Form has been successfully submitted!",
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary"
-                                }
-                            });
+                            if (change < 0) {
 
-                            formpaymenet.submit(); // Submit form
+                                Swal.fire({
+                                    text: "Form has been failed submitted, Check Amount Payment uncorrect !",
+                                    icon: "error",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                });
+
+                            } else {
+
+                                // Show popup confirmation
+                                Swal.fire({
+                                    text: "Form has been successfully submitted!",
+                                    icon: "success",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                });
+                                formpaymenet.submit(); // Submit form
+                            }
+
                         }, 2000);
                     }
                 });
             }
         });
+
 
         //change customer 
 

@@ -45,6 +45,11 @@ class TransactionSales extends Model
         'saved_trans'
     ];
 
+    public function operator()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'id_customer', 'id');

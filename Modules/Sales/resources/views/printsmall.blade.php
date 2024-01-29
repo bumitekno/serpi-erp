@@ -174,7 +174,7 @@
             <div class="payment">
                 <div>Payment : {{ $transaction->methodpayment?->name }}</div>
                 <div>Status : {{ $transaction->status == 1 ? 'Paid' : 'Pending ' }}</div>
-
+                <div>Operator : {{ $transaction->operator?->name }}</div>
             </div>
             <br>
             <div class="date_time_con">
@@ -197,7 +197,7 @@
 
                     <thead>
                         <th>Product</th>
-                        <th>QTY</th>
+                        <th>Qty</th>
                         <th>Unit</th>
                         <th>Price</th>
                         <th>Amount</th>

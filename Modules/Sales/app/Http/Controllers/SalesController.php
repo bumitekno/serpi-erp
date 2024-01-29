@@ -554,7 +554,7 @@ class SalesController extends Controller
                     return $row->customer?->name;
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="javascript:void(0)" class="choose-saved btn btn-primary btn-sm me-3" data-transid="' . $row->id . '"> <i class="bi bi-eyedropper"></i> Choose</a>';
+                    $btn = '<a href="javascript:void(0)" class="choose-saved btn btn-primary btn-sm me-3 mb-2" data-transid="' . $row->id . '"> <i class="bi bi-eyedropper"></i> Choose</a>';
                     $btn .= '<a href="javascript:void(0)" class="delete-saved btn btn-danger btn-sm" data-transid="' . $row->id . '"> <i class="bi bi-x"></i>  Delete</a>';
                     return $btn;
                 })
@@ -590,7 +590,7 @@ class SalesController extends Controller
      */
     public function show($id)
     {
-        $information = TransactionSales::with(['customer', 'methodpayment', 'departement'])->find($id);
+        $information = TransactionSales::with(['customer', 'methodpayment', 'departement', 'operator'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
         $credit_information = SalesCredit::where('id_transaction_sales', $information->id)->get();
         return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'credit_transaction' => $credit_information]);
@@ -599,7 +599,7 @@ class SalesController extends Controller
     /** print struk small */
     public function printsmall($id)
     {
-        $information = TransactionSales::with(['customer', 'methodpayment', 'departement'])->find($id);
+        $information = TransactionSales::with(['customer', 'methodpayment', 'departement', 'operator'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
         return view('sales::printsmall')->with(['transaction' => $information, 'detail_transaction' => $detail_information]);
     }

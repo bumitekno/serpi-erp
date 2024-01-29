@@ -102,7 +102,7 @@
                             <!--begin::Row-->
                             <div class="row g-5 mb-11">
                                 <!--end::Col-->
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <!--end::Label-->
                                     <div class="fw-bold fs-7 text-gray-600 mb-1">Transaction Date:</div>
                                     <!--end::Label-->
@@ -114,7 +114,7 @@
                                 </div>
                                 <!--end::Col-->
                                 <!--end::Col-->
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <!--end::Label-->
                                     <div class="fw-bold fs-7 text-gray-600 mb-1">Due Date:</div>
                                     <!--end::Label-->
@@ -122,6 +122,17 @@
                                     <div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center flex-wrap">
                                         <span
                                             class="pe-2">{{ empty($transaction->date_due) ? '-' : \Carbon\Carbon::parse($transaction->date_due)->translatedFormat('d F Y') }}</span>
+                                    </div>
+                                    <!--end::Info-->
+                                </div>
+                                <!--end::Col-->
+                                <div class="col-sm-4">
+                                    <!--end::Label-->
+                                    <div class="fw-bold fs-7 text-gray-600 mb-1">Operator:</div>
+                                    <!--end::Label-->
+                                    <!--end::Info-->
+                                    <div class="fw-bolder fs-6 text-gray-800 d-flex align-items-center flex-wrap">
+                                        <span class="pe-2">{{ $transaction->operator?->name }}</span>
                                     </div>
                                     <!--end::Info-->
                                 </div>
