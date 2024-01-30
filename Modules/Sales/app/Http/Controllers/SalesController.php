@@ -138,9 +138,30 @@ class SalesController extends Controller
             'keyword' => empty($keyword) ? '' : $keyword,
             'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name,
             'edit_trans' => $edit_trans,
-
+            'nominal_opsi_cash' => $this->generatecur($total_cart)
         ]);
     }
+
+    /** generate currency money list */
+    public function generatecur($startValue)
+    {
+        $listArray = array();
+        // Starting value
+        // Generate values in hundreds of thousands and millions
+        for ($i = 1; $i < 6; $i++) {
+
+            if ($i > 1) {
+                $value = abs(($i * $startValue));
+            } else {
+                $value = $startValue;
+            }
+
+            $listArray[] = $value;
+        }
+
+        return $listArray;
+    }
+
 
     /** change customer  */
     public function changeCust($customer)
@@ -346,18 +367,30 @@ class SalesController extends Controller
 
             if (!empty($cart)) {
                 foreach ($cart as $key => $val) {
+                    $stock_unit = Stock::where(['id_product' => $cart[$key]['id'], 'id_unit' => $cart[$key]['unit_id'], 'id_location' => $cart[$key]['location']])->first();
                     $item_sales = [
                         'id_product' => $cart[$key]['id'],
                         'id_unit' => $cart[$key]['unit_id'],
-                        'qty' => $cart[$key]['qty'],
+                        'qty' => empty($stock_unit->qty_convert) ? $cart[$key]['qty'] : 0,
+                        'qty_convert' => $stock_unit->qty_convert,
                         'price_sales' => $cart[$key]['price_unit'],
                         'id_transaction_sales' => $transFind->id
                     ];
+
                     $create_item_sales = TransactionSalesItem::create($item_sales);
+
                     //update stock last product 
                     $checkStocklast = ProductPos::find($create_item_sales->id_product);
+                    $item_qty = 0;
+
+                    if (!empty($stock_unit)) {
+                        $item_qty = $stock_unit->qty_convert;
+                    } else {
+                        $item_qty = $create_item_sales->qty;
+                    }
+
                     if (!empty($checkStocklast->stock_last) && $checkStocklast->stock_last > 0) {
-                        $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
+                        $updatelast = intval($checkStocklast->stock_last) - intval($item_qty);
                         $checkStocklast->update(['stock_last' => $updatelast]);
                     }
                 }
@@ -408,18 +441,29 @@ class SalesController extends Controller
 
             if (!empty($cart) && !empty($create_transaction)) {
                 foreach ($cart as $key => $val) {
+
+                    $stock_unit = Stock::where(['id_product' => $cart[$key]['id'], 'id_unit' => $cart[$key]['unit_id'], 'id_location' => $cart[$key]['location']])->first();
+
                     $item_sales = [
                         'id_product' => $cart[$key]['id'],
                         'id_unit' => $cart[$key]['unit_id'],
-                        'qty' => $cart[$key]['qty'],
+                        'qty' => empty($stock_unit->qty_convert) ? $cart[$key]['qty'] : 0,
+                        'qty_convert' => $stock_unit->qty_convert,
                         'price_sales' => $cart[$key]['price_unit'],
                         'id_transaction_sales' => $create_transaction->id
                     ];
+
                     $create_item_sales = TransactionSalesItem::create($item_sales);
+                    $item_qty = 0;
+                    if (!empty($stock_unit)) {
+                        $item_qty = $stock_unit->qty_convert;
+                    } else {
+                        $item_qty = $create_item_sales->qty;
+                    }
                     //update stock last product 
                     $checkStocklast = ProductPos::find($create_item_sales->id_product);
                     if (!empty($checkStocklast->stock_last) && $checkStocklast->stock_last > 0) {
-                        $updatelast = intval($checkStocklast->stock_last) - intval($create_item_sales->qty);
+                        $updatelast = intval($checkStocklast->stock_last) - intval($item_qty);
                         $checkStocklast->update(['stock_last' => $updatelast]);
                     }
                 }

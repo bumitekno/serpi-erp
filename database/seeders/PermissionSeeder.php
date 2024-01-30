@@ -169,7 +169,9 @@ class PermissionSeeder extends Seeder
             'create-purchase',
             'edit-purchase',
             'delete-purchase',
-            'download-purchase'
+            'download-purchase',
+            'dashboard-purchase',
+            'report-purchase'
         ];
 
         foreach ($permission_module_purchase as $permission) {
@@ -181,12 +183,12 @@ class PermissionSeeder extends Seeder
             'create-sales',
             'edit-sales',
             'delete-sales',
-            'download-sales'
+            'download-sales',
+            'dashboard-sales',
+            'report-sales'
         ];
-
         foreach ($permission_module_sales as $permission) {
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'sales', 'group_modules' => 'sales']);
         }
-
     }
 }

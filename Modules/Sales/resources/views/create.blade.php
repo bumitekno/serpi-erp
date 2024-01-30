@@ -5,6 +5,11 @@
             font-size: 3.75rem !important;
         }
 
+        div.scrollmoney {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
         div.scrollmenu {
             white-space: nowrap;
             overflow-x: auto;
@@ -285,7 +290,7 @@
 
 @push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_payment">
-        <div class="modal-dialog">
+        <div class="modal-dialog" id="modallg-append">
             <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('sales.store') }}"
                 autocomplete="off" method="POST">
                 @csrf
@@ -309,7 +314,6 @@
 
                     <div class="modal-body">
                         <!--begin::Input group-->
-
                         <div class="mb-3 row fv-row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Method
                                 Payment</label>
@@ -318,22 +322,25 @@
                                     name="methodpayment">
                                     <option></option>
                                     @foreach ($method_payment as $method_payments)
-                                        <option value="{{ $method_payments->id }}"> {{ $method_payments->name }} </option>
+                                        <option value="{{ $method_payments->id }}"> {{ $method_payments->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
                         <div class="mb-3 row fv-row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Due Date</label>
-                            <div class="col-md-4">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Due
+                                Date</label>
+                            <div class="col-md-6">
                                 <input type="date" name="due_date_transaction"
                                     class="form-control  kt_datepicker text-start" value="{{ $date_transaction }}">
                             </div>
                         </div>
 
                         <div class="mb-3 row fv-row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Total Payment
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Total
+                                Payment
                             </label>
                             <div class="col-md-8">
                                 <input type="text" name="total_payment"
@@ -344,15 +351,28 @@
                         </div>
 
                         <div class="mb-3 row fv-row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Amount </label>
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Amount
+                            </label>
                             <div class="col-md-8">
                                 <input type="text" name="amount_payment" class="form-control  mb-3 mb-lg-0"
                                     placeholder="0 " data-type="currency" />
                             </div>
                         </div>
 
+                        <div class="m-grid-row mb-3 scrollmoney d-none " id="list-nominal">
+                            <div class="d-flex align-items-center ">
+                                @if (!empty($nominal_opsi_cash))
+                                    @foreach ($nominal_opsi_cash as $nominal)
+                                        <a href="javascript:;" class="btn btn-light-dark me-3 m-3 list-moneys"
+                                            data-currency="{{ $nominal }}">{{ number_format($nominal, 0, ',', '.') }}</a>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="mb-3 row fv-row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Changes </label>
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Changes
+                            </label>
                             <div class="col-md-8">
                                 <input type="text" name="change" class="form-control form-control-solid mb-3 mb-lg-0"
                                     placeholder="0" data-type="currency" readonly="readonly" />
@@ -360,7 +380,8 @@
                         </div>
 
                         <div class="mb-3 row fv-row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Notes </label>
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Notes
+                            </label>
                             <div class="col-md-8">
                                 <textarea name="notes" class="form-control"></textarea>
                             </div>
@@ -545,7 +566,7 @@
                 href="{{ route('sales.filter', ['filter' => 'all']) }}">All</a>
             <!--end::Nav item-->
             @forelse($category_product as $categorys)
-                <a class="btn btn-color-gray-600 btn-active-white btn-active-color-primary fw-boldest fs-8 fs-lg-base nav-link px-3 px-lg-8 mx-1 text-uppercase @if (request()->segment(2) == $categorys->id) active @endif"
+                <a class="btn btn-color-gray-600 btn-active-white btn-active-color-primary m-2 fw-boldest fs-8 fs-lg-base nav-link px-3 px-lg-8 mx-1 text-uppercase @if (request()->segment(2) == $categorys->id) active @endif"
                     href="{{ route('sales.filter', ['filter' => $categorys->id]) }}">
                     {{ Str::title($categorys->name) }}</a>
             @empty
@@ -1132,10 +1153,27 @@
         //method payment 
 
         $('body').on('change', 'select[name=methodpayment]', function(e) {
-            if (e.target.val > 1) {
-
+            if (e.target.value > 1) {
+                $('#list-nominal').addClass('d-none');
             } else {
+                $('#list-nominal').removeClass('d-none');
+            }
+        });
 
+        $('body').on('click', '.list-moneys', function() {
+            var money = $(this).data('currency');
+            $('input[name=amount_payment]').attr('data-currency', money);
+            $('input[name=amount_payment]').val(formatNumber(money.toString()));
+            var total_payment = $('input[name=total_payment]').data('currency');
+            var change = parseInt(money) - parseInt(total_payment);
+            console.log(change);
+            if (change > 0) {
+                var dfc = formatNumber(change.toString());
+                $('input[name="change"]').attr('data-currency', change.toString());
+                $('input[name="change"]').val(dfc);
+            } else {
+                $('input[name="change"]').attr('data-currency', 0);
+                $('input[name="change"]').val(0);
             }
         });
 
