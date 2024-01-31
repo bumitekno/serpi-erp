@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::table('transaction_item_sales', function (Blueprint $table) {
             $table->string('qty_convert')->nullable();
+            $table->boolean('check_convert')->default(false);
         });
     }
 

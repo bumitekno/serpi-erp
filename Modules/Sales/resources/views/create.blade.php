@@ -746,7 +746,17 @@
                                                 class="text-muted fw-bold d-block pt-1">{{ empty($cart[$key]['price_unit']) ? 0 : number_format($cart[$key]['price_unit'], 0, ',', '.') }}</span>
                                             <span class="text-gray-800 fw-bolder">x</span>
                                             <span class="text-gray-800 fw-bolder me-2">{{ $cart[$key]['qty'] }}</span>
-                                            <span class="text-gray-800 "> ( {{ $cart[$key]['unit_name'] }} ) </span>
+                                            @if ($cart[$key]['check_convert'] == false)
+                                                <span class="text-gray-800 "> ( {{ $cart[$key]['unit_name'] }} ) </span>
+                                            @else
+                                                <span class="text-gray-800 me-2 "> ( {{ $cart[$key]['unit_name'] }}
+                                                    )</span>
+                                                <br>
+                                                @if ($cart[$key]['qty_convert'] > 1)
+                                                    <span class="text-gray-800"> (fill :
+                                                        {{ $cart[$key]['qty_convert'] }}) </span>
+                                                @endif
+                                            @endif
                                         </div>
                                         <!--end::Title-->
                                         <!--begin::Section-->
@@ -873,6 +883,11 @@
                 data-bs-target="#kt_modal_payment" id="buttonpayment">
                 <i class="bi bi-credit-card"></i> Pay
                 Now</a>
+            @if ($edit_trans == true)
+                <a href="{{ route('sales.canceledit') }}" class="btn btn-danger py-6 mb-3"> <i
+                        class="bi bi-arrow-left"></i>
+                    Cancel Edit </a>
+            @endif
         @endif
     </div>
 @endsection
@@ -889,6 +904,7 @@
 
         $(".kt_datepicker").flatpickr({
             dateFormat: "d/m/Y",
+            defaultDate: "{{ $date_transaction }}"
         });
 
         $('input[data-kt-product-table-filter="search"]').on('keydown', function(event) {
@@ -1105,17 +1121,14 @@
 
         /** inject payment  **/
         $('body').on('click', '#buttonpayment', function() {
-
             var no_invoive = $('input[name=ponumber]').val();
             var customer_invoce = $('select[name=customer] option:selected').val();
             var date_invoice = $('input[name=date_transaction]').val();
             var departement_invoice = $('select[name=departement] option:selected').val();
-
             $('input[name=number_invoice]').val(no_invoive);
             $('input[name=date_invoice]').val(date_invoice);
             $('input[name=customer_invoice]').val(customer_invoce);
             $('input[name=departement_invoice]').val(departement_invoice);
-
         });
 
 
@@ -1195,6 +1208,7 @@
                         // Disable button to avoid multiple click
                         submitButtonpay.disabled = true;
 
+                        var methodpaymentid = $('select[name=methodpayment] option:selected').val();
                         var replace_currency = $('input[name=amount_payment]').val().replace(/\D/g, "");
                         var total_payment = $('input[name=total_payment]').data('currency');
                         var change = parseInt(replace_currency) - parseInt(total_payment);
@@ -1210,15 +1224,31 @@
 
                             if (change < 0) {
 
-                                Swal.fire({
-                                    text: "Form has been failed submitted, Check Amount Payment uncorrect !",
-                                    icon: "error",
-                                    buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
-                                    customClass: {
-                                        confirmButton: "btn btn-primary"
-                                    }
-                                });
+                                if (methodpaymentid == 3) {
+
+                                    // Show popup confirmation
+                                    Swal.fire({
+                                        text: "Form has been successfully submitted!",
+                                        icon: "success",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    });
+                                    formpaymenet.submit(); // Submit form
+
+                                } else {
+                                    Swal.fire({
+                                        text: "Form has been failed submitted, Check Amount Payment uncorrect !",
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    });
+                                }
 
                             } else {
 

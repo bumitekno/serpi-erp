@@ -16,6 +16,7 @@ use App\Models\MethodPayment;
 use App\Models\Departement;
 use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,8 @@ class SalesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:create-sales|edit-sales|delete-sales', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-sales|edit-sales|delete-sales|dashboard-sales|download-sales|report-sales
+        ', ['only' => ['index', 'show']]);
         $this->middleware('permission:create-sales', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-sales', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete-sales', ['only' => ['destroy']]);
@@ -49,7 +51,73 @@ class SalesController extends Controller
             $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->where('saved_trans', '=', '0')->latest()->paginate(10);
         }
 
-        return view('sales::index')->with(['transaction' => $transaction, 'keyword' => $request->search]);
+        if (!empty($request->get('from')) && !empty($request->get('to'))) {
+            $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->whereBetween('date_sales', [$request->get('from'), $request->get('to')])->latest()->paginate(10);
+            $startdate = Carbon::createFromFormat('Y-m-d', $request->get('from'))->format('d/m/Y');
+            $enddate = Carbon::createFromFormat('Y-m-d', $request->get('from'))->format('d/m/Y');
+        } else {
+            $startdate = Carbon::now()->startOfMonth()->format('d/m/Y');
+            $enddate = Carbon::now()->endOfMonth()->addDays(1)->format('d/m/Y');
+        }
+
+        $sum_transaction_pending = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('id_method_payment', '=', '3')->sum('total_transaction');
+        $sum_transaction_success = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->sum('total_transaction');
+        $sum_transaction_cancel = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('note', '=', 'cancel')->sum('total_transaction');
+        $sum_transaction_success_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
+        $sum_transaction_cancel_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('note', '=', 'cancel')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
+        $sum_transaction_pending_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('id_method_payment', '=', '3')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
+
+
+        $total_success_chart = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->select(DB::raw("CAST(SUM(total_transaction) as int ) as total_success"))
+            ->GroupBy(DB::raw("Month(date_sales)"))
+            ->pluck('total_success');
+
+        $total_cancel_chart = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('note', '=', 'cancel')->select(DB::raw("CAST(SUM(total_transaction) as int )as total_failed"))
+            ->GroupBy(DB::raw("Month(date_sales)"))
+            ->pluck('total_failed');
+
+        $total_pending_chart = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('id_method_payment', '=', '3')->select(DB::raw("CAST(SUM(total_transaction) as int )as total_pending"))
+            ->GroupBy(DB::raw("Month(date_sales)"))
+            ->pluck('total_pending');
+
+        $bulan = TransactionSales::select(DB::raw("MONTHNAME(date_sales) as bulan"))
+            ->GroupBy(DB::raw("MONTHNAME(date_sales)"))
+            ->pluck('bulan');
+
+        //product terlaris 
+        $product_top = DB::table('product_pos')
+            ->select([
+                'product_pos.id',
+                'product_pos.name',
+                'product_pos.code_product',
+                DB::raw('CAST(SUM(transaction_item_sales.qty_convert) as int ) as total_sales'),
+                DB::raw('CAST(SUM(transaction_item_sales.qty_convert * product_pos.price_sell) as int) AS total_price'),
+            ])
+            ->join('transaction_item_sales', 'transaction_item_sales.id_product', '=', 'product_pos.id')
+            ->join('transaction_sales', 'transaction_item_sales.id_transaction_sales', '=', 'transaction_sales.id')
+            ->where('transaction_sales.saved_trans', '=', '0')->where('transaction_sales.status', '=', '1')
+            ->groupBy('product_pos.id', 'product_pos.name', 'product_pos.code_product')
+            ->orderByDesc('total_sales')
+            ->get();
+
+        return view('sales::index')->with([
+            'transaction' => $transaction,
+            'keyword' => $request->search,
+            'total_transaction_pending' => $sum_transaction_pending,
+            'total_transaction_success' => $sum_transaction_success,
+            'total_transaction_cancel' => $sum_transaction_cancel,
+            'total_transaction' => $sum_transaction_success + $sum_transaction_cancel,
+            'today_success' => $sum_transaction_success_today,
+            'today_cancel' => $sum_transaction_cancel_today,
+            'today_pending' => $sum_transaction_pending_today,
+            'chart_month' => $bulan,
+            'chart_success' => $total_success_chart,
+            'chart_cancel' => $total_cancel_chart,
+            'chart_pending' => $total_pending_chart,
+            'top_product' => $product_top,
+            'startdate' => $startdate,
+            'enddate' => $enddate
+        ]);
     }
 
     /**
@@ -86,8 +154,7 @@ class SalesController extends Controller
         $departement = Departement::query()->get();
         $departement_default = empty(Session::get('departement')) ? Departement::first()?->id : Session::get('departement');
 
-        $date_transaction = empty(Session::get('date_trans')) ? Carbon::now()->format('Y-m-d') : Session::get('date_trans');
-
+        $date_transaction = empty(Session::get('date_trans')) ? Carbon::now()->format('d/m/Y') : Session::get('date_trans');
         $record = TransactionSales::latest()->first();
 
         $cart = empty(Session::get('cart')) ? [] : Session::get('cart');
@@ -188,6 +255,7 @@ class SalesController extends Controller
 
         if (!empty($cart[$product['id']])) {
             $cart[$product['id']]['qty'] += 1;
+            $cart[$product['id']]['qty_convert'] += 1;
             $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
         } else {
             $id_unit = UnitProduct::first();
@@ -201,6 +269,8 @@ class SalesController extends Controller
                 "unit_name" => $id_unit?->name,
                 "image_product" => $product->image_product,
                 "qty" => 1,
+                "qty_convert" => 1, // convert ke satuan terkecil
+                "check_convert" => false,
                 "subtotal" => $product->price_sell * 1,
                 'location' => $departement?->id_location
             );
@@ -227,6 +297,7 @@ class SalesController extends Controller
             $cart = Session::get('cart');
             if (!empty($cart[$product['id']])) {
                 $cart[$product['id']]['qty'] += 1;
+                $cart[$product['id']]['qty_convert'] += 1;
                 $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
             } else {
                 $id_unit = UnitProduct::first();
@@ -238,6 +309,8 @@ class SalesController extends Controller
                     "unit_id" => $id_unit?->id,
                     "unit_name" => $id_unit?->name,
                     "qty" => 1,
+                    "qty_convert" => 1, // convert ke satuan terkecil
+                    "check_convert" => false,
                     "subtotal" => $product->price_sell * 1
                 );
             }
@@ -279,6 +352,8 @@ class SalesController extends Controller
                         $cart[$request->id_cart]['unit_name'] = $unit?->name;
                         $cart[$request->id_cart]['qty'] = $request->qty_cart;
                         $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $stock_unit->qty_convert;
+                        $cart[$request->id_cart]['check_convert'] = true;
+                        $cart[$request->id_cart]['qty_convert'] = empty($stock_unit->qty_convert) ? 1 : $stock_unit->qty_convert; //convert ke satuan terkecil
                         $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
                         $notif = 'success';
                     } else {
@@ -288,6 +363,8 @@ class SalesController extends Controller
                         $cart[$request->id_cart]['unit_id'] = $unitdefault?->id;
                         $cart[$request->id_cart]['unit_name'] = $unitdefault?->name;
                         $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                        $cart[$request->id_cart]['check_convert'] = false;
+                        $cart[$request->id_cart]['qty_convert'] = $request->qty_cart; // convert ke satuan terkecil
                     }
                 } else {
                     $message = $cart[$request->id_cart]['name_product'] . ' Unit not found .';
@@ -368,11 +445,26 @@ class SalesController extends Controller
             if (!empty($cart)) {
                 foreach ($cart as $key => $val) {
                     $stock_unit = Stock::where(['id_product' => $cart[$key]['id'], 'id_unit' => $cart[$key]['unit_id'], 'id_location' => $cart[$key]['location']])->first();
+
+                    if (empty($stock_unit->qty_convert)) {
+                        $convert_qty = $cart[$key]['qty_convert'];
+                        $convert = false;
+                    } else {
+                        if ($stock_unit->qty_convert != $cart[$key]['qty_convert']) {
+                            $convert_qty = $cart[$key]['qty_convert'];
+                            $convert = false;
+                        } else {
+                            $convert_qty = $stock_unit->qty_convert;
+                            $convert = true;
+                        }
+                    }
+
                     $item_sales = [
                         'id_product' => $cart[$key]['id'],
                         'id_unit' => $cart[$key]['unit_id'],
-                        'qty' => empty($stock_unit->qty_convert) ? $cart[$key]['qty'] : 0,
-                        'qty_convert' => $stock_unit->qty_convert,
+                        'qty' => $cart[$key]['qty'],
+                        'qty_convert' => $convert_qty,
+                        'check_convert' => $convert,
                         'price_sales' => $cart[$key]['price_unit'],
                         'id_transaction_sales' => $transFind->id
                     ];
@@ -444,11 +536,25 @@ class SalesController extends Controller
 
                     $stock_unit = Stock::where(['id_product' => $cart[$key]['id'], 'id_unit' => $cart[$key]['unit_id'], 'id_location' => $cart[$key]['location']])->first();
 
+                    if (empty($stock_unit->qty_convert)) {
+                        $convert_qty = $cart[$key]['qty_convert'];
+                        $convert = false;
+                    } else {
+                        if ($stock_unit->qty_convert != $cart[$key]['qty_convert']) {
+                            $convert_qty = $cart[$key]['qty_convert'];
+                            $convert = false;
+                        } else {
+                            $convert_qty = $stock_unit->qty_convert;
+                            $convert = true;
+                        }
+                    }
+
                     $item_sales = [
                         'id_product' => $cart[$key]['id'],
                         'id_unit' => $cart[$key]['unit_id'],
-                        'qty' => empty($stock_unit->qty_convert) ? $cart[$key]['qty'] : 0,
-                        'qty_convert' => $stock_unit->qty_convert,
+                        'qty' => $cart[$key]['qty'],
+                        'qty_convert' => $convert_qty,
+                        'check_convert' => $convert,
                         'price_sales' => $cart[$key]['price_unit'],
                         'id_transaction_sales' => $create_transaction->id
                     ];
@@ -638,7 +744,8 @@ class SalesController extends Controller
         $information = TransactionSales::with(['customer', 'methodpayment', 'departement', 'operator'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
         $credit_information = SalesCredit::where('id_transaction_sales', $information->id)->get();
-        return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'credit_transaction' => $credit_information]);
+        $total_credit = SalesCredit::where('id_transaction_sales', $information->id)->sum('amount');
+        return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'credit_transaction' => $credit_information, 'total_credit' => $total_credit]);
     }
 
     /** print struk small */
@@ -683,11 +790,14 @@ class SalesController extends Controller
 
                 } else {
 
-                    $create_reduce = $total_transaction - $total_credit;
+                    $create_reduce = $total_transaction - ($replace_currency + $total_credit);
 
                     // update lunas jika tidak ada sisa kredit tagihan 
                     if ($create_reduce == 0) {
-                        TransactionSales::where('id', $$information->id)->update(['amount' => $total_credit, 'status' => true, 'note' => '']);
+                        TransactionSales::where('id', $information->id)->update(['amount' => $total_transaction, 'status' => true, 'note' => '']);
+                    } else if ($replace_currency > $create_reduce) {
+                        Session::flash('error', 'the amount credit value is greater than the transaction value, please for correct it! ');
+                        return redirect()->back();
                     }
 
                     SalesCredit::create([
@@ -698,6 +808,7 @@ class SalesController extends Controller
                         'id_transaction_sales' => $information->id
                     ]);
                     Session::flash('success', 'Payment Credit for due method is successfully.');
+
                     return redirect()->back();
                 }
             }
@@ -711,12 +822,12 @@ class SalesController extends Controller
     {
         $information = TransactionSales::where('id', $id)->first();
         $detail = TransactionSalesItem::where('id_transaction_sales', $information?->id)->get();
-        $departement = Departement::where('id', '=', $information->id_departement)->first();
 
         if (!empty($information) && !empty($detail)) {
+            $departement = Departement::where('id', '=', $information?->id_departement)->first();
             Session::put('customer', $information->id_customer);
             Session::put('departement', $information->id_departement);
-            Session::put('date_trans', $information->date_sales);
+            Session::put('date_trans', Carbon::parse($information->date_sales)->format('d/m/Y'));
             Session::put('tax', $information->tax_amount);
             Session::put('discount', $information->discount_amount);
             Session::put('ponumber', $information->code_transaction);
@@ -734,7 +845,9 @@ class SalesController extends Controller
                     "unit_name" => $id_unit?->name,
                     "image_product" => $product->image_product,
                     "qty" => $detail->qty,
-                    "subtotal" => $product->price_sell * $detail->qty,
+                    "qty_convert" => $detail->qty_convert,
+                    "check_convert" => $detail->check_convert,
+                    "subtotal" => $detail->check_convert == false ? $product->price_sell * $detail->qty : $product->price_sell * $detail->qty_convert,
                     'location' => $departement?->id_location
                 ];
             }
@@ -746,6 +859,24 @@ class SalesController extends Controller
         }
 
         return redirect()->route('sales.create');
+    }
+
+    /** cancel edit  */
+    public function canceledit()
+    {
+
+        $information = TransactionSales::where('code_transaction', Session::get('ponumber'))->first();
+
+        Session::put('cart', []);
+        Session::put('edit', false);
+        Session::remove('customer');
+        Session::remove('departement');
+        Session::remove('date_trans');
+        Session::remove('tax');
+        Session::remove('discount');
+        Session::remove('ponumber');
+        Session::flash('success', 'Edit Transaction ' . $information?->code_transaction . '  has been cancel!');
+        return redirect()->route('sales.index');
     }
 
     /**
@@ -800,7 +931,6 @@ class SalesController extends Controller
         if (!empty($trans)) {
             TransactionSalesItem::where('id_transaction_sales', $trans->id)->delete();
             $trans->delete();
-
             return response()->json(['reload' => true, 'message' => 'Remove Transaction is successfully !'], 200);
         } else {
             return response()->json(['reload' => false, 'message' => 'Remove Transaction is failed !'], 403);

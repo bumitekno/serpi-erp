@@ -181,14 +181,15 @@
                                 <!--begin::Table-->
                                 <div class="table-responsive border-bottom mb-9">
                                     <table class="table mb-3">
-                                        <thead>
+                                        <thead class="table-dark">
                                             <tr class="border-bottom fs-6 fw-bolder text-muted">
-                                                <th class="min-w-175px pb-2">Code</th>
+                                                <th class="min-w-175px pb-2"><span class="p-2">Code</span></th>
                                                 <th class="min-w-70px text-end pb-2">Product</th>
                                                 <th class="min-w-80px text-end pb-2">Unit</th>
                                                 <th class="min-w-80px text-end pb-2">Qty</th>
                                                 <th class="min-w-100px text-end pb-2">Price Unit </th>
-                                                <th class="min-w-100px text-end pb-2">Amount </th>
+                                                <th class="min-w-100px text-end pb-2"><span class="p-2">Amount</span>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -200,17 +201,34 @@
                                                     <td class="d-flex align-items-center pt-6">
                                                         {{ $details->products?->code_product }}</td>
                                                     <td class="pt-6">{{ $details->products?->name }}</td>
-                                                    <td class="pt-6">{{ $details->units?->name }}</td>
+                                                    @if ($details->check_convert == false)
+                                                        <td class="pt-6">{{ $details->units?->name }}</td>
+                                                    @else
+                                                        <td class="pt-6">{{ $details->units?->name }}
+                                                            {{ $details->qty_convert > 1 ? ' ( fill:' . $details->qty_convert . ')' : '' }}
+                                                        </td>
+                                                    @endif
                                                     <td class="pt-6">{{ $details->qty }}</td>
                                                     <td class="pt-6">
                                                         {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell, 0, ',', '.') }}
                                                     </td>
-                                                    <td class="pt-6">
-                                                        {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty, 0, ',', '.') }}
-                                                    </td>
+                                                    @if ($details->check_convert == false)
+                                                        <td class="pt-6">
+                                                            {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty, 0, ',', '.') }}
+                                                        </td>
+                                                    @else
+                                                        <td class="pt-6">
+                                                            {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty_convert, 0, ',', '.') }}
+                                                        </td>
+                                                    @endif
 
                                                     @php
-                                                        $subtotal += $details->products->price_sell * $details->qty;
+                                                        if ($details->check_convert == false) {
+                                                            $subtotal += $details->products->price_sell * $details->qty;
+                                                        } else {
+                                                            $subtotal += $details->products->price_sell * $details->qty_convert;
+                                                        }
+
                                                     @endphp
                                                 </tr>
                                             @empty
@@ -358,33 +376,40 @@
         <!--end::Body-->
     </div>
 
-    <div class="card">
+    <div class="card" id="print-addon">
         <div class="card-header mt-3">
             <div class="float-start">
                 Credit Information
             </div>
-            <div class="card-body p-lg-20">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
+            <div class="float-end ">
+                Remaining payment : <span class="badge badge-light-danger">
+                    {{ $total_credit - $transaction->total_transaction > 0 ? number_format($total_credit - $transaction->total_transaction * -1, 0, ',', '.') : '-' }}
+                </span>
+            </div>
+        </div>
+        <div class="card-body p-lg-20">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><span class="p-2">#</span></th>
+                            <th>Date Credit</th>
+                            <th>Status </th>
+                            <th> <span class="p-2">Amount </span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($credit_transaction as $credit)
                             <tr>
-                                <th>#</th>
-                                <th>Date Credit</th>
-                                <th> Amount</th>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ \Carbon\Carbon::parse($credit->date_credit)->translatedFormat('d F Y') }}</td>
+                                <td>{{ $credit->status == 1 ? 'Paid' : 'Pending' }}</td>
+                                <td>{{ number_format($credit->amount, 0, ',', '.') }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($credit_transaction as $credit)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($credit->date_credit)->translatedFormat('d F Y') }}</td>
-                                    <td>{{ number_format($credit->amount, 0, ',', '.') }}</td>
-                                </tr>
-                            @empty
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                        @empty
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -401,9 +426,10 @@
 
         function printDiv() {
             var printContents = document.getElementById('printarea').innerHTML;
+            var printContents_addon = document.getElementById('print-addon').innerHTML;
             var originalContents = document.body.innerHTML;
 
-            document.body.innerHTML = printContents;
+            document.body.innerHTML = printContents + '<br>' + printContents_addon;
 
             window.print();
 

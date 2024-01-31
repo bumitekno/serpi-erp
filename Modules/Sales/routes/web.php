@@ -36,4 +36,6 @@ Route::group([], function () {
     Route::get('delete/saved/transaction/{id}', [SalesController::class, 'removeTrans'])->name('sales.removeTrans');
     Route::post('pay/credit/due', [SalesController::class, 'pay_credit'])->name('sales.pay_credit');
     Route::post('sales/history/filter', [SalesController::class, 'index'])->name('sales.filter-history');
+    Route::get('sales/history/filter', [SalesController::class, 'index'])->name('sales.filter-history');
+    Route::get('sales/edit/cancel', [SalesController::class, 'canceledit'])->name('sales.canceledit');
 });

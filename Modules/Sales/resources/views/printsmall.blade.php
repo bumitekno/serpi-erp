@@ -169,12 +169,13 @@
             <div>{{ $transaction->customer?->email }}</div>
             <div class="hr"></div>
             <br>
-            <div>Invoice : {{ $transaction->code_transaction }}</div>
+            <div>Invoice {{ $transaction->code_transaction }}</div>
+            <div>Note {{ $transaction?->note }}</div>
             <br>
             <div class="payment">
-                <div>Payment : {{ $transaction->methodpayment?->name }}</div>
-                <div>Status : {{ $transaction->status == 1 ? 'Paid' : 'Pending ' }}</div>
-                <div>Operator : {{ $transaction->operator?->name }}</div>
+                <div>Payment {{ $transaction->methodpayment?->name }}</div>
+                <div>Status {{ $transaction->status == 1 ? 'Paid' : 'Pending ' }}</div>
+                <div>Operator {{ $transaction->operator?->name }}</div>
             </div>
             <br>
             <div class="date_time_con">
@@ -196,10 +197,10 @@
                 <table>
 
                     <thead>
-                        <th>Product</th>
-                        <th>Qty</th>
-                        <th>Unit</th>
-                        <th>Price</th>
+                        <th>Name Item </th>
+                        <th>Qty Item </th>
+                        <th>Unit Item </th>
+                        <th>Price Unit </th>
                         <th>Amount</th>
                     </thead>
 
@@ -209,17 +210,34 @@
                         @endphp
                         @forelse($detail_transaction as $details)
                             <tr>
-                                <td>{{ $details->products?->name }}</td>
+                                <td>{{ $details->products?->code_product }} {{ $details->products?->name }}</td>
                                 <td>{{ $details->qty }}</td>
-                                <td>{{ $details->units?->name }}</td>
+                                @if ($details->check_convert == false)
+                                    <td>{{ $details->units?->name }}</td>
+                                @else
+                                    <td>{{ $details->units?->name }}
+                                        {{ $details->qty_convert > 1 ? ' ( fill:' . $details->qty_convert . ')' : '' }}
+                                    </td>
+                                @endif
                                 <td>{{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell, 0, ',', '.') }}
                                 </td>
-                                <td>
-                                    {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty, 0, ',', '.') }}
-                                </td>
+                                @if ($details->check_convert == false)
+                                    <td>
+                                        {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty, 0, ',', '.') }}
+                                    </td>
+                                @else
+                                    <td>
+                                        {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty_convert, 0, ',', '.') }}
+                                    </td>
+                                @endif
                             </tr>
                             @php
-                                $subtotal += $details->products->price_sell * $details->qty;
+                                if ($details->check_convert == false) {
+                                    $subtotal += $details->products->price_sell * $details->qty;
+                                } else {
+                                    $subtotal += $details->products->price_sell * $details->qty_convert;
+                                }
+
                             @endphp
                         @empty
                         @endforelse
