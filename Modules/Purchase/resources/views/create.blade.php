@@ -41,7 +41,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Supplier</label>
                             <div class="col-md-8">
                                 <select class="form-select @error('supplier') is-invalid @enderror" data-control="select2"
-                                    data-placeholder="Select an option Supplier" name="supplier">
+                                    data-placeholder="Select Supplier" name="supplier">
                                     <option></option>
                                     @foreach ($supplier as $supplier)
                                         <option value="{{ $supplier->id }}"> {{ $supplier->name }} </option>
@@ -57,11 +57,10 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="mb-3 row">
-                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Ship To</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Departement</label>
                             <div class="col-md-8">
                                 <select class="form-select @error('departement') is-invalid @enderror"
-                                    data-control="select2" data-placeholder="Select an option Departement"
-                                    name="departement">
+                                    data-control="select2" data-placeholder="Select Departement" name="departement">
                                     <option></option>
                                     @foreach ($departement as $departement)
                                         <option value="{{ $departement->id }}"> {{ $departement->name }} </option>
@@ -78,8 +77,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Payment</label>
                             <div class="col-md-8">
                                 <select class="form-select @error('methodpayment') is-invalid @enderror"
-                                    data-control="select2" data-placeholder="Select an option Method Payment"
-                                    name="methodpayment">
+                                    data-control="select2" data-placeholder="Select Method Payment" name="methodpayment">
                                     <option></option>
                                     @foreach ($method_payment as $method_payment)
                                         <option value="{{ $method_payment->id }}"> {{ $method_payment->name }} </option>
@@ -109,7 +107,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="mb-3 row">
                     <table class="table table-hover" id="dynamicTable">
@@ -128,8 +125,7 @@
                                 <td>
                                     <select
                                         class="form-select  form-control-sm items @error('addmore.product.*') is-invalid @enderror"
-                                        data-control="select2" data-placeholder="Select an option Product"
-                                        name="addmore[product][]">
+                                        data-control="select2" data-placeholder="Select  Product" name="addmore[product][]">
                                         <option></option>
                                         @foreach ($product as $product)
                                             <option value="{{ $product->id }}"> {{ $product->name }}
@@ -143,8 +139,7 @@
                                 <td>
                                     <select
                                         class="form-select form-control-sm items @error('addmore.units.*')is-invalid @enderror"
-                                        data-control="select2" data-placeholder="Select an option unit"
-                                        name="addmore[units][]">
+                                        data-control="select2" data-placeholder="Select unit" name="addmore[units][]">
                                         <option></option>
                                         @foreach ($unit as $unit)
                                             <option value="{{ $unit->id }}"> {{ $unit->name }} </option>
@@ -155,22 +150,22 @@
                                     @endif
                                 </td>
                                 <td><input type="number" name="addmore[qty][]"
-                                        class="form-control @error('addmore.qty.*') is-invalid @enderror"
+                                        class="form-control @error('addmore.qty.*') is-invalid @enderror kt_inputqty"
                                         placeholder="QTY">
                                     @if ($errors->has('addmore.qty.*'))
                                         <span class="text-danger">{{ $errors->first('addmore.qty.*') }}</span>
                                     @endif
                                 </td>
                                 <td><input inputmode="text" name="addmore[unitprice][]"
-                                        class="form-control @error('addmore.unitprice.*') is-invalid @enderror kt_inputmask_6"
+                                        class="form-control @error('addmore.unitprice.*') is-invalid @enderror kt_inputmask"
                                         placeholder="Unit Price " data-type='currency'>
                                     @if ($errors->has('addmore.unitprice.*'))
                                         <span class="text-danger">{{ $errors->first('addmore.unitprice.*') }}</span>
                                     @endif
                                 </td>
-                                <td><input type="number" name="addmore[amount][]"
-                                        class="form-control @error('addmore.amount.*') is-invalid @enderror form-control-solid"
-                                        placeholder="Amount " readonly="readonly">
+                                <td><input type="text" name="addmore[amount][]"
+                                        class="form-control @error('addmore.amount.*') is-invalid @enderror kt_inputamount form-control-solid"
+                                        placeholder="Amount " readonly="readonly" data-currency="0">
                                     @if ($errors->has('addmore.amount.*'))
                                         <span class="text-danger">{{ $errors->first('addmore.amount.*') }}</span>
                                     @endif
@@ -188,6 +183,23 @@
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Subtotal</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Discount</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td>Tax</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <div class="mb-3 row">
@@ -201,7 +213,8 @@
     <script>
         var index = 0;
         $(".kt_datepicker").flatpickr({
-            dateFormat: "d-m-Y",
+            dateFormat: "d/m/Y",
+            defaultDate: new Date()
         });
         $('.btn-del-select').hide();
         $('.items').select2();
@@ -217,20 +230,73 @@
             $('.items').select2();
             $clone.find('.items').select2();
             $clone.find('input').val('');
+            $clone.find('.kt_inputamount').attr('data-currency', 0);
+            // Currency
+            Inputmask({
+                "numericInput": true,
+                "clearMaskOnLostFocus": true,
+                "removeMaskOnSubmit": true,
+                "placeholder": "",
+                "autoUnmask": true,
+                'digits': 0,
+                'rightAlign': false,
+                'allowMinus': false,
+                'groupSeparator': '.',
+                'alias': 'currency'
+            }).mask($clone.find('.kt_inputmask'));
+            calculate();
         });
         $(document).on('click', '.remove-select', function() {
             $(this).parents('tr').remove();
             index--;
+            calculate();
         });
 
         // Currency
-        Inputmask("Rp 999.999.999,99", {
+        Inputmask({
             "numericInput": true,
-        }).mask(".kt_inputmask_6");
+            "clearMaskOnLostFocus": true,
+            "removeMaskOnSubmit": true,
+            "placeholder": "",
+            "autoUnmask": true,
+            'digits': 0,
+            'rightAlign': false,
+            'allowMinus': false,
+            'alias': 'currency',
+            'groupSeparator': '.'
+        }).mask(".kt_inputmask");
 
-        let input = document.querySelector("input[data-type='currency']")
-        input.addEventListener("keyup", (e) => {
-            console.log(e.target.value);
+        calculate();
+
+        function formatNumber(n) {
+            // format number 1000000 to 1,234,567
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }
+
+        function calculate() {
+            var currency = 0;
+            $('input.kt_inputamount').each(function(e) {
+                currency += parseInt($(this).attr('data-currency').toString());
+            });
+            console.log(currency);
+        }
+
+        //calculate
+        $('body').on('keyup', '.kt_inputmask', function(e) {
+            //var id = $(this).closest('tr').attr('data-id');
+            if (e.target.value.length > 0) {
+                var replace_currency = e.target.value.replace(/\D/g, "");
+                var qty = $(this).closest('tr').find('input.kt_inputqty').val();
+                var change = parseInt(replace_currency) * parseInt(qty);
+                var dxc = formatNumber(change.toString());
+                $(this).closest('tr').find('input.kt_inputamount').val(dxc);
+                $(this).closest('tr').find('input.kt_inputamount').attr('data-currency', change);
+            } else {
+                $(this).closest('tr').find('input.kt_inputamount').val('');
+                $(this).closest('tr').find('input.kt_inputamount').attr('data-currency', 0);
+            }
+
+            calculate();
         });
     </script>
 @endpush

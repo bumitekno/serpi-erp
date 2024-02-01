@@ -11,6 +11,8 @@ use Modules\Purchase\app\Models\TransactionPurchaseItem;
 use App\Models\MethodPayment;
 use App\Models\Supplier;
 use App\Models\Departement;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Modules\Stock\app\Models\Stock;
 use Modules\UnitProduct\app\Models\UnitProduct;
 
@@ -88,7 +90,28 @@ class PurchaseController extends Controller
     {
         //
 
+        $request->validate([
+            'supplier' => 'required',
+            'departement' => 'required',
+            'methodpayment' => 'required',
+            'date_due' => 'required',
+            'addmore.product.*' => 'required|sometimes',
+            'addmore.units.*' => 'required|sometimes',
+            'addmore.unitprice.*' => 'required|sometimes',
+            'addmore.qty.*' => 'required|sometimes'
+        ]);
+
         dd($request->all());
+
+        $send_data = [
+            'date_purchase' => Carbon::createFromFormat('d/m/Y', $request->date_transaction)->format('Y-m-d'),
+            'time_purchase' => Carbon::createFromFormat('d/m/Y', $request->date_transaction)->format('H:i:s'),
+            'status' => true,
+            'id_supplier' => $request->supplier,
+            'id_method_payment' => $request->methodpayment,
+            'id_departement' => $request->departement,
+            'id_user' => Auth::user()->id,
+        ];
     }
 
     /**
