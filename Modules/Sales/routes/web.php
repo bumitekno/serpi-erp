@@ -38,4 +38,5 @@ Route::group([], function () {
     Route::post('sales/history/filter', [SalesController::class, 'index'])->name('sales.filter-history');
     Route::get('sales/history/filter', [SalesController::class, 'index'])->name('sales.filter-history');
     Route::get('sales/edit/cancel', [SalesController::class, 'canceledit'])->name('sales.canceledit');
+    Route::get('sales/download/transaction', [SalesController::class, 'download_transaction'])->name('sales.download_transaction');
 });

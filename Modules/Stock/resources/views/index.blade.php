@@ -175,11 +175,13 @@
                                 </td>
                             </tr>
                         @empty
-                            <td colspan="4">
-                                <span class="text-danger">
-                                    <strong>No Stock Found!</strong>
-                                </span>
-                            </td>
+                            <tr>
+                                <td colspan="9">
+                                    <span class="text-danger text-center">
+                                        <strong>No Stock Found!</strong>
+                                    </span>
+                                </td>
+                            </tr>
                         @endforelse
 
                     </tbody>

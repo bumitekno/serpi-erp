@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Modules\Sales\app\Http\Controllers\SalesExportController;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SalesController extends Controller
 {
@@ -54,7 +56,7 @@ class SalesController extends Controller
         if (!empty($request->get('from')) && !empty($request->get('to'))) {
             $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->whereBetween('date_sales', [$request->get('from'), $request->get('to')])->latest()->paginate(10);
             $startdate = Carbon::createFromFormat('Y-m-d', $request->get('from'))->format('d/m/Y');
-            $enddate = Carbon::createFromFormat('Y-m-d', $request->get('from'))->format('d/m/Y');
+            $enddate = Carbon::createFromFormat('Y-m-d', $request->get('to'))->format('d/m/Y');
         } else {
             $startdate = Carbon::now()->startOfMonth()->format('d/m/Y');
             $enddate = Carbon::now()->endOfMonth()->addDays(1)->format('d/m/Y');
@@ -66,7 +68,6 @@ class SalesController extends Controller
         $sum_transaction_success_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
         $sum_transaction_cancel_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('note', '=', 'cancel')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
         $sum_transaction_pending_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '0')->where('id_method_payment', '=', '3')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
-
 
         $total_success_chart = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->select(DB::raw("CAST(SUM(total_transaction) as int ) as total_success"))
             ->GroupBy(DB::raw("Month(date_sales)"))
@@ -626,10 +627,25 @@ class SalesController extends Controller
         $create_transaction = TransactionSales::create($transaction);
         if (!empty($cart) && !empty($create_transaction)) {
             foreach ($cart as $key => $val) {
+                $stock_unit = Stock::where(['id_product' => $cart[$key]['id'], 'id_unit' => $cart[$key]['unit_id'], 'id_location' => $cart[$key]['location']])->first();
+                if (empty($stock_unit->qty_convert)) {
+                    $convert_qty = $cart[$key]['qty_convert'];
+                    $convert = false;
+                } else {
+                    if ($stock_unit->qty_convert != $cart[$key]['qty_convert']) {
+                        $convert_qty = $cart[$key]['qty_convert'];
+                        $convert = false;
+                    } else {
+                        $convert_qty = $stock_unit->qty_convert;
+                        $convert = true;
+                    }
+                }
                 $item_sales = [
                     'id_product' => $cart[$key]['id'],
                     'id_unit' => $cart[$key]['unit_id'],
                     'qty' => $cart[$key]['qty'],
+                    'qty_convert' => $convert_qty,
+                    'check_convert' => $convert,
                     'price_sales' => $cart[$key]['price_unit'],
                     'id_transaction_sales' => $create_transaction->id
                 ];
@@ -658,9 +674,10 @@ class SalesController extends Controller
     {
         $information = TransactionSales::where('id', $id)->first();
         $detail = TransactionSalesItem::where('id_transaction_sales', $information?->id)->get();
-        $departement = Departement::where('id', '=', $information->id_departement)->first();
+
 
         if (!empty($information) && !empty($detail)) {
+            $departement = Departement::where('id', '=', $information->id_departement)->first();
             Session::put('customer', $information->id_customer);
             Session::put('departement', $information->id_departement);
             Session::put('date_trans', $information->date_sales);
@@ -682,6 +699,8 @@ class SalesController extends Controller
                     "unit_name" => $id_unit?->name,
                     "image_product" => $product->image_product,
                     "qty" => $detail->qty,
+                    "qty_convert" => $detail->qty_convert, // convert ke satuan terkecil
+                    "check_convert" => $detail->check_convert,
                     "subtotal" => $product->price_sell * $detail->qty,
                     'location' => $departement?->id_location
                 ];
@@ -934,6 +953,17 @@ class SalesController extends Controller
             return response()->json(['reload' => true, 'message' => 'Remove Transaction is successfully !'], 200);
         } else {
             return response()->json(['reload' => false, 'message' => 'Remove Transaction is failed !'], 403);
+        }
+    }
+
+    /** download files export transaction sales */
+    public function download_transaction(Request $request)
+    {
+        if (!empty($request->get('from')) && !empty($request->get('to'))) {
+            $startdate = Carbon::createFromFormat('d/m/Y', $request->get('from'))->format('Y-m-d');
+            $enddate = Carbon::createFromFormat('d/m/Y', $request->get('to'))->format('Y-m-d');
+            $transaction = TransactionSales::with(['customer', 'methodpayment', 'departement'])->whereBetween('date_sales', [$startdate, $enddate])->get();
+            return Excel::download(new SalesExportController($transaction), 'sales-export.xlsx');
         }
     }
 }

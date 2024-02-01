@@ -339,9 +339,15 @@
                         </div>
                     </form>
                     <div class="position-relative my-1">
-                        <input class="form-control form-control-solid w-200px  me-3 " placeholder="Pick date range "
-                            id="kt_daterangepicker_1" />
+                        <input class="form-control form-control-solid w-250px ps-3 text-center  me-3 " name="datefilter"
+                            placeholder="Pick date range " id="kt_daterangepicker_1" data-stardate="{{ $startdate }}"
+                            data-enddate="{{ $enddate }}" value="{{ $startdate }} - {{ $enddate }}" />
                     </div>
+                    @can('download-sales')
+                        <a href="javascript:;" class="btn btn-info btn-sm my-2 download-files"><i
+                                class="bi bi-arrow-down"></i>
+                            Export </a>
+                    @endcan
                 </div>
             </div>
             <div class="float-end">
@@ -441,11 +447,13 @@
                                 </td>
                             </tr>
                         @empty
-                            <td colspan="13">
-                                <span class="text-danger text-center">
-                                    <strong>No Sales Found!</strong>
-                                </span>
-                            </td>
+                            <tr>
+                                <td colspan="13">
+                                    <span class="text-danger text-center">
+                                        <strong>No Sales Found!</strong>
+                                    </span>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -463,11 +471,21 @@
             }
         });
         $("#kt_daterangepicker_1").daterangepicker({
-            startDate: '{{ $startdate }}',
-            endDate: '{{ $enddate }}'
+            minYear: 1901,
+            autoUpdateInput: false,
+            showDropdowns: true,
+            locale: {
+                format: 'MM/DD/YYYY'
+            }
         }, function(start, end, label) {
             window.location.href = "{{ route('sales.filter-history') }}?from=" + start.format(
                 'YYYY-MM-DD') + "&to=" + end.format('YYYY-MM-DD');
+        });
+
+        $('body').on('click', '.download-files', function() {
+            var start = $('input[name=datefilter]').attr('data-stardate');
+            var end = $('input[name=datefilter]').attr('data-enddate');
+            window.location.href = "{{ route('sales.download_transaction') }}?from=" + start + "&to=" + end;
         });
     </script>
 @endpush

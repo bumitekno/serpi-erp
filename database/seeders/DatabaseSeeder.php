@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
             ProductPosDatabaseSeeder::class,
             UnitProductDatabaseSeeder::class,
             WarehouseDatabaseSeeder::class,
-            StockDatabaseSeeder::class
+            //StockDatabaseSeeder::class
         ]);
     }
 }
