@@ -16,4 +16,8 @@ use Modules\Purchase\app\Http\Controllers\PurchaseController;
 
 Route::group([], function () {
     Route::resource('purchase', PurchaseController::class)->names('purchase');
+    Route::post('purchase/pay/credit/due', [PurchaseController::class, 'pay_credit'])->name('purchase.pay_credit');
+    Route::post('purchase/add/supplier', [PurchaseController::class, 'storesupplier'])->name('purchase.storesupplier');
+    Route::post('purchase/history/filter', [PurchaseController::class, 'index'])->name('purchase.filter-history');
+    Route::get('purchase/history/filter', [PurchaseController::class, 'index'])->name('purchase.filter-history');
 });

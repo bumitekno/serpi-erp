@@ -5,7 +5,7 @@ namespace Modules\Customer\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Models\Customer;
 
 class CustomerController extends Controller
 {
@@ -14,7 +14,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return view('customer::index');
+        $customer = Customer::latest()->paginate(10);
+        return view('customer::index')->with(['customer' => $customer]);
     }
 
     /**

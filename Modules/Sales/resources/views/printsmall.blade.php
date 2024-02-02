@@ -219,23 +219,23 @@
                                         {{ $details->qty_convert > 1 ? ' ( fill:' . $details->qty_convert . ')' : '' }}
                                     </td>
                                 @endif
-                                <td>{{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell, 0, ',', '.') }}
+                                <td>{{ empty($details->price_sales) ? 0 : number_format($details->price_sales, 0, ',', '.') }}
                                 </td>
                                 @if ($details->check_convert == false)
                                     <td>
-                                        {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty, 0, ',', '.') }}
+                                        {{ empty($details->price_sales) ? 0 : number_format($details->price_sales * $details->qty, 0, ',', '.') }}
                                     </td>
                                 @else
                                     <td>
-                                        {{ empty($details->products->price_sell) ? 0 : number_format($details->products->price_sell * $details->qty_convert, 0, ',', '.') }}
+                                        {{ empty($details->price_sales) ? 0 : number_format($details->price_sales * $details->qty_convert, 0, ',', '.') }}
                                     </td>
                                 @endif
                             </tr>
                             @php
                                 if ($details->check_convert == false) {
-                                    $subtotal += $details->products->price_sell * $details->qty;
+                                    $subtotal += $details->price_sales * $details->qty;
                                 } else {
-                                    $subtotal += $details->products->price_sell * $details->qty_convert;
+                                    $subtotal += $details->price_sales * $details->qty_convert;
                                 }
 
                             @endphp

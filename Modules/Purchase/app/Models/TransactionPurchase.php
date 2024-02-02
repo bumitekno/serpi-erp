@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Purchase\Database\factories\TransactionPurchaseFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use App\Models\Supplier;
+use App\Models\Departement;
+use App\Models\MethodPayment;
+use App\Models\User;
 
 class TransactionPurchase extends Model
 {
@@ -36,8 +40,29 @@ class TransactionPurchase extends Model
         'id_user',
         'id_method_payment',
         'note',
-        'adjustment_amount'
+        'adjustment_amount',
+        'file_doc'
     ];
+
+    public function operator()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'id_supplier', 'id');
+    }
+
+    public function methodpayment()
+    {
+        return $this->belongsTo(MethodPayment::class, 'id_method_payment', 'id');
+    }
+
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class, 'id_departement', 'id');
+    }
 
     protected static function newFactory(): TransactionPurchaseFactory
     {

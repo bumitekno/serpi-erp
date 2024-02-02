@@ -1,7 +1,7 @@
-@extends('sales::layouts.master')
+@extends('purchase::layouts.master')
 @push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_1">
-        <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('sales.pay_credit') }}" autocomplete="off"
+        <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('purchase.pay_credit') }}" autocomplete="off"
             method="POST">
             @csrf
             <input type="hidden" name="id_trans" value="{{ $transaction->id }}">
@@ -50,17 +50,16 @@
     <div class="card mb-3 ">
         <div class="card-header mt-3">
             <div class="float-start">
-                Sales Order Information
+                Purchase Order Information
             </div>
             <div class="float-end">
-                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-dark my-2 ">Back</a>
-                <a href="{{ route('sales.printsmall', ['id' => $transaction->id, 'route' => 'history']) }}" target="_blank"
-                    class="btn btn-sm btn-info my-2 ">Print receipt
-                    (small) </a>
+                <a href="{{ route('purchase.index') }}" class="btn btn-sm btn-dark my-2 ">Back</a>
+
                 <a href="javascript:;" class="btn btn-sm btn-info my-2 " onclick="printDiv()">Print receipt (large) </a>
-                @can('create-sales')
-                    <a href="{{ route('sales.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
-                        New Sales </a>
+                @can('create-purchase')
+                    <a href="{{ route('purchase.create') }}" class="btn btn-success btn-sm my-2"><i
+                            class="bi bi-plus-circle"></i>
+                        New Purchase </a>
                 @endcan
                 <!--begin::Action-->
                 @if ($transaction->status != 1 && $transaction->note != 'cancel')
@@ -108,7 +107,7 @@
                                     <!--end::Label-->
                                     <!--end::Col-->
                                     <div class="fw-bolder fs-6 text-gray-800">
-                                        {{ empty($transaction->date_sales) ? '-' : \Carbon\Carbon::parse($transaction->date_sales)->translatedFormat('d F Y') }}
+                                        {{ empty($transaction->date_purchase) ? '-' : \Carbon\Carbon::parse($transaction->date_purchase)->translatedFormat('d F Y') }}
                                     </div>
                                     <!--end::Col-->
                                 </div>
@@ -144,16 +143,16 @@
                                 <!--end::Col-->
                                 <div class="col-sm-6">
                                     <!--end::Label-->
-                                    <div class="fw-bold fs-7 text-gray-600 mb-1">Customer:</div>
+                                    <div class="fw-bold fs-7 text-gray-600 mb-1">Supplier:</div>
                                     <!--end::Label-->
                                     <!--end::Text-->
                                     <div class="fw-bolder fs-6 text-gray-800">
-                                        {{ Str::title($transaction->customer?->name) }}</div>
+                                        {{ Str::title($transaction->supplier?->name) }}</div>
                                     <!--end::Text-->
                                     <!--end::Description-->
-                                    <div class="fw-bold fs-7 text-gray-600"> {{ $transaction->customer?->address }}
-                                        <br> {{ $transaction->customer?->contact }}
-                                        <br> {{ $transaction->customer?->email }}
+                                    <div class="fw-bold fs-7 text-gray-600"> {{ $transaction->supplier?->address }}
+                                        <br> {{ $transaction->supplier?->contact }}
+                                        <br> {{ $transaction->supplier?->email }}
                                     </div>
                                     <!--end::Description-->
                                 </div>
@@ -201,39 +200,21 @@
                                                     <td class="d-flex align-items-center pt-6">
                                                         {{ $details->products?->code_product }}</td>
                                                     <td class="pt-6">{{ $details->products?->name }}</td>
-                                                    @if ($details->check_convert == false)
-                                                        <td class="pt-6">{{ $details->units?->name }}</td>
-                                                    @else
-                                                        <td class="pt-6">{{ $details->units?->name }}
-                                                            {{ $details->qty_convert > 1 ? ' ( fill:' . $details->qty_convert . ')' : '' }}
-                                                        </td>
-                                                    @endif
+                                                    <td class="pt-6">{{ $details->units?->name }}</td>
                                                     <td class="pt-6">{{ $details->qty }}</td>
                                                     <td class="pt-6">
-                                                        {{ empty($details->price_sales) ? 0 : number_format($details->price_sales, 0, ',', '.') }}
+                                                        {{ empty($details->price_purchase) ? 0 : number_format($details->price_purchase, 0, ',', '.') }}
                                                     </td>
-                                                    @if ($details->check_convert == false)
-                                                        <td class="pt-6">
-                                                            {{ empty($details->price_sales) ? 0 : number_format($details->price_sales * $details->qty, 0, ',', '.') }}
-                                                        </td>
-                                                    @else
-                                                        <td class="pt-6">
-                                                            {{ empty($details->price_sales) ? 0 : number_format($details->price_sales * $details->qty_convert, 0, ',', '.') }}
-                                                        </td>
-                                                    @endif
-
+                                                    <td class="pt-6">
+                                                        {{ empty($details->price_purchase) ? 0 : number_format($details->price_purchase * $details->qty, 0, ',', '.') }}
+                                                    </td>
                                                     @php
-                                                        if ($details->check_convert == false) {
-                                                            $subtotal += $details->price_sales * $details->qty;
-                                                        } else {
-                                                            $subtotal += $details->price_sales * $details->qty_convert;
-                                                        }
-
+                                                        $subtotal += $details->price_purchase * $details->qty;
                                                     @endphp
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="6"> No Found Product Sales </td>
+                                                    <td colspan="6"> No Found Product Purchase </td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -286,40 +267,12 @@
                                             <!--end::Code-->
                                             <!--begin::Label-->
                                             <div class="text-end fw-bolder fs-6 text-gray-800">
-                                                {{ empty($transaction->total_transaction) ? 0 : number_format($transaction->total_transaction, 0, ',', '.') }}
-                                            </div>
-                                            <!--end::Label-->
-                                        </div>
-                                        <!--end::Item-->
-                                        <!--begin::Item-->
-                                        <div class="d-flex flex-stack">
-                                            <!--begin::Code-->
-                                            <div class="fw-bold pe-10 text-gray-600 fs-7">Nominal</div>
-                                            <!--end::Code-->
-                                            <!--begin::Label-->
-                                            <div class="text-end fw-bolder fs-6 text-gray-800">
                                                 {{ empty($transaction->amount) ? 0 : number_format($transaction->amount, 0, ',', '.') }}
                                             </div>
                                             <!--end::Label-->
                                         </div>
                                         <!--end::Item-->
-                                        <div class="d-flex flex-stack">
-                                            <!--begin::Code-->
-                                            <div class="fw-bold pe-10 text-gray-600 fs-7">Money Changes</div>
-                                            <!--end::Code-->
-                                            <!--begin::Label-->
-                                            <div class="text-end fw-bolder fs-6 text-gray-800">
-                                                @php
-                                                    $charge = $transaction->amount - $transaction->total_transaction;
-                                                    if ($charge < 0) {
-                                                        $charge = 0;
-                                                    }
-                                                @endphp
-                                                {{ number_format($charge, 0, ',', '.') }}
-                                            </div>
-                                            <!--end::Label-->
-                                        </div>
-                                        <!--end::Item-->
+
                                     </div>
                                     <!--end::Section-->
                                 </div>
@@ -375,7 +328,6 @@
         </div>
         <!--end::Body-->
     </div>
-
     <div class="card" id="print-addon">
         <div class="card-header mt-3">
             <div class="float-start">
@@ -383,7 +335,7 @@
             </div>
             <div class="float-end ">
                 Remaining payment : <span class="badge badge-light-danger">
-                    {{ $total_credit - $transaction->total_transaction > 0 ? number_format($total_credit - $transaction->total_transaction * -1, 0, ',', '.') : '-' }}
+                    {{ $total_credit - $transaction->amount > 0 ? number_format($total_credit - $transaction->amount * -1, 0, ',', '.') : '-' }}
                 </span>
             </div>
         </div>
@@ -414,6 +366,7 @@
         </div>
     </div>
 @endsection
+
 @push('scripts')
     <script type="text/javascript">
         $(".kt_datepicker").flatpickr({
@@ -426,10 +379,10 @@
 
         function printDiv() {
             var printContents = document.getElementById('printarea').innerHTML;
-            var printContents_addon = document.getElementById('print-addon').innerHTML;
+            var printAddon = document.getElementById('print-addon').innerHTML;
             var originalContents = document.body.innerHTML;
 
-            document.body.innerHTML = printContents + '<br>' + printContents_addon;
+            document.body.innerHTML = printContents + '<br>' + printAddon;
 
             window.print();
 
@@ -444,6 +397,7 @@
                 }
             });
         }
+
         window.onafterprint = afterPrint;
 
         function formatNumber(n) {
