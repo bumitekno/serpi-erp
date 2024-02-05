@@ -22,16 +22,7 @@ class Departement extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [
-        'code',
-        'name',
-        'contact',
-        'email',
-        'image',
-        'address',
-        'id_warehouse',
-        'id_location'
-    ];
+    protected $fillable = [];
 
     public function warehouse()
     {

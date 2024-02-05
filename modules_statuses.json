@@ -12,5 +12,7 @@
     "Customer": true,
     "Supplier": true,
     "Departement": true,
-    "MethodPayment": true
+    "MethodPayment": true,
+    "Income": true,
+    "Expense": true
 }

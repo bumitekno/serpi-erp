@@ -1,5 +1,117 @@
 @extends('departement::layouts.master')
 
+@push('modals')
+    <div class="modal fade" tabindex="-1" id="kt_modal_departement">
+        <form id="kt_docs_formvalidation_textD" class="form" action="{{ route('departement.store') }}" autocomplete="off"
+            method="POST">
+            @csrf
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add Departement </h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Name</label>
+                            <!--end::Label-->
+
+                            <!--begin::Input-->
+                            <input type="text" name="name_input" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Insert Name " />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Email</label>
+                            <!--end::Label-->
+
+                            <!--begin::Input-->
+                            <input type="email" name="email_input" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="insert Email" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Contact</label>
+                            <!--end::Label-->
+
+                            <!--begin::Input-->
+                            <input type="number" name="contact_input" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Insert Contact " />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Address</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <textarea name="address_input" class="form-control form-control-solid" placeholder="Insert Address"></textarea>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <div class="fv-row mb-10">
+                            <label for="name" class="required fw-semibold fs-6 mb-2">Warehouse</label>
+                            <select class="form-select @error('id_warehouse') is-invalid @enderror" data-control="select2"
+                                data-placeholder="Select Warehouse" name="id_warehouse">
+                                <option></option>
+                                @foreach ($warehouse as $warehouses)
+                                    <option value="{{ $warehouses->id }}">
+                                        {{ $warehouses->name }} </option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('id_warehouse'))
+                                <span class="text-danger">{{ $errors->first('id_warehouse') }}</span>
+                            @endif
+                        </div>
+
+                        <div class="fv-row mb-10">
+                            <label for="name" class="required fw-semibold fs-6 mb-2">Location</label>
+                            <select class="form-select @error('id_location') is-invalid @enderror" data-control="select2"
+                                data-placeholder="Select Location" name="id_location">
+                                <option></option>
+                                @foreach ($location as $locations)
+                                    <option value="{{ $locations->id }}">
+                                        {{ $locations->name_location }} </option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('id_location'))
+                                <span class="text-danger">{{ $errors->first('id_location') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="kt_docs_formvalidation_text_submitD">Save changes
+                            <span class="indicator-progress">
+                                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+@endpush
+
 @section('content')
     <div class="d-flex flex-wrap flex-stack pb-7">
         <div class="d-flex flex-wrap align-items-center my-1">
@@ -26,9 +138,9 @@
                 </div>
             </form>
             <!--end::Search-->
-            @can('supplier-create')
+            @can('departement-create')
                 <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2" data-bs-toggle="modal"
-                    data-bs-target="#kt_modal_supplier">
+                    data-bs-target="#kt_modal_departement">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->
                     <span class="svg-icon svg-icon-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -143,3 +255,115 @@
     </div>
     {{ $departement->links() }}
 @endsection
+
+@push('scripts')
+    <script type="text/javascript">
+        // Define form element
+        const form = document.getElementById('kt_docs_formvalidation_textD');
+
+        // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
+        var validator = FormValidation.formValidation(
+            form, {
+                fields: {
+                    'name_input': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Name is required'
+                            }
+                        }
+                    },
+                    'email_input': {
+                        validators: {
+                            emailAddress: {
+                                message: 'The value is not a valid email address'
+                            },
+                            notEmpty: {
+                                message: 'Email address is required'
+                            }
+                        }
+                    },
+                    'address_input': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Address is required'
+                            }
+                        }
+                    },
+                    'contact_input': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Contact is required'
+                            }
+                        }
+                    },
+                    'id_warehouse': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Warehouse is required'
+                            }
+                        }
+                    },
+                    'id_location': {
+                        validators: {
+                            notEmpty: {
+                                message: 'Location is required'
+                            }
+                        }
+                    },
+                },
+
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger(),
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: '.fv-row',
+                        eleInvalidClass: '',
+                        eleValidClass: ''
+                    })
+                }
+            }
+        );
+
+        // Submit button handler
+        const submitButton = document.getElementById('kt_docs_formvalidation_text_submitD');
+        submitButton.addEventListener('click', function(e) {
+            // Prevent default button action
+            e.preventDefault();
+
+            // Validate form before submit
+            if (validator) {
+                validator.validate().then(function(status) {
+
+                    if (status == 'Valid') {
+                        // Show loading indication
+                        submitButton.setAttribute('data-kt-indicator', 'on');
+
+                        // Disable button to avoid multiple click
+                        submitButton.disabled = true;
+
+                        // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+                        setTimeout(function() {
+                            // Remove loading indication
+                            submitButton.removeAttribute('data-kt-indicator');
+
+                            // Enable button
+                            submitButton.disabled = false;
+
+                            // Show popup confirmation
+                            Swal.fire({
+                                text: "Form has been successfully submitted!",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            });
+
+                            form.submit(); // Submit form
+                        }, 2000);
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

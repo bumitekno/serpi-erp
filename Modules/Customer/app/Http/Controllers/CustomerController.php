@@ -12,6 +12,19 @@ use Modules\Sales\app\Models\TransactionSales;
 
 class CustomerController extends Controller
 {
+
+    /**
+     * Instantiate a new SupplierController instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:create-customer|edit-customer|delete-customer', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-customer', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-customer', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-customer', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */

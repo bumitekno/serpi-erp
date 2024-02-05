@@ -12,6 +12,19 @@ use Modules\Purchase\app\Models\TransactionPurchase;
 
 class SupplierController extends Controller
 {
+
+    /**
+     * Instantiate a new SupplierController instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:create-supplier|edit-supplier|delete-supplier', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create-supplier', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-supplier', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-supplier', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
