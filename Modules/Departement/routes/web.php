@@ -16,4 +16,6 @@ use Modules\Departement\app\Http\Controllers\DepartementController;
 
 Route::group([], function () {
     Route::resource('departement', DepartementController::class)->names('departement');
+    Route::post('departement/filter/list', [DepartementController::class, 'index'])->name('departement.search');
+    Route::get('departement/filter/list', [DepartementController::class, 'index'])->name('departement.search');
 });

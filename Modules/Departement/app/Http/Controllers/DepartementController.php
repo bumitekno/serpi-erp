@@ -5,16 +5,28 @@ namespace Modules\Departement\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Models\Departement;
+use Modules\Location\app\Models\Location;
+use Modules\Warehouse\app\Models\Warehouse;
 
 class DepartementController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('departement::index');
+
+        if (!empty($request->search)) {
+            $departement = Departement::with(['warehouse', 'location'])->where('name', 'like', '%' . $request->search . '%')->latest()->paginate(10);
+        } else {
+            $departement = Departement::with(['warehouse', 'location'])->latest()->paginate(10);
+        }
+
+        $warehouse = Warehouse::query()->get();
+        $location = Location::query()->get();
+
+        return view('departement::index')->with(['departement' => $departement, 'keyword' => $request->search, 'warehouse' => $warehouse, 'location' => $location]);
     }
 
     /**

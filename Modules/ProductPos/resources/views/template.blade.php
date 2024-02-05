@@ -15,6 +15,9 @@
                 <td style="text-align: center; font-size:10px">Code</td>
                 <td style="text-align: center; font-size:10px">ID Category</td>
                 <td style="text-align: center; font-size:10px">Description</td>
+                <td style="text-align: center; font-size:10px">Stock Min</td>
+                <td style="text-align: center; font-size:10px">Stock Max</td>
+                <td style="text-align: center; font-size:10px">Expired</td>
             </thead>
         </table>
         <tbody>
@@ -38,11 +41,12 @@
                         style="color: red">*</span></td>
                 <td style="text-align: center; background-color:#7dd8ff; font-size:10px">description &nbsp;<span
                         style="color: red">*</span></td>
-
+                <td style="text-align: center; background-color:#7dd8ff; font-size:10px">stock_min &nbsp;</td>
+                <td style="text-align: center; background-color:#7dd8ff; font-size:10px">stock_max &nbsp;</td>
+                <td style="text-align: center; background-color:#7dd8ff; font-size:10px">expired_date &nbsp;</td>
             </thead>
         </table>
         <tbody>
-
         </tbody>
     </div>
 </body>

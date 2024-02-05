@@ -16,4 +16,6 @@ use Modules\Customer\app\Http\Controllers\CustomerController;
 
 Route::group([], function () {
     Route::resource('customer', CustomerController::class)->names('customer');
+    Route::post('customer/filter/list', [CustomerController::class, 'index'])->name('customer.search');
+    Route::get('customer/filter/list', [CustomerController::class, 'index'])->name('customer.search');
 });

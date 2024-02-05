@@ -43,7 +43,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Category</label>
                             <div class="col-md-6">
                                 <select class="form-select @error('category') is-invalid @enderror" data-control="select2"
-                                    data-placeholder="Select an option category" name="category">
+                                    data-placeholder="Select category" name="category">
                                     <option></option>
                                     @foreach ($category_product as $category)
                                         <option value="{{ $category->id }}"> {{ $category->name }} </option>
@@ -149,8 +149,7 @@
 
                             <div class="form-check form-switch form-check-custom form-check-solid col-md-6">
                                 <input class="form-check-input h-20px w-30px" type="checkbox" name="enabled"
-                                    @if ($product->enabled == 1) checked="checked" @endif
-                                    value="{{ $product->enabled }}" id="flexSwitch20x30" />
+                                    value="1" id="flexSwitch20x30" />
                             </div>
                         </div>
 

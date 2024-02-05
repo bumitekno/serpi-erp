@@ -24,11 +24,23 @@ class ProductPostImport implements ToModel, WithStartRow, WithHeadingRow
             return null;
         }
 
-        return ProductPos::create([
+        $data_send = [
             'name' => $row['name'],
             'code_product' => $row['code'],
             'category' => $row['id_category'],
-            'description' => $row['description']
-        ]);
+            'description' => $row['description'],
+            'enabled' => 1
+        ];
+
+        if (!empty($row['expired_date']))
+            $data_send['date_expired'] = \Carbon\Carbon::parse($row['expired_date'])->format('Y-m-d');
+
+        if (!empty($row['stock_min']))
+            $data_send['stock_min'] = $row['stock_min'];
+
+        if (!empty($row['stock_max']))
+            $data_send['stock_max'] = $row['stock_max'];
+
+        return ProductPos::create($data_send);
     }
 }

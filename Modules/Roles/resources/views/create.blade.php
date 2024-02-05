@@ -1,18 +1,19 @@
 @extends('template')
 
 @section('content')
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="float-start">
+                <h3 class="fw-bolder me-5 my-1"> Add Role </h3>
+            </div>
+            <div class="float-end">
+                <a href="{{ route('roles.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
+            </div>
+        </div>
+    </div>
     <div class="row justify-content-center">
-        <div class="col-md-12">
-
+        <div class="col-md-8">
             <div class="card">
-                <div class="card-header mt-3">
-                    <div class="float-start">
-                        Add New Role
-                    </div>
-                    <div class="float-end">
-                        <a href="{{ route('roles.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
-                    </div>
-                </div>
                 <div class="card-body">
                     <form action="{{ route('roles.store') }}" method="post">
                         @csrf
@@ -30,7 +31,7 @@
 
                         <div class="mb-3 row">
 
-                            <div class="col-md-8 table-responsive">
+                            <div class="table-responsive">
 
                                 <table class="table @error('permissions') is-invalid @enderror table-row-bordered"
                                     id="kt_table_roles">

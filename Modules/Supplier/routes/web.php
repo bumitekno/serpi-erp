@@ -16,4 +16,6 @@ use Modules\Supplier\app\Http\Controllers\SupplierController;
 
 Route::group([], function () {
     Route::resource('supplier', SupplierController::class)->names('supplier');
+    Route::post('supplier/filter/list', [SupplierController::class, 'index'])->name('supplier.search');
+    Route::get('supplier/filter/list', [SupplierController::class, 'index'])->name('supplier.search');
 });
