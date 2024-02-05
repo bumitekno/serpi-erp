@@ -190,5 +190,33 @@ class PermissionSeeder extends Seeder
         foreach ($permission_module_sales as $permission) {
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'sales', 'group_modules' => 'sales']);
         }
+
+        //premission module income 
+        $permission_module_income = [
+            'create-income',
+            'edit-income',
+            'delete-income',
+            'create-transaction-income',
+            'edit-transaction-income',
+            'delete-transaction-income'
+        ];
+
+        foreach ($permission_module_income as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'income', 'group_modules' => 'income']);
+        }
+
+        //premission module income 
+        $permission_module_expense = [
+            'create-expense',
+            'edit-expense',
+            'delete-expense',
+            'create-transaction-expense',
+            'edit-transaction-expense',
+            'delete-transaction-expense'
+        ];
+
+        foreach ($permission_module_expense as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'income', 'group_modules' => 'income']);
+        }
     }
 }

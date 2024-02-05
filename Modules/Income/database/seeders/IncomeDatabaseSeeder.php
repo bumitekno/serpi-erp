@@ -3,6 +3,7 @@
 namespace Modules\Income\database\seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Income\app\Models\Income;
 
 class IncomeDatabaseSeeder extends Seeder
 {
@@ -11,6 +12,8 @@ class IncomeDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        Income::create([
+            'name' => 'Income 1'
+        ]);
     }
 }

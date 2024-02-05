@@ -355,11 +355,15 @@
                     <a href="{{ route('sales.create') }}" class="btn btn-success btn-sm my-2"><i
                             class="bi bi-plus-circle"></i>
                         New Sales </a>
-                    <a href="javascript:;" class="btn btn-primary btn-sm my-2"><i class="bi bi-plus-circle"></i>
-                        New Income </a>
-                    <a href="javascript:;" class="btn btn-danger btn-sm my-2"><i class="bi bi-plus-circle"></i>
-                        New Expense </a>
                 @endcan
+
+                <a href="{{ route('income.index') }}" class="btn btn-primary btn-sm my-2"><i
+                        class="bi bi-plus-circle"></i>
+                    Income </a>
+
+                <a href="{{ route('expense.index') }}" class="btn btn-danger btn-sm my-2"><i
+                        class="bi bi-plus-circle"></i>
+                    Expense </a>
             </div>
         </div>
         <div class="card-body">

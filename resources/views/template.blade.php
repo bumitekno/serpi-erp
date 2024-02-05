@@ -252,6 +252,17 @@
                                             class="text-muted text-hover-primary">Home</a>
                                     </li>
                                     <!--end::Item-->
+                                    @if (!empty(request()->segment(1)) && request()->segment(1) != 'home')
+                                        <li class="breadcrumb-item">
+                                            <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                                        </li>
+                                        <li class="breadcrumb-item text-dark">
+                                            <a href="{{ route(request()->segment(1) . '.index') }}"
+                                                class="text-hover-primary">
+                                                {{ Str::title(request()->segment(1)) }}
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                                 <!--end::Breadcrumb-->
                             </div>
