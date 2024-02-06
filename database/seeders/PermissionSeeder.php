@@ -216,7 +216,7 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach ($permission_module_expense as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'income', 'group_modules' => 'income']);
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'expense', 'group_modules' => 'expense']);
         }
     }
 }

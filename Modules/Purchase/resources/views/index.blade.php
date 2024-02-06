@@ -302,6 +302,19 @@
                             class="bi bi-plus-circle"></i>
                         New Purchase </a>
                 @endcan
+
+                @can('create-income')
+                    <a href="{{ route('income.index') }}" class="btn btn-primary btn-sm my-2"><i
+                            class="bi bi-plus-circle"></i>
+                        Income </a>
+                @endcan
+
+                @can('create-expense')
+                    <a href="{{ route('expense.index') }}" class="btn btn-danger btn-sm my-2"><i
+                            class="bi bi-plus-circle"></i>
+                        Expense </a>
+                @endcan
+
             </div>
         </div>
         <div class="card-body">

@@ -111,7 +111,7 @@
                 </div>
             </form>
             <!--end::Search-->
-            @can('customer-create')
+            @can('create-customer')
                 <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2" data-bs-toggle="modal"
                     data-bs-target="#kt_modal_customer">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->

@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Modules\Users\app\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {
@@ -79,8 +80,16 @@ class UsersController extends Controller
         $user = User::create($data_send);
 
         $user->assignRole($request->input('user_role'));
-        $permissions = Permission::pluck('id', 'id')->all();
-        $user->syncPermissions($permissions);
+
+        $role = Role::where('name', '=', $request->input('user_role'))->first();
+
+        $rolePermissions = DB::table("role_has_permissions")->where("role_id", $role->id)
+            ->pluck('permission_id')
+            ->all();
+
+        //$permissions = Permission::pluck('id', 'id')->all();
+
+        $user->syncPermissions($rolePermissions);
 
         return response()->json(['message' => 'User created successfully', 'redirect' => route('users.index')], 200);
 
