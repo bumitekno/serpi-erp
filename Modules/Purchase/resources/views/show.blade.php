@@ -53,20 +53,26 @@
                 Purchase Order Information
             </div>
             <div class="float-end">
-                <a href="{{ route('purchase.index') }}" class="btn btn-sm btn-dark my-2 ">Back</a>
 
-                <a href="javascript:;" class="btn btn-sm btn-info my-2 " onclick="printDiv()">Print receipt (large) </a>
-                @can('create-purchase')
-                    <a href="{{ route('purchase.create') }}" class="btn btn-success btn-sm my-2"><i
-                            class="bi bi-plus-circle"></i>
-                        New Purchase </a>
-                @endcan
-                <!--begin::Action-->
-                @if ($transaction->status != 1 && $transaction->note != 'cancel')
-                    <a href="javascript:;" class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                        data-bs-target="#kt_modal_1">Pay Now</a>
+                @if (request()->get('import') == true && !empty(request()->get('import')))
+                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-dark my-2 "> Back </a>
+                    <a href="javascript:;" class="btn btn-sm btn-info my-2 ">Transfer Stock </a>
+                @else
+                    <a href="{{ route('purchase.index') }}" class="btn btn-sm btn-dark my-2 ">Back</a>
+                    <a href="javascript:;" class="btn btn-sm btn-info my-2 " onclick="printDiv()">Print receipt (large) </a>
+                    @can('create-purchase')
+                        <a href="{{ route('purchase.create') }}" class="btn btn-success btn-sm my-2"><i
+                                class="bi bi-plus-circle"></i>
+                            New Purchase </a>
+                    @endcan
+                    <!--begin::Action-->
+                    @if ($transaction->status != 1 && $transaction->note != 'cancel')
+                        <a href="javascript:;" class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#kt_modal_1">Pay Now</a>
+                    @endif
+                    <!--end::Action-->
                 @endif
-                <!--end::Action-->
+
             </div>
         </div>
 

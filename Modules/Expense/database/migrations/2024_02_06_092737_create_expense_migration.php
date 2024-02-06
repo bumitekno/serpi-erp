@@ -18,14 +18,14 @@ return new class extends Migration {
         });
 
         Schema::create('transaction_expense', function (Blueprint $table) {
-            $table->string('amount')->nullable();
             $table->id();
             $table->string('code_transaction')->nullable();
             $table->string('name_transaction')->nullable();
             $table->date('date_transaction')->nullable();
             $table->time('time_transaction')->nullable();
             $table->foreignId('id_user')->nullable();
-            $table->foreignId('id_income')->nullable();
+            $table->foreignId('id_expense')->nullable();
+            $table->string('amount')->nullable();
             $table->timestamps();
         });
     }

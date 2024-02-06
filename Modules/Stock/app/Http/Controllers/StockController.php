@@ -10,6 +10,9 @@ use Modules\Warehouse\app\Models\Warehouse;
 use Modules\Location\app\Models\Location;
 use Modules\UnitProduct\app\Models\UnitProduct;
 use Modules\ProductPos\app\Models\ProductPos;
+use Modules\Purchase\app\Models\TransactionPurchase;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class StockController extends Controller
 {
@@ -68,6 +71,7 @@ class StockController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
         return view('stock::create')->with([
@@ -76,6 +80,27 @@ class StockController extends Controller
             'warehouse' => Warehouse::query()->get(),
             'location' => Location::query()->get()
         ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+
+    public function createstokP(Request $request)
+    {
+        if ($request->ajax()) {
+            $data_trans = TransactionPurchase::where('status', '=', '1')->latest()->get();
+            return DataTables::of($data_trans)
+                ->addIndexColumn()
+                ->editColumn('date_transaction', function ($row) {
+                    return empty($row->date_transaction) ? '-' : Carbon::parse($row->date_transaction)->translatedFormat('d F Y');
+                })
+                ->addColumn('action', function ($row) {
+                    $btn = '<a href="' . route('purchase.show', $row->id) . '?import=true&transfer=stock" class="edit btn btn-info btn-sm me-2">detail</a>';
+                    return $btn;
+                })->rawColumns(['action'])->make();
+        }
+        return view('stock::create_stock_purchase');
     }
 
     /**

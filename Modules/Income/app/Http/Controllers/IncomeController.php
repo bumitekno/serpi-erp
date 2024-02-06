@@ -173,11 +173,6 @@ class IncomeController extends Controller
      */
     public function updatetrans(Request $request, $id): RedirectResponse
     {
-        //
-        $request->validate([
-            'name_trans' => 'required|unique:transaction_income,name_transaction,' . $id
-        ]);
-
         TransactionIncome::find($id)->update([
             'name_transaction' => $request->name_trans,
             'code_transaction' => $request->no_trans,
