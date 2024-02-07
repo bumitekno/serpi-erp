@@ -390,7 +390,7 @@
                                             @can('delete-purchase')
                                                 @if ($transactions->note != 'cancel')
                                                     <button type="submit"
-                                                        onclick ="return confirm('Do you want to cancel this Sales?')"
+                                                        onclick ="return confirm('Do you want to cancel this Purchase?')"
                                                         class="btn btn-default btn-danger btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-trash"></i>

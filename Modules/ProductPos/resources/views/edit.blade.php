@@ -141,6 +141,32 @@
                         </div>
 
                         <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Price
+                                Purchase</label>
+                            <div class="col-md-6">
+                                <input type="text"
+                                    class="form-control @error('pricepurchase') is-invalid @enderror kt_inputmask"
+                                    id="pricepurchase" name="pricepurchase" value="{{ $product->price_purchase }}">
+                                @if ($errors->has('pricepurchase'))
+                                    <span class="text-danger">{{ $errors->first('pricepurchase') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Price
+                                Sell</label>
+                            <div class="col-md-6">
+                                <input type="text"
+                                    class="form-control @error('pricesell') is-invalid @enderror kt_inputmask"
+                                    id="pricesell" name="pricesell" value="{{ $product->price_sell }}">
+                                @if ($errors->has('pricesell'))
+                                    <span class="text-danger">{{ $errors->first('pricesell') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Expired
                                 Date</label>
                             <div class="col-md-6">
@@ -193,5 +219,19 @@
         $(".kt_datepicker").flatpickr({
             dateFormat: "d/m/Y",
         });
+
+        // Currency
+        Inputmask({
+            "numericInput": true,
+            "clearMaskOnLostFocus": true,
+            "removeMaskOnSubmit": true,
+            "placeholder": "",
+            "autoUnmask": true,
+            'digits': 0,
+            'rightAlign': false,
+            'allowMinus': false,
+            'alias': 'currency',
+            'groupSeparator': '.'
+        }).mask(".kt_inputmask");
     </script>
 @endpush

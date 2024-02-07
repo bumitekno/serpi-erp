@@ -92,11 +92,14 @@ class StockController extends Controller
             $data_trans = TransactionPurchase::where('status', '=', '1')->latest()->get();
             return DataTables::of($data_trans)
                 ->addIndexColumn()
-                ->editColumn('date_transaction', function ($row) {
-                    return empty($row->date_transaction) ? '-' : Carbon::parse($row->date_transaction)->translatedFormat('d F Y');
+                ->editColumn('date_purchase', function ($row) {
+                    return empty($row->date_purchase) ? '-' : Carbon::parse($row->date_purchase)->translatedFormat('d F Y');
+                })
+                ->editColumn('transfer_stock', function ($row) {
+                    return $row->transfer_stock == 1 ? 'N' : 'Y';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="' . route('purchase.show', $row->id) . '?import=true&transfer=stock" class="edit btn btn-info btn-sm me-2">detail</a>';
+                    $btn = '<a href="' . route('purchase.show', $row->id) . '?import=true&transfer=stock" class="edit btn btn-info btn-sm me-2"> <i class="bi bi-eye"></i> detail</a>';
                     return $btn;
                 })->rawColumns(['action'])->make();
         }

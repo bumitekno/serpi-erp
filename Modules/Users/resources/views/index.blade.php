@@ -268,11 +268,15 @@
                     @foreach ($list_user as $users)
                         <tr>
                             <!--begin::Checkbox-->
-                            <td>
-                                <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                    <input class="form-check-input" type="checkbox" value="{{ $users->id }}" />
-                                </div>
-                            </td>
+                            @if ($users->id != 1)
+                                <td>
+                                    <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                        <input class="form-check-input" type="checkbox" value="{{ $users->id }}" />
+                                    </div>
+                                </td>
+                            @else
+                                <td>-</td>
+                            @endif
                             <!--end::Checkbox-->
                             <!--begin::User=-->
                             <td class="d-flex align-items-center">
@@ -349,10 +353,12 @@
                                     </div>
                                     <!--end::Menu item-->
                                     <!--begin::Menu item-->
-                                    <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3" data-user_id="{{ $users->id }}"
-                                            data-kt-users-table-filter="delete_row">Delete</a>
-                                    </div>
+                                    @if ($users->id != 1)
+                                        <div class="menu-item px-3">
+                                            <a href="#" class="menu-link px-3" data-user_id="{{ $users->id }}"
+                                                data-kt-users-table-filter="delete_row">Delete</a>
+                                        </div>
+                                    @endif
                                     <!--end::Menu item-->
                                 </div>
                                 <!--end::Menu-->

@@ -16,11 +16,13 @@ use Modules\ProductPos\app\Http\Controllers\ProductPosController;
 
 Route::group([], function () {
     Route::resource('productpos', ProductPosController::class)->names('productpos');
-    Route::post('productpos/search', [ProductPosController::class, 'index'])->name('productpos.search');
-    Route::prefix('tools-productpos')->group(function () {
-        Route::post('import', [ProductPosController::class, 'import'])->name('tools-productpos.import');
-        Route::get('export', [ProductPosController::class, 'export'])->name('tools-productpos.export');
-        Route::get('download', [ProductPosController::class, 'download'])->name('tools-productpos.download');
-        Route::get('importview', [ProductPosController::class, 'importview'])->name('tools-productpos.importview');
+    Route::post('productpos/search/filter', [ProductPosController::class, 'index'])->name('productpos.search');
+    Route::get('productpos/search/filter', [ProductPosController::class, 'index'])->name('productpos.search');
+    Route::prefix('productpos')->group(function () {
+        Route::post('import/data', [ProductPosController::class, 'import'])->name('tools-productpos.import');
+        Route::get('export/data', [ProductPosController::class, 'export'])->name('tools-productpos.export');
+        Route::get('download/template', [ProductPosController::class, 'download'])->name('tools-productpos.download');
+        Route::get('importview/import', [ProductPosController::class, 'importview'])->name('tools-productpos.importview');
     });
+    Route::post('productpos/printbarcode/label', [ProductPosController::class, 'printbarcode'])->name('productpos.printbarcode');
 });

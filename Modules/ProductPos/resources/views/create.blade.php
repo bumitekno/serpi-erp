@@ -106,6 +106,32 @@
                         </div>
 
                         <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Price
+                                Purchase</label>
+                            <div class="col-md-6">
+                                <input type="text"
+                                    class="form-control @error('pricepurchase') is-invalid @enderror kt_inputmask"
+                                    id="pricepurchase" name="pricepurchase" value="">
+                                @if ($errors->has('pricepurchase'))
+                                    <span class="text-danger">{{ $errors->first('pricepurchase') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Price
+                                Sell</label>
+                            <div class="col-md-6">
+                                <input type="text"
+                                    class="form-control @error('pricesell') is-invalid @enderror kt_inputmask"
+                                    id="pricesell" name="pricesell" value="">
+                                @if ($errors->has('pricesell'))
+                                    <span class="text-danger">{{ $errors->first('pricesell') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Min</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('stockmin') is-invalid @enderror"
@@ -132,8 +158,8 @@
                                 Date</label>
                             <div class="col-md-6">
                                 <input type="date"
-                                    class="form-control @error('expired') is-invalid @enderror kt_datepicker" id="expired"
-                                    name="expired">
+                                    class="form-control @error('expired') is-invalid @enderror kt_datepicker"
+                                    id="expired" name="expired">
                                 @if ($errors->has('expired'))
                                     <span class="text-danger">{{ $errors->first('expired') }}</span>
                                 @endif
@@ -179,5 +205,18 @@
         $(".kt_datepicker").flatpickr({
             dateFormat: "d/m/Y",
         });
+        // Currency
+        Inputmask({
+            "numericInput": true,
+            "clearMaskOnLostFocus": true,
+            "removeMaskOnSubmit": true,
+            "placeholder": "",
+            "autoUnmask": true,
+            'digits': 0,
+            'rightAlign': false,
+            'allowMinus': false,
+            'alias': 'currency',
+            'groupSeparator': '.'
+        }).mask(".kt_inputmask");
     </script>
 @endpush

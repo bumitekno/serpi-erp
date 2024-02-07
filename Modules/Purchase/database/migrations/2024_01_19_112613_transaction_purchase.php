@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->foreignId('id_unit')->nullable();
             $table->string('qty')->nullable();
             $table->string('price_purchase')->nullable();
+            $table->string('price_purchase_before')->nullable();
             $table->string('tax_amount_item')->nullable();
             $table->string('tax_percent_item')->nullable();
             $table->string('discount_persent_item')->nullable();

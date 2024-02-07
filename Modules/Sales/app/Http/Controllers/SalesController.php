@@ -477,7 +477,7 @@ class SalesController extends Controller
                     $item_qty = 0;
 
                     if (!empty($stock_unit)) {
-                        $item_qty = $stock_unit->qty_convert;
+                        $item_qty = $stock_unit->qty_convert * $create_item_sales->qty;
                     } else {
                         $item_qty = $create_item_sales->qty;
                     }
@@ -563,7 +563,7 @@ class SalesController extends Controller
                     $create_item_sales = TransactionSalesItem::create($item_sales);
                     $item_qty = 0;
                     if (!empty($stock_unit)) {
-                        $item_qty = $stock_unit->qty_convert;
+                        $item_qty = $stock_unit->qty_convert * $create_item_sales->qty;
                     } else {
                         $item_qty = $create_item_sales->qty;
                     }
@@ -925,7 +925,7 @@ class SalesController extends Controller
                 $unit = Stock::where(['id_product' => $item->id_product, 'id_warehouse' => $departement->id_warehouse, 'id_location' => $departement->id_location])->first();
 
                 if (!empty($checkStocklast->stock_last) && !empty($unit)) {
-                    $updatelast = intval($checkStocklast->stock_last) + intval($unit->qty_convert);
+                    $updatelast = intval($checkStocklast->stock_last) + intval($unit->qty_convert * $item->qty);
                     $checkStocklast->stock_last = $updatelast;
                     $checkStocklast->save();
                 }

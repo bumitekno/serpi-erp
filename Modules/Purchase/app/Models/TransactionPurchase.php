@@ -41,7 +41,8 @@ class TransactionPurchase extends Model
         'id_method_payment',
         'note',
         'adjustment_amount',
-        'file_doc'
+        'file_doc',
+        'transfer_stock'
     ];
 
     public function operator()

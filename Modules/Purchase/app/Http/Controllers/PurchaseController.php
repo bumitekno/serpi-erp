@@ -136,6 +136,36 @@ class PurchaseController extends Controller
         ]);
     }
 
+    /** store transfer */
+    public function storetransfer($id)
+    {
+        $purchase = TransactionPurchase::find($id);
+        $transaction = TransactionPurchaseItem::where('id_transaction_purchase', $id)->get();
+        if (!empty($purchase) && !empty($transaction)) {
+            foreach ($transaction as $transaction) {
+                $departement = Departement::where('id', '=', $purchase->id_departement)->first();
+                $stock_unit = Stock::where(['id_product' => $transaction->id_product, 'id_unit' => $transaction->id_unit, 'id_location' => $departement->id_location, 'id_warehouse' => $departement->id_warehouse])->first();
+                $item_qty = 0;
+                if (!empty($stock_unit)) {
+                    $item_qty = $stock_unit->qty_convert != $transaction->qty ? $stock_unit->qty_convert * $transaction->qty : $transaction->qty;
+                } else {
+                    $item_qty = $transaction->qty;
+                }
+                $checkStocklast = ProductPos::find($transaction->id_product);
+                if (!empty($checkStocklast)) {
+                    $updatelast = intval($checkStocklast->stock_last) + intval($item_qty);
+                    $checkStocklast->update(['stock_last' => $updatelast, 'price_purchase' => $transaction->price_purchase]);
+                }
+            }
+            $purchase->update(['transfer_stock' => true]);
+            Session::flash('success', 'Transaction is successfully !');
+            return redirect()->back();
+        } else {
+            Session::flash('error', 'Transaction is failed !');
+            return redirect()->back();
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -181,11 +211,13 @@ class PurchaseController extends Controller
         $purchase = TransactionPurchase::create($send_data);
 
         foreach ($request->addmore['product'] as $key => $val) {
+            $check = ProductPos::find($val);
             $item_purchase = [
                 'id_product' => $val,
                 'id_unit' => $request->addmore['units'][$key],
                 'qty' => $request->addmore['qty'][$key],
                 'price_purchase' => $request->addmore['unitprice'][$key],
+                'price_purchase_before' => $check->price_purchase,
                 'id_transaction_purchase' => $purchase->id
             ];
             $purchase_item = TransactionPurchaseItem::create($item_purchase);
@@ -371,9 +403,29 @@ class PurchaseController extends Controller
     {
         //
         $trans = TransactionPurchase::find($id);
+
+        $transaction = TransactionPurchaseItem::where('id_transaction_purchase', $trans->id)->get();
+        if (!empty($trans) && !empty($transaction) && $trans->transfer_stock == 1) {
+            foreach ($transaction as $transaction) {
+                $departement = Departement::where('id', '=', $trans->id_departement)->first();
+                $stock_unit = Stock::where(['id_product' => $transaction->id_product, 'id_unit' => $transaction->id_unit, 'id_location' => $departement->id_location, 'id_warehouse' => $departement->id_warehouse])->first();
+                if (!empty($stock_unit)) {
+                    $item_qty = $stock_unit->qty_convert != $transaction->qty ? $stock_unit->qty_convert * $transaction->qty : $transaction->qty;
+                } else {
+                    $item_qty = $transaction->qty;
+                }
+                $checkStocklast = ProductPos::find($transaction->id_product);
+                if (!empty($checkStocklast)) {
+                    $updatelast = intval($checkStocklast->stock_last) - intval($item_qty);
+                    $checkStocklast->update(['stock_last' => $updatelast, 'price_purchase' => $transaction->price_purchase_before]);
+                }
+            }
+        }
+
         $trans->note = 'cancel';
         $trans->status = false;
         $trans->save();
+
         Session::flash('success', ' Transaction ' . $trans->code_transaction . 'has been cancel  successfuly.');
         return redirect()->back();
     }

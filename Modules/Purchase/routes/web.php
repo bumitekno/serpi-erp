@@ -20,4 +20,5 @@ Route::group([], function () {
     Route::post('purchase/add/supplier', [PurchaseController::class, 'storesupplier'])->name('purchase.storesupplier');
     Route::post('purchase/history/filter', [PurchaseController::class, 'index'])->name('purchase.filter-history');
     Route::get('purchase/history/filter', [PurchaseController::class, 'index'])->name('purchase.filter-history');
+    Route::get('purchase/transfer/stock/{id}', [PurchaseController::class, 'storetransfer'])->name('purchase.storetransfer');
 });

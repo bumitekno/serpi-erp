@@ -15,6 +15,8 @@ use Modules\ProductPos\app\Http\Controllers\ProductPosExportController;
 use Modules\ProductPos\app\Http\Controllers\ProductPostSheetController;
 use Modules\ProductPos\app\Http\Controllers\ProductPostImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+use IlLuminate\Support\Str;
 
 class ProductPosController extends Controller
 {
@@ -41,7 +43,7 @@ class ProductPosController extends Controller
     public function index(Request $request)
     {
         if (!empty($request->search)) {
-            $product = ProductPos::with('category_product')->where('name', 'like', '%' . $request->search . '%')->latest()->paginate(10);
+            $product = ProductPos::with('category_product')->where('name', 'like', '%' . $request->search . '%')->orWhere('code_product', 'like', '%' . $request->search . '%')->latest()->paginate(10);
         } else {
             $product = ProductPos::with('category_product')->latest()->paginate(10);
         }
@@ -79,6 +81,12 @@ class ProductPosController extends Controller
             $data_send['image_product'] = $path;
         }
 
+        if (!empty($request->pricepurchase))
+            $data_send['price_purchase'] = $request->pricepurchase;
+
+        if (!empty($request->pricepurchase))
+            $data_send['price_sell'] = $request->pricesell;
+
         if (!empty($request->stockmin))
             $data_send['stock_min'] = $request->stockmin;
 
@@ -97,6 +105,30 @@ class ProductPosController extends Controller
         ProductPos::create($data_send);
         return redirect()->route('productpos.index')
             ->withSuccess('New product is added successfully.');
+    }
+
+    /** print barcode */
+    public function printbarcode(Request $request)
+    {
+        $check_product = ProductPos::whereIn('id', $request->product_id)->select('id', 'code_product', 'name')->get();
+        $generator = new BarcodeGeneratorPNG();
+        $html = '';
+        if (!empty($check_product)) {
+            $html .= '<div class="row g-6 g-xl-9 mb-6 mb-xl-9">';
+            foreach (collect($check_product) as $product) {
+                $html .= '<div class="col-md-6 col-lg-4 col-xl-3">';
+                $html .= '<div class="mb-2">';
+                $html .= '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode($product->code_product, $generator::TYPE_CODE_128)) . '">';
+                $html .= '</div>';
+                $html .= '<div class="fs-7 fw-bolder mb-2">' . Str::title($product->name) . '</div>';
+                $html .= '<div class="fs-7 fw-bolder mb-2">' . $product->code_product . '</div>';
+                $html .= '</div>';
+            }
+            $html .= '</div>';
+            return response()->json(['data' => $html, 'message' => 'Data Printing Label Barcode Found'], 200);
+        } else {
+            return response()->json(['data' => '', 'message' => 'Data Printing Label Barcode Not Found'], 403);
+        }
     }
 
     /**
@@ -151,6 +183,12 @@ class ProductPosController extends Controller
             $data_send['image_product'] = $path;
         }
 
+        if (!empty($request->pricepurchase))
+            $data_send['price_purchase'] = $request->pricepurchase;
+
+        if (!empty($request->pricepurchase))
+            $data_send['price_sell'] = $request->pricesell;
+
         if (!empty($request->stockmin))
             $data_send['stock_min'] = $request->stockmin;
 
@@ -158,7 +196,7 @@ class ProductPosController extends Controller
             $data_send['stock_max'] = $request->stockmax;
 
         if (!empty($request->expired))
-            $data_send['date_expired'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
+            $data_send['date_expired'] = Carbon::createFromFormat('d/m/Y', $request->expired)->format('Y-m-d');
 
         if (!empty($request->enabled)) {
             $data_send['enabled'] = 1;

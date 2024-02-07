@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::table('transaction_purchase', function (Blueprint $table) {
             $table->string('file_doc')->nullable();
+            $table->boolean('transfer_stock')->default(false);
         });
     }
 
