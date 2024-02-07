@@ -19,6 +19,7 @@
         "nwidart/laravel-modules": "^10.0",
         "picqer/php-barcode-generator": "^2.4",
         "spatie/laravel-activitylog": "^4.7",
+        "spatie/laravel-html": "^3.4",
         "spatie/laravel-permission": "^6.3",
         "spatie/laravel-translation-loader": "*",
         "yajra/laravel-datatables": "^10.0"
