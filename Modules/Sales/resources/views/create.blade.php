@@ -603,7 +603,7 @@
                         <i class="bi bi-credit-card"></i> Pay
                         Now</a>
                     @if ($edit_trans == true)
-                        <a href="{{ route('sales.canceledit') }}" class="btn btn-danger py-2"> <i
+                        <a href="{{ route('sales.canceledit') }}" class="btn btn-danger py-6"> <i
                                 class="bi bi-arrow-left"></i>
                             Cancel Edit </a>
                     @endif

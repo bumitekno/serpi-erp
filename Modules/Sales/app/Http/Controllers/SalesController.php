@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Modules\Expense\app\Models\TransactionExpense;
+use Modules\Income\app\Models\TransactionIncome;
 use Modules\Sales\app\Models\TransactionSales;
 use Modules\Sales\app\Models\TransactionSalesItem;
 use Modules\Sales\app\Models\SalesCredit;
@@ -101,8 +103,29 @@ class SalesController extends Controller
             ->orderByDesc('total_sales')
             ->get();
 
-        //saldo awal bulan 
-        $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->first();
+
+        $departement = Departement::query()->get();
+        $departement_default = empty(Session::get('departement')) ? Departement::first()?->id : Session::get('departement');
+
+        if (!empty($request->get('departement'))) {
+
+            if ($request->get('departement') == 'all') {
+                //saldo awal bulan 
+                $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->sum('amount');
+                $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->sum('amount');
+                $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->sum('amount');
+            } else {
+                //saldo awal bulan 
+                $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('amount');
+                $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('amount');
+                $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('amount');
+            }
+        } else {
+            //saldo awal bulan 
+            $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', Departement::first()?->id)->sum('amount');
+            $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', Departement::first()?->id)->sum('amount');
+            $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', Departement::first()?->id)->sum('amount');
+        }
 
         return view('sales::index')->with([
             'transaction' => $transaction,
@@ -121,7 +144,13 @@ class SalesController extends Controller
             'top_product' => $product_top,
             'startdate' => $startdate,
             'enddate' => $enddate,
-            'open_balance' => empty($saldo_awal) ? 0 : number_format($saldo_awal->amount, 0, ',', '.')
+            'open_balance' => empty($saldo_awal) ? 0 : number_format($saldo_awal, 0, ',', '.'),
+            'daily_income' => empty($income) ? 0 : number_format($income, 0, ',', '.'),
+            'daily_expense' => empty($expense) ? 0 : number_format($expense, 0, ',', '.'),
+            'daily_sales' => empty($sum_transaction_success_today) ? 0 : number_format($sum_transaction_success_today, 0, ',', '.'),
+            'close_balance' => number_format($saldo_awal + $income + $sum_transaction_success_today - $expense, 0, ',', '.'),
+            'list_departement' => $departement,
+            'departement_default' => $departement_default
         ]);
     }
 
@@ -437,7 +466,8 @@ class SalesController extends Controller
         BalanceSales::updateOrCreate([
             'date_balance' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('Y-m-d')
         ], [
-            'amount' => $request->amount_balance
+            'amount' => $request->amount_balance,
+            'id_departement' => $request->departement_balance
         ]);
 
         Session::flash('success', ' Open Balance is saved successfully !');

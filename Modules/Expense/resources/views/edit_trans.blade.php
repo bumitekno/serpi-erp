@@ -21,6 +21,24 @@
                             value="{{ $expense->code_transaction }}" readonly>
                     </div>
                 </div>
+
+                <div class="mb-3 row">
+                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Departement
+                    </label>
+                    <div class="col-md-6">
+                        <select class="form-select" data-control="select2" data-placeholder="Select Departement"
+                            name="departement" required>
+                            <option></option>
+                            @foreach ($list_departement as $departements)
+                                <option value="{{ $departements->id }}"
+                                    @if ($departements->id == $expense->id_departement) selected="selected" @endif>
+                                    {{ $departements->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="mb-3 row">
                     <label for="name" class="col-md-4 col-form-label text-md-end text-start">Name </label>
                     <div class="col-md-6">

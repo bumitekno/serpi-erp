@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\Departement;
 use Modules\Income\app\Models\Income;
 use Modules\Income\app\Models\TransactionIncome;
 use Illuminate\Support\Facades\Session;
@@ -88,7 +89,9 @@ class IncomeController extends Controller
                 })->rawColumns(['action'])->make();
         }
 
-        return view('income::create_trans')->with(['income' => $income, 'no_trans' => $nextInvoiceNumber]);
+        $departement = Departement::query()->get();
+
+        return view('income::create_trans')->with(['income' => $income, 'no_trans' => $nextInvoiceNumber, 'list_departement' => $departement]);
     }
 
     /**
@@ -119,7 +122,8 @@ class IncomeController extends Controller
             'time_transaction' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('H:i:s'),
             'id_income' => $request->id_income,
             'amount' => $request->amount_trans,
-            'id_user' => Auth::user()->id
+            'id_user' => Auth::user()->id,
+            'id_departement' => $request->departement
         ]);
         Session::flash('success', ' Transaction ' . $request->name_trans . 'is  add successfuly.');
         return redirect()->back();
@@ -150,7 +154,8 @@ class IncomeController extends Controller
     public function edittrans($id)
     {
         $edit = TransactionIncome::find($id);
-        return view('income::edit_trans')->with(['income' => $edit]);
+        $departement = Departement::query()->get();
+        return view('income::edit_trans')->with(['income' => $edit, 'list_departement' => $departement]);
     }
 
     /**
@@ -178,7 +183,8 @@ class IncomeController extends Controller
             'code_transaction' => $request->no_trans,
             'date_transaction' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('Y-m-d'),
             'time_transaction' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('H:i:s'),
-            'amount' => $request->amount_trans
+            'amount' => $request->amount_trans,
+            'id_departement' => $request->departement
         ]);
         Session::flash('success', ' Transaction Income ' . $request->name_iname_transnput . 'is  change successfuly.');
         return redirect()->back();

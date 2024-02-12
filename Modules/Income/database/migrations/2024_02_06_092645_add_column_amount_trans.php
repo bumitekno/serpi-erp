@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::table('transaction_income', function (Blueprint $table) {
             $table->string('amount')->nullable();
+            $table->foreignId('id_departement')->nullable();
         });
     }
 

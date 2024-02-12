@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-header mt-3">
             <div class="float-start">
-                Create Stock
+                Create Stock Convert
             </div>
             <div class="float-end">
                 <a href="{{ route('stock.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>

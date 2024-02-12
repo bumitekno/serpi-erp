@@ -21,6 +21,20 @@
                     <div class="modal-body">
 
                         <div class="fv-row mb-10">
+                            <label for="name" class="required fw-semibold fs-6 mb-2">Departement</label>
+                            <select class="form-select" data-control="select2" data-placeholder="Select Departement"
+                                name="departement_balance">
+                                <option></option>
+                                @foreach ($list_departement as $departementx)
+                                    <option value="{{ $departementx->id }}"
+                                        @if ($departement_default == $departementx->id) selected="selected" @endif>
+                                        {{ $departementx->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="fv-row mb-10">
                             <label for="name" class="required fw-semibold fs-6 mb-2">
                                 Date</label>
                             <input type="date" class="form-control kt_datepicker" id="date" name="date_trans">
@@ -371,7 +385,7 @@
                     </div>
                     <div class="card-body">
                         <!--begin::Chart-->
-                        <div id="kt_charts_widget_1_chart" style="height: 350px"></div>
+                        <div id="kt_charts_widget_1_chart" style="height: 500px"></div>
                         <!--end::Chart-->
                     </div>
                     <!--end::Body-->
@@ -380,8 +394,94 @@
         </div>
     @endcan
 
-    <div class="card">
+    @can('report-sales')
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="card-toolbar">
+                    <div class="mb-3 row">
+                        <div class="col-md-12">
+                            <select class="form-select" data-control="select2" data-placeholder="Select Departement"
+                                name="departement">
+                                @foreach ($list_departement as $departements)
+                                    <option value="{{ $departements->id }}"
+                                        @if (!empty(request()->get('departement')) && request()->get('departement') == $departements->id) selected="selected" @endif>
+                                        {{ $departements->name }}
+                                    </option>
+                                @endforeach
+                                <option value="all" @if (!empty(request()->get('departement')) && request()->get('departement') == 'all') selected="selected" @endif>All
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
 
+                <h3 class="card-title text-center">
+                    <span class="card-label fw-bolder fs-3 mb-1">Daily Report Cashir (Today) </span>
+                </h3>
+
+                <div class="d-flex align-items-sm-center mb-7">
+                    <!--begin::Section-->
+                    <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                        <div class="flex-grow-1 me-2">
+                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Beginning
+                                Balance</a>
+                            <span class="text-muted fw-bold d-block fs-7">Amount Open Balance</span>
+                        </div>
+                        <span class="badge badge-light fw-bolder my-2">{{ $open_balance }}</span>
+                    </div>
+                    <!--end::Section-->
+                </div>
+                <div class="d-flex align-items-sm-center mb-7">
+                    <!--begin::Section-->
+                    <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                        <div class="flex-grow-1 me-2">
+                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Income</a>
+                            <span class="text-muted fw-bold d-block fs-7">Amount Income</span>
+                        </div>
+                        <span class="badge badge-light fw-bolder my-2">{{ $daily_income }}</span>
+                    </div>
+                    <!--end::Section-->
+                </div>
+                <div class="d-flex align-items-sm-center mb-7">
+                    <!--begin::Section-->
+                    <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                        <div class="flex-grow-1 me-2">
+                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Sales</a>
+                            <span class="text-muted fw-bold d-block fs-7">Amount Sales</span>
+                        </div>
+                        <span class="badge badge-light fw-bolder my-2">{{ $daily_sales }}</span>
+                    </div>
+                    <!--end::Section-->
+                </div>
+                <div class="d-flex align-items-sm-center mb-7">
+                    <!--begin::Section-->
+                    <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                        <div class="flex-grow-1 me-2">
+                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Expense</a>
+                            <span class="text-muted fw-bold d-block fs-7">Amount Expense</span>
+                        </div>
+                        <span class="badge badge-light fw-bolder my-2">{{ $daily_expense }}</span>
+                    </div>
+                    <!--end::Section-->
+                </div>
+                <div class="d-flex align-items-sm-center mb-7">
+                    <!--begin::Section-->
+                    <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                        <div class="flex-grow-1 me-2">
+                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Endinf Balance</a>
+                            <span class="text-muted fw-bold d-block fs-7">Amount Close Balance</span>
+                        </div>
+                        <span class="badge badge-light fw-bolder my-2">{{ $close_balance }}</span>
+                    </div>
+                    <!--end::Section-->
+                </div>
+            </div>
+        </div>
+    @endcan
+
+    <div class="card">
         <div class="card-header mt-3">
             <div class="float-start">
                 <div class="d-flex">
@@ -560,6 +660,7 @@
             {{ empty($transaction->links) ? '' : $transaction->links }}
         </div>
     </div>
+
 @endsection
 
 @push('scripts')
@@ -605,6 +706,11 @@
             'alias': 'currency',
             'groupSeparator': '.'
         }).mask(".kt_inputmask");
+
+        $('body').on('change', 'select[name=departement]', function(e) {
+            var url = '{{ route('sales.index') }}?departement=' + e.target.value;
+            window.location.href = url;
+        });
     </script>
 @endpush
 

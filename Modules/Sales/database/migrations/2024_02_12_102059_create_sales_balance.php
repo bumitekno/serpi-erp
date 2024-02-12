@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('amount')->nullable();
             $table->date('date_balance')->nullable();
+            $table->foreignId('id_departement')->nullable();
             $table->timestamps();
         });
     }

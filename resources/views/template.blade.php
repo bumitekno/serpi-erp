@@ -109,7 +109,7 @@
                                                 <div class="d-flex flex-column">
                                                     <div class="fw-bolder d-flex align-items-center fs-5">
                                                         {{ empty(Auth()->user()->name) ? '-' : Auth()->user()->name }}
-                                                        {{ empty(Auth()->user()->getRoleNames())? '-': Auth()->user()->getRoleNames()->first() }}
+                                                        {{ empty(Auth()->user()->getRoleNames()) ? '-' : Auth()->user()->getRoleNames()->first() }}
                                                     </div>
                                                     <a href="#"
                                                         class="fw-bold text-muted text-hover-primary fs-7">{{ empty(Auth()->user()->email) ? '-' : Auth()->user()->email }}</a>
@@ -256,12 +256,63 @@
                                         <li class="breadcrumb-item">
                                             <span class="bullet bg-gray-200 w-5px h-2px"></span>
                                         </li>
-                                        <li class="breadcrumb-item text-dark">
-                                            <a href="{{ route(request()->segment(1) . '.index') }}"
-                                                class="text-hover-primary">
-                                                {{ Str::title(request()->segment(1)) }}
-                                            </a>
-                                        </li>
+
+                                        @if (!empty(request()->segment(1)) && request()->segment(1) == 'expense')
+                                            <li class="breadcrumb-item">
+                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                                            </li>
+
+                                            @can('create-sales')
+                                                <li class="breadcrumb-item text-muted">
+                                                    <a href="{{ route('sales.index') }}" class="text-hover-primary">
+                                                        Sales
+                                                    </a>
+                                                </li>
+                                            @endcan
+
+                                            <li class="breadcrumb-item">
+                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                                            </li>
+
+                                            @can('create-purchase')
+                                                <li class="breadcrumb-item  text-muted">
+                                                    <a href="{{ route('purchase.index') }}" class="text-hover-primary">
+                                                        Purchase
+                                                    </a>
+                                                </li>
+                                            @endcan
+                                        @elseif (!empty(request()->segment(1)) && request()->segment(1) == 'income')
+                                            <li class="breadcrumb-item">
+                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                                            </li>
+
+                                            @can('create-sales')
+                                                <li class="breadcrumb-item text-muted">
+                                                    <a href="{{ route('sales.index') }}" class="text-hover-primary">
+                                                        Sales
+                                                    </a>
+                                                </li>
+                                            @endcan
+
+                                            <li class="breadcrumb-item">
+                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                                            </li>
+
+                                            @can('create-purchase')
+                                                <li class="breadcrumb-item text-muted">
+                                                    <a href="{{ route('purchase.index') }}" class="text-hover-primary">
+                                                        Purchase
+                                                    </a>
+                                                </li>
+                                            @endcan
+                                        @else
+                                            <li class="breadcrumb-item text-dark">
+                                                <a href="{{ route(request()->segment(1) . '.index') }}"
+                                                    class="text-hover-primary">
+                                                    {{ Str::title(request()->segment(1)) }}
+                                                </a>
+                                            </li>
+                                        @endif
                                     @endif
                                 </ul>
                                 <!--end::Breadcrumb-->
@@ -295,7 +346,7 @@
                                                         <div class="fw-bolder d-flex align-items-center fs-5">
                                                             {{ empty(Auth()->user()->name) ? '-' : Auth()->user()->name }}
                                                             <span
-                                                                class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">{{ empty(Auth()->user()->getRoleNames())? '-': Auth()->user()->getRoleNames()->first() }}
+                                                                class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">{{ empty(Auth()->user()->getRoleNames()) ? '-' : Auth()->user()->getRoleNames()->first() }}
                                                             </span>
                                                         </div>
 

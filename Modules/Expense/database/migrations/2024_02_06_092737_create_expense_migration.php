@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->time('time_transaction')->nullable();
             $table->foreignId('id_user')->nullable();
             $table->foreignId('id_expense')->nullable();
+            $table->foreignId('id_departement')->nullable();
             $table->string('amount')->nullable();
             $table->timestamps();
         });
