@@ -470,7 +470,7 @@
                     <!--begin::Section-->
                     <div class="d-flex align-items-center flex-row-fluid flex-wrap">
                         <div class="flex-grow-1 me-2">
-                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Endinf Balance</a>
+                            <a href="javascript:;" class="text-gray-800 text-hover-primary fs-6 fw-bolder">Ending Balance</a>
                             <span class="text-muted fw-bold d-block fs-7">Amount Close Balance</span>
                         </div>
                         <span class="badge badge-light fw-bolder my-2">{{ $close_balance }}</span>
@@ -541,7 +541,7 @@
 
                     <a href="{{ route('sales.create') }}" class="btn btn-success btn-sm my-2"><i
                             class="bi bi-plus-circle"></i>
-                        New Sales </a>
+                        Point Of Sales </a>
                 @endcan
 
                 @can('create-income')

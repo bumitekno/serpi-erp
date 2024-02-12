@@ -29,6 +29,70 @@
 @endpush
 
 @push('modals')
+    <div class="modal fade" tabindex="-1" id="kt_modal_openbalance">
+        <div class="modal-dialog">
+            <form id="kt_docs_formvalidation_text_t" class="form" action="{{ route('sales.storeopenbal') }}"
+                autocomplete="off" method="POST">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal Open Balance</h5>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-2x"></span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="fv-row mb-10">
+                            <label for="name" class="required fw-semibold fs-6 mb-2">Departement</label>
+                            <select class="form-select" data-control="select2" data-placeholder="Select Departement"
+                                name="departement_balance">
+                                <option></option>
+                                @foreach ($departement as $departementx)
+                                    <option value="{{ $departementx->id }}"
+                                        @if ($departement_default == $departementx->id) selected="selected" @endif>
+                                        {{ $departementx->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="fv-row mb-10">
+                            <label for="name" class="required fw-semibold fs-6 mb-2">
+                                Date</label>
+                            <input type="date" class="form-control kt_datepicker" id="date" name="date_trans">
+                        </div>
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Amount</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" name="amount_balance"
+                                class="form-control form-control-solid mb-3 mb-lg-0 kt_inputmask"
+                                placeholder="Insert Amount Balance " data-type="currency" required="required" />
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endpush
+
+@push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_customer">
         <form id="kt_docs_formvalidation_text" class="form" action="{{ route('sales.storecustomer') }}" autocomplete="off"
             method="POST">
@@ -334,7 +398,7 @@
                                 Date</label>
                             <div class="col-md-6">
                                 <input type="date" name="due_date_transaction"
-                                    class="form-control  kt_datepicker text-start" value="{{ $date_transaction }}">
+                                    class="form-control  kt_datepicker text-start">
                             </div>
                         </div>
 
@@ -472,7 +536,6 @@
                                         value="{{ $ponumber }}" readonly="readonly">
                                 </div>
                             </div>
-
                             <div class="mb-3 row">
                                 <label for="name"
                                     class="col-md-4 col-form-label text-md-end text-start">Customer</label>
@@ -509,15 +572,13 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3 row">
                                 <label for="name" class="col-md-4 col-form-label text-md-end text-start">Date</label>
                                 <div class="col-md-4">
                                     <input type="date" name="date_transaction"
-                                        class="form-control @error('date_transaction') is-invalid @enderror kt_datepicker text-start"
-                                        value="{{ $date_transaction }}">
+                                        class="form-control @error('date_transaction') is-invalid @enderror kt_datepicker text-start">
                                     @if ($errors->has('date_transaction'))
                                         <span class="text-danger">{{ $errors->first('date_transaction') }}</span>
                                     @endif
@@ -1498,5 +1559,12 @@
                 }
             })
         });
+
+        //open balance 
+        @if ($open_balance == true)
+            $(function() {
+                $('#kt_modal_openbalance').modal('show');
+            });
+        @endif
     </script>
 @endpush

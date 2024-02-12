@@ -220,6 +220,8 @@ class SalesController extends Controller
             $total_cart = $subtotal - $discount_cart + $tax_cart;
         }
 
+        $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->sum('amount');
+
         return view('sales::create')->with([
             'ponumber' => empty(Session::get('ponumber')) ? $nextInvoiceNumber : Session::get('ponumber'),
             'product' => $product,
@@ -239,7 +241,8 @@ class SalesController extends Controller
             'keyword' => empty($keyword) ? '' : $keyword,
             'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name,
             'edit_trans' => $edit_trans,
-            'nominal_opsi_cash' => $this->generatecur($total_cart)
+            'nominal_opsi_cash' => $this->generatecur($total_cart),
+            'open_balance' => empty($saldo_awal) ? true : false
         ]);
     }
 
