@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Modules\Sales\app\Models\TransactionSales;
 use Modules\Sales\app\Models\TransactionSalesItem;
 use Modules\Sales\app\Models\SalesCredit;
+use Modules\Sales\app\Http\Controllers\SalesExportController;
+use Modules\Sales\app\Models\BalanceSales;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\UnitProduct\app\Models\UnitProduct;
 use Modules\Stock\app\Models\Stock;
@@ -21,7 +23,6 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
-use Modules\Sales\app\Http\Controllers\SalesExportController;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SalesController extends Controller
@@ -127,15 +128,15 @@ class SalesController extends Controller
     public function create(Request $request)
     {
         //filter category
-        if (!empty($request->segment(2))) {
-            if ($request->segment(1) == 'filter') {
-                if ($request->segment(2) == 'all' || $request->segment(2) == 'create') {
+        if (!empty($request->segment(1))) {
+            if ($request->segment(2) == 'filter') {
+                if ($request->segment(3) == 'all' || $request->segment(1) == 'create') {
                     $product = ProductPos::with('category_product')->where('enabled', '1')->paginate(12);
                 } else {
-                    $product = ProductPos::with('category_product')->where('enabled', '1')->where('category', '=', $request->segment(2))->paginate(12);
+                    $product = ProductPos::with('category_product')->where('enabled', '1')->where('category', '=', $request->segment(3))->paginate(12);
                 }
-            } else if ($request->segment(1) == 'search') {
-                $keyword = Str::replace('%20', '', $request->segment(2));
+            } else if ($request->segment(2) == 'search') {
+                $keyword = Str::replace('%20', '', $request->segment(3));
                 $product = ProductPos::with('category_product')->where('enabled', '1')->where('name', 'like', '%' . $keyword . '%')->paginate(12);
             } else if ($request->segment(1) == 'sales') {
                 $product = ProductPos::with('category_product')->where('enabled', '1')->paginate(12);
@@ -278,7 +279,7 @@ class SalesController extends Controller
         }
 
         Session::put('cart', $cart);
-        Session::flash('success', 'Item successfully added to Cart!');
+        Session::flash('success', 'Item ' . $product?->name . ' successfully added to Cart!');
         return redirect()->back();
     }
 
@@ -386,6 +387,7 @@ class SalesController extends Controller
     /** delete cart item by id */
     public function deletecart($id)
     {
+        $product = ProductPos::with('category_product')->where('id', '=', $id)->first();
         $cart = Session::get('cart');
         foreach ($cart as $key => $value) {
             if ($value['id'] == $id) {
@@ -394,7 +396,7 @@ class SalesController extends Controller
         }
         //put back in session array without deleted item
         Session::put('cart', $cart);
-        Session::flash('success', 'Item successfully remove from Cart !');
+        Session::flash('success', 'Item ' . $product?->name . ' successfully remove from Cart !');
         //then you can redirect or whatever you need
         return redirect()->back();
     }
@@ -404,6 +406,8 @@ class SalesController extends Controller
     public function clearCart(Request $request)
     {
         Session::put('cart', []);
+        Session::put('discount', 0);
+        Session::put('tax', 0);
         Session::flash('success', 'Cart has been emptied !');
         return redirect()->back();
     }

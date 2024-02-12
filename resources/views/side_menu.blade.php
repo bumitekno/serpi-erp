@@ -121,17 +121,6 @@
                     </a>
                 </div>
             @endcanany
-            @canany(['create-product', 'edit-product', 'delete-product'])
-                <div class="menu-item">
-                    <a class="menu-link {{ request()->is('productpos*') || request()->is('tools-productpos*') ? 'active' : '' }} "
-                        href="{{ route('productpos.index') }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                        <span class="menu-title">Product</span>
-                    </a>
-                </div>
-            @endcanany
 
             @canany(['create-warehouse', 'edit-warehouse', 'delete-warehouse'])
                 <div class="menu-item">
@@ -156,6 +145,19 @@
                     </a>
                 </div>
             @endcanany
+
+            @canany(['create-product', 'edit-product', 'delete-product'])
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->is('productpos*') || request()->is('tools-productpos*') ? 'active' : '' }} "
+                        href="{{ route('productpos.index') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Product</span>
+                    </a>
+                </div>
+            @endcanany
+
 
             @canany(['create-stock', 'edit-stock', 'delete-stock'])
                 <div class="menu-item">

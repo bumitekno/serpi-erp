@@ -21,7 +21,8 @@
                                 Product</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('code_product') is-invalid @enderror"
-                                    id="name" name="code_product" value="{{ old('code_product') }}">
+                                    id="name" name="code_product" value="{{ old('code_product') }}"
+                                    placeholder="Insert Code">
                                 @if ($errors->has('code_product'))
                                     <span class="text-danger">{{ $errors->first('code_product') }}</span>
                                 @endif
@@ -32,7 +33,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Name</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name') }}">
+                                    id="name" name="name" value="{{ old('name') }}" placeholder="Insert Name">
                                 @if ($errors->has('name'))
                                     <span class="text-danger">{{ $errors->first('name') }}</span>
                                 @endif
@@ -51,6 +52,38 @@
                                 </select>
                                 @if ($errors->has('category'))
                                     <span class="text-danger">{{ $errors->first('category') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Warehouse</label>
+                            <div class="col-md-6">
+                                <select class="form-select @error('warehouse') is-invalid @enderror" data-control="select2"
+                                    data-placeholder="Select Warehouse" name="warehouse">
+                                    <option></option>
+                                    @foreach ($warehouse as $warehouses)
+                                        <option value="{{ $warehouses->id }}"> {{ $warehouses->name }} </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('warehouse'))
+                                    <span class="text-danger">{{ $errors->first('warehouse') }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Location</label>
+                            <div class="col-md-6">
+                                <select class="form-select @error('location') is-invalid @enderror" data-control="select2"
+                                    data-placeholder="Select Location" name="location">
+                                    <option></option>
+                                    @foreach ($location as $locations)
+                                        <option value="{{ $locations->id }}"> {{ $locations->name_location }} </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('location'))
+                                    <span class="text-danger">{{ $errors->first('location') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -111,7 +144,7 @@
                             <div class="col-md-6">
                                 <input type="text"
                                     class="form-control @error('pricepurchase') is-invalid @enderror kt_inputmask"
-                                    id="pricepurchase" name="pricepurchase" value="">
+                                    id="pricepurchase" name="pricepurchase" value="" placeholder="0">
                                 @if ($errors->has('pricepurchase'))
                                     <span class="text-danger">{{ $errors->first('pricepurchase') }}</span>
                                 @endif
@@ -124,7 +157,7 @@
                             <div class="col-md-6">
                                 <input type="text"
                                     class="form-control @error('pricesell') is-invalid @enderror kt_inputmask"
-                                    id="pricesell" name="pricesell" value="">
+                                    id="pricesell" name="pricesell" value="" placeholder="0">
                                 @if ($errors->has('pricesell'))
                                     <span class="text-danger">{{ $errors->first('pricesell') }}</span>
                                 @endif
@@ -135,7 +168,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Min</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('stockmin') is-invalid @enderror"
-                                    id="stockmin" name="stockmin">
+                                    id="stockmin" name="stockmin" placeholder="0">
                                 @if ($errors->has('stockmin'))
                                     <span class="text-danger">{{ $errors->first('stockmin') }}</span>
                                 @endif
@@ -146,7 +179,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Stock Max</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control @error('stockmax') is-invalid @enderror"
-                                    id="stockmax" name="stockmax">
+                                    id="stockmax" name="stockmax" placeholder="0">
                                 @if ($errors->has('stockmax'))
                                     <span class="text-danger">{{ $errors->first('stockmax') }}</span>
                                 @endif
@@ -183,7 +216,8 @@
                             <label for="description"
                                 class="col-md-4 col-form-label text-md-end text-start">Description</label>
                             <div class="col-md-6">
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description">{{ old('description') }}</textarea>
+                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                    placeholder="Insert Description">{{ old('description') }}</textarea>
                                 @if ($errors->has('description'))
                                     <span class="text-danger">{{ $errors->first('description') }}</span>
                                 @endif

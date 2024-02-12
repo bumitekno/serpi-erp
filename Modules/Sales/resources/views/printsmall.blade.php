@@ -210,7 +210,7 @@
                         @endphp
                         @forelse($detail_transaction as $details)
                             <tr>
-                                <td>{{ $details->products?->code_product }} {{ $details->products?->name }}</td>
+                                <td>{{ $details->products?->name }}</td>
                                 <td>{{ $details->qty }}</td>
                                 @if ($details->check_convert == false)
                                     <td>{{ $details->units?->name }}</td>

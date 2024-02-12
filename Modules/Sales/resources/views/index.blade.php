@@ -6,13 +6,12 @@
         <div class="row g-5 g-xl-8">
             <div class="col-xl-3">
                 <!--begin::Statistics Widget 5-->
-                <a href="javascript:;" class="card bg-body-white hoverable card-xl-stretch mb-xl-8">
+                <div class="card bg-body-white hoverable card-xl-stretch mb-xl-8">
                     <!--begin::Body-->
                     <div class="card-body">
                         <!--begin::Svg Icon | path: icons/duotune/ecommerce/ecm002.svg-->
                         <span class="svg-icon svg-icon-primary svg-icon-3x ms-n1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path
                                     d="M21 10H13V11C13 11.6 12.6 12 12 12C11.4 12 11 11.6 11 11V10H3C2.4 10 2 10.4 2 11V13H22V11C22 10.4 21.6 10 21 10Z"
                                     fill="black"></path>
@@ -29,12 +28,12 @@
                         <div class="fw-bold text-gray-400">{{ number_format($total_transaction, 0, ',', '.') }}</div>
                     </div>
                     <!--end::Body-->
-                </a>
+                </div>
                 <!--end::Statistics Widget 5-->
             </div>
             <div class="col-xl-3">
                 <!--begin::Statistics Widget 5-->
-                <a href="javascript:;" class="card bg-primary hoverable card-xl-stretch mb-xl-8">
+                <div class="card bg-primary hoverable card-xl-stretch mb-xl-8">
                     <!--begin::Body-->
                     <div class="card-body">
                         <!--begin::Svg Icon | path: icons/duotune/general/gen008.svg-->
@@ -60,12 +59,12 @@
                         <div class="fw-bold text-white">{{ number_format($total_transaction_success, 0, ',', '.') }}</div>
                     </div>
                     <!--end::Body-->
-                </a>
+                </div>
                 <!--end::Statistics Widget 5-->
             </div>
             <div class="col-xl-3">
                 <!--begin::Statistics Widget 5-->
-                <a href="javascript:;" class="card bg-danger hoverable card-xl-stretch mb-5 mb-xl-8">
+                <div class="card bg-danger hoverable card-xl-stretch mb-5 mb-xl-8">
                     <!--begin::Body-->
                     <div class="card-body">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr070.svg-->
@@ -84,12 +83,12 @@
                         <div class="fw-bold text-gray-100">{{ number_format($total_transaction_cancel, 0, ',', '.') }}</div>
                     </div>
                     <!--end::Body-->
-                </a>
+                </div>
                 <!--end::Statistics Widget 5-->
             </div>
             <div class="col-xl-3">
                 <!--begin::Statistics Widget 5-->
-                <a href="javascript:;" class="card bg-warning hoverable card-xl-stretch mb-5 mb-xl-8">
+                <div class="card bg-warning hoverable card-xl-stretch mb-5 mb-xl-8">
                     <!--begin::Body-->
                     <div class="card-body">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr070.svg-->
@@ -108,7 +107,7 @@
                         <div class="fw-bold text-gray-100">{{ number_format($total_transaction_pending, 0, ',', '.') }}</div>
                     </div>
                     <!--end::Body-->
-                </a>
+                </div>
                 <!--end::Statistics Widget 5-->
             </div>
         </div>

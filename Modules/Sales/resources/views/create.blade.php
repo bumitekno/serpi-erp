@@ -463,7 +463,7 @@
                 <!--begin::Body-->
                 <div class="card-body py-3">
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="mb-3 row">
                                 <label for="name" class="col-md-4 col-form-label text-md-end text-start">S.O
                                     Number</label>
@@ -511,7 +511,7 @@
                             </div>
 
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="mb-3 row">
                                 <label for="name" class="col-md-4 col-form-label text-md-end text-start">Date</label>
                                 <div class="col-md-4">
@@ -542,6 +542,8 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div class="mb-3 row">
                                 <label for="name"
                                     class="col-md-4 col-form-label text-md-end text-start">Operator</label>
@@ -559,20 +561,55 @@
         </div>
     </div>
 
-    <div class="card-rounded bg-light d-flex flex-stack flex-wrap p-0 mb-3 ">
-        <!--begin::Nav-->
-        <div class="scrollmenu">
-            <a class="btn btn-color-gray-600 btn-active-white btn-active-color-primary fw-boldest fs-8 fs-lg-base nav-link px-3 px-lg-8 mx-1 text-uppercase @if (request()->segment(2) == 'all') active @endif"
-                href="{{ route('sales.filter', ['filter' => 'all']) }}">All</a>
-            <!--end::Nav item-->
-            @forelse($category_product as $categorys)
-                <a class="btn btn-color-gray-600 btn-active-white btn-active-color-primary m-2 fw-boldest fs-8 fs-lg-base nav-link px-3 px-lg-8 mx-1 text-uppercase @if (request()->segment(2) == $categorys->id) active @endif"
-                    href="{{ route('sales.filter', ['filter' => $categorys->id]) }}">
-                    {{ Str::title($categorys->name) }}</a>
-            @empty
-            @endforelse
+    <div class="row mb-2">
+        <div class="col-lg-6">
+            <div class="scrollmenu g-5 gx-xxl-8">
+                <a class="btn btn-color-gray-600 btn-active-white btn-active-color-primary fw-boldest fs-8 fs-lg-base nav-link px-3 px-lg-8 mx-1 text-uppercase @if (request()->segment(3) == 'all') active @endif"
+                    href="{{ route('sales.filter', ['filter' => 'all']) }}">All</a>
+                <!--end::Nav item-->
+                @forelse($category_product as $categorys)
+                    <a class="btn btn-color-gray-600 btn-active-white btn-active-color-primary m-2 fw-boldest fs-8 fs-lg-base nav-link px-3 px-lg-8 mx-1 text-uppercase @if (request()->segment(3) == $categorys->id) active @endif"
+                        href="{{ route('sales.filter', ['filter' => $categorys->id]) }}">
+                        {{ Str::title($categorys->name) }}</a>
+                @empty
+                @endforelse
+            </div>
         </div>
-        <!--end::Nav-->
+        <div class="col-lg-6">
+            <div class="g-5 gx-xxl-8 text-end">
+                @if ($edit_trans == false)
+                    <a href="javascript:;" class="btn btn-info py-6 " data-bs-toggle="modal"
+                        data-bs-target="#kt_modal_call" id="buttoncall"> <i class="bi bi-arrow-down-up"></i> Call
+                    </a>
+                @endif
+
+                @if (!empty($cart) && count($cart) > 0)
+                    @if ($edit_trans == false)
+                        <a href="javascript:;" class="btn btn-danger py-6 " id="savedtrans"> <i
+                                class="bi bi-save2-fill"></i>
+                            Save
+                        </a>
+                    @endif
+                    <a href="javascript:;" class="btn btn-warning py-6" data-bs-toggle="modal"
+                        data-bs-target="#kt_modal_discount">
+                        <i class="bi bi-cash-stack"></i> Discount
+                    </a>
+                    <a href="javascript:;" class="btn btn-dark  py-6" data-bs-toggle="modal"
+                        data-bs-target="#kt_modal_tax">
+                        <i class="bi bi-cash-stack"></i> Tax
+                    </a>
+                    <a href="javascrip:;" class="btn btn-primary  py-6 " data-bs-toggle="modal"
+                        data-bs-target="#kt_modal_payment" id="buttonpayment">
+                        <i class="bi bi-credit-card"></i> Pay
+                        Now</a>
+                    @if ($edit_trans == true)
+                        <a href="{{ route('sales.canceledit') }}" class="btn btn-danger py-2"> <i
+                                class="bi bi-arrow-left"></i>
+                            Cancel Edit </a>
+                    @endif
+                @endif
+            </div>
+        </div>
     </div>
 
     <div class="row g-3 g-xl-8">
@@ -595,7 +632,7 @@
 
                 @if (!empty($keyword))
                     <a href="{{ route('sales.create') }}"
-                        class="btn btn-danger btn-icon-white btn-text-white ps-5 w-120px">
+                        class="btn btn-danger btn-icon-white btn-text-white ps-5 w-200px">
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-x" viewBox="0 0 16 16">
@@ -607,72 +644,81 @@
                     </a>
                 @endif
             </div>
-            <div class="row g-4 g-xl-4 mb-6 mb-xl-4">
-                @forelse ($product as $products)
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                        <!--begin::Card-->
-                        <div class="card h-100">
-                            <!--begin::Card body-->
-                            <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                <!--begin::Name-->
-                                <a href="javascript:;" data-id="{{ $products->id }}" id="addcart"
-                                    class="text-gray-800 text-hover-primary d-flex flex-column">
-                                    <!--begin::Image-->
-                                    <div class="symbol symbol-100px mb-5">
-                                        @if (!empty($products->image_product))
-                                            <img src="{{ Storage::url($products->image_product) }}" alt="Product"
-                                                class="w-100 h-150px" />
-                                        @else
-                                            <img src="https://fakeimg.pl/100x150" alt="Product" class="w-100 h-150px" />
-                                        @endif
-                                    </div>
-                                    <!--end::Image-->
-                                    <!--begin::Title-->
-                                    <div class="fs-5 fw-bolder mb-2">{{ $products->name ?? '' }}</div>
-                                    <!--end::Title-->
-                                </a>
-                                <!--end::Name-->
-                                <!--begin::Description-->
-                                <div class="fs-7 fw-bold text-gray-400">
-                                    {{ $products->category_product?->name }}
-                                </div>
-                                <!--end::Description-->
-                                <div class="fs-7 fw-bold text-gray-400">
-                                    {{ empty($products->price_sell) ? 0 : number_format($products->price_sell, 0, ',', '.') }}
-                                </div>
-                            </div>
-                            <!--end::Card body-->
-                        </div>
-                        <!--end::Card-->
-                    </div>
-                @empty
+            <div class="scroll h-600px px-0">
+                <div class="row g-4 g-xl-4 mb-6 mb-xl-4">
+                    @forelse ($product as $products)
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <!--begin::Card-->
+                            <div class="card h-100">
+                                <!--begin::Card body-->
+                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
+                                    <!--begin::Name-->
+                                    <a href="javascript:;" data-id="{{ $products->id }}" id="addcart"
+                                        class="text-gray-800 text-hover-primary d-flex flex-column">
+                                        <!--begin::Image-->
+                                        <div class="symbol symbol-100px mb-5">
+                                            @if (!empty($products->image_product))
+                                                <img src="{{ Storage::url($products->image_product) }}" alt="Product"
+                                                    class="w-100 h-150px" />
+                                            @else
+                                                <img src="https://fakeimg.pl/100x150" alt="Product"
+                                                    class="w-100 h-150px" />
+                                            @endif
+                                        </div>
+                                        <!--end::Image-->
+                                        <!--begin::Title-->
+                                        <div class="fs-5 fw-bolder mb-2">{{ $products->name ?? '' }}</div>
+                                        <!--end::Title-->
+                                    </a>
+                                    <!--end::Name-->
 
-                    <div class="alert alert-dismissible bg-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10">
-                        <!--begin::Icon-->
-                        <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
-                        <span class="svg-icon svg-icon-2hx svg-icon-light me-4 mb-5 mb-sm-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none">
-                                <path opacity="0.3"
-                                    d="M2 4V16C2 16.6 2.4 17 3 17H13L16.6 20.6C17.1 21.1 18 20.8 18 20V17H21C21.6 17 22 16.6 22 16V4C22 3.4 21.6 3 21 3H3C2.4 3 2 3.4 2 4Z"
-                                    fill="black"></path>
-                                <path
-                                    d="M18 9H6C5.4 9 5 8.6 5 8C5 7.4 5.4 7 6 7H18C18.6 7 19 7.4 19 8C19 8.6 18.6 9 18 9ZM16 12C16 11.4 15.6 11 15 11H6C5.4 11 5 11.4 5 12C5 12.6 5.4 13 6 13H15C15.6 13 16 12.6 16 12Z"
-                                    fill="black"></path>
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                        <!--end::Icon-->
-                        <!--begin::Content-->
-                        <div class="d-flex flex-column text-light pe-0 pe-sm-10">
-                            <h4 class="mb-2 text-light">This is an alert</h4>
-                            <span>Product Not Found .</span>
+                                    <div class="fs-7 fw-bold mb-3 badge badge-light-success">
+                                        {{ empty($products->price_sell) ? 0 : number_format($products->price_sell, 0, ',', '.') }}
+                                    </div>
+
+                                    <!--begin::Description-->
+                                    <div class="fs-7 fw-bold badge badge-info mb-3  ">
+                                        {{ $products->category_product?->name }}
+                                    </div>
+                                    <!--end::Description-->
+
+                                    <div class="fs-7 fw-bold badge badge-light-primary">
+                                        {{ empty($products->stock_last) ? 0 : $products->stock_last }}
+                                    </div>
+
+                                </div>
+                                <!--end::Card body-->
+                            </div>
+                            <!--end::Card-->
                         </div>
-                        <!--end::Content-->
-                    </div>
-                @endforelse
+                    @empty
+                        <div class="alert alert-dismissible bg-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                            <!--begin::Icon-->
+                            <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
+                            <span class="svg-icon svg-icon-2hx svg-icon-light me-4 mb-5 mb-sm-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3"
+                                        d="M2 4V16C2 16.6 2.4 17 3 17H13L16.6 20.6C17.1 21.1 18 20.8 18 20V17H21C21.6 17 22 16.6 22 16V4C22 3.4 21.6 3 21 3H3C2.4 3 2 3.4 2 4Z"
+                                        fill="black"></path>
+                                    <path
+                                        d="M18 9H6C5.4 9 5 8.6 5 8C5 7.4 5.4 7 6 7H18C18.6 7 19 7.4 19 8C19 8.6 18.6 9 18 9ZM16 12C16 11.4 15.6 11 15 11H6C5.4 11 5 11.4 5 12C5 12.6 5.4 13 6 13H15C15.6 13 16 12.6 16 12Z"
+                                        fill="black"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                            <!--end::Icon-->
+                            <!--begin::Content-->
+                            <div class="d-flex flex-column text-light pe-0 pe-sm-10">
+                                <h4 class="mb-2 text-light">This is an alert</h4>
+                                <span>Product Not Found .</span>
+                            </div>
+                            <!--end::Content-->
+                        </div>
+                    @endforelse
+                </div>
             </div>
-            <div class="mb-3 mt-3 row">
+            <div class="mb-3 mt-10 row">
                 {{ empty($product->links()) ? '' : $product->links() }}
             </div>
         </div>
@@ -718,7 +764,7 @@
                     </div>
                     <!--end::Header-->
                     <div class="card-body pt-3">
-                        <div class="scroll h-400px">
+                        <div class="scroll @if (!empty($cart) && count($cart) > 0) h-200px @endif">
                             @forelse($cart as $key => $cart_item)
                                 <div class="d-flex align-items-sm-center mb-7">
                                     <!--begin::Symbol-->
@@ -847,7 +893,6 @@
                                     </span>
                                 </div>
                             </div>
-
                         </div>
                     @endif
                 </div>
@@ -855,40 +900,6 @@
 
         </div>
         <!--end::Col-->
-    </div>
-
-    <div class="g-5 gx-xxl-8 text-center py-10">
-        @if ($edit_trans == false)
-            <a href="javascript:;" class="btn btn-info py-6 mb-3" data-bs-toggle="modal" data-bs-target="#kt_modal_call"
-                id="buttoncall"> <i class="bi bi-arrow-down-up"></i> Call
-                Transaction </a>
-        @endif
-
-        @if (!empty($cart) && count($cart) > 0)
-            @if ($edit_trans == false)
-                <a href="javascript:;" class="btn btn-danger py-6 mb-3" id="savedtrans"> <i
-                        class="bi bi-save2-fill"></i>
-                    Save
-                    Transaction </a>
-            @endif
-            <a href="javascript:;" class="btn btn-warning py-6 mb-3" data-bs-toggle="modal"
-                data-bs-target="#kt_modal_discount">
-                <i class="bi bi-cash-stack"></i> Discount
-            </a>
-            <a href="javascript:;" class="btn btn-dark  py-6 mb-3" data-bs-toggle="modal"
-                data-bs-target="#kt_modal_tax">
-                <i class="bi bi-cash-stack"></i> Tax
-            </a>
-            <a href="javascrip:;" class="btn btn-primary  py-6 mb-3 " data-bs-toggle="modal"
-                data-bs-target="#kt_modal_payment" id="buttonpayment">
-                <i class="bi bi-credit-card"></i> Pay
-                Now</a>
-            @if ($edit_trans == true)
-                <a href="{{ route('sales.canceledit') }}" class="btn btn-danger py-6 mb-3"> <i
-                        class="bi bi-arrow-left"></i>
-                    Cancel Edit </a>
-            @endif
-        @endif
     </div>
 @endsection
 @push('scripts')

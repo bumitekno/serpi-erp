@@ -19,10 +19,10 @@ Route::group([], function () {
     Route::get('sales/edit-cart/{id}', [SalesController::class, 'editcart'])->name('sales.editcart');
     Route::get('sales/add-cart/{id}/{departement}', [SalesController::class, 'addToCart'])->name('sales.addcart');
     Route::get('sales/delete-cart/{id}', [SalesController::class, 'deletecart'])->name('sales.deletecart');
-    Route::get('sales/clear-cart', [SalesController::class, 'clearCart'])->name('sales.clearcart');
+    Route::get('sales/clear-cart/session', [SalesController::class, 'clearCart'])->name('sales.clearcart');
     Route::get('sales/filter/{filter}', [SalesController::class, 'create'])->name('sales.filter');
     Route::get('sales/search/{keyword}', [SalesController::class, 'create'])->name('sales.search');
-    Route::post('sales/scanbarcode', [SalesController::class, 'scancart'])->name('sales.scancart');
+    Route::post('sales/scanbarcode/session', [SalesController::class, 'scancart'])->name('sales.scancart');
     Route::post('sales/customer/store', [SalesController::class, 'storecustomer'])->name('sales.storecustomer');
     Route::post('sales/discount-cart', [SalesController::class, 'updateDiscount'])->name('sales.updateDiscount');
     Route::post('sales/tax-cart', [SalesController::class, 'updatetax'])->name('sales.updatetax');

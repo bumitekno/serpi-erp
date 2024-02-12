@@ -21,7 +21,9 @@ class ProductPosDatabaseSeeder extends Seeder
                 'price_sell' => $i . '000' + 5000,
                 'price_purchase' => $i . '000',
                 'description' => 'Product ' . $i,
-                'stock_last' => 100
+                'stock_last' => 100,
+                'id_warehouse' => 1,
+                'id_location' => 1
             ]);
         }
     }

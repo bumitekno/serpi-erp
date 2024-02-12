@@ -52,6 +52,22 @@
                     </div>
 
                     <div class="mb-3 row">
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Warehouse
+                                :</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product->warehouse?->name }} </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Location
+                                :</strong></label>
+                        <div class="col-lg-8">
+                            <span class="fw-bolder fs-6 text-gray-800"> {{ $product->location?->name_location }} </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
                         <label for="name" class="col-lg-4 fw-bold text-muted text-end"><strong>Stock Min
                                 :</strong></label>
                         <div class="col-lg-8">

@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Modules\ProductPos\app\Http\Controllers\ProductPosExportController;
 use Modules\ProductPos\app\Http\Controllers\ProductPostSheetController;
 use Modules\ProductPos\app\Http\Controllers\ProductPostImport;
+use Modules\Warehouse\app\Models\Warehouse;
+use Modules\Location\app\Models\Location;
 use Maatwebsite\Excel\Facades\Excel;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use IlLuminate\Support\Str;
@@ -56,7 +58,11 @@ class ProductPosController extends Controller
      */
     public function create()
     {
-        return view('productpos::create', ['category_product' => CategoryProduct::query()->get()]);
+        return view('productpos::create', [
+            'category_product' => CategoryProduct::query()->get(),
+            'location' => Location::query()->get(),
+            'warehouse' => Warehouse::query()->get()
+        ]);
     }
 
     /**
@@ -102,6 +108,12 @@ class ProductPosController extends Controller
             $data_send['enabled'] = 0;
         }
 
+        if (!empty($request->warehouse))
+            $data_send['id_warehouse'] = $request->warehouse;
+
+        if (!empty($request->location))
+            $data_send['id_location'] = $request->location;
+
         ProductPos::create($data_send);
         return redirect()->route('productpos.index')
             ->withSuccess('New product is added successfully.');
@@ -136,7 +148,7 @@ class ProductPosController extends Controller
      */
     public function show($id)
     {
-        $product = ProductPos::with('category_product')->find($id);
+        $product = ProductPos::with('category_product', 'warehouse', 'location')->find($id);
         return view('productpos::show')->with([
             'product' => $product
         ]);
@@ -149,7 +161,9 @@ class ProductPosController extends Controller
     {
         return view('productpos::edit')->with([
             'product' => ProductPos::with('category_product')->find($id),
-            'category_product' => CategoryProduct::query()->get()
+            'category_product' => CategoryProduct::query()->get(),
+            'location' => Location::query()->get(),
+            'warehouse' => Warehouse::query()->get()
         ]);
     }
 
@@ -203,6 +217,12 @@ class ProductPosController extends Controller
         } else {
             $data_send['enabled'] = 0;
         }
+
+        if (!empty($request->warehouse))
+            $data_send['id_warehouse'] = $request->warehouse;
+
+        if (!empty($request->location))
+            $data_send['id_location'] = $request->location;
 
         $product->update($data_send);
 

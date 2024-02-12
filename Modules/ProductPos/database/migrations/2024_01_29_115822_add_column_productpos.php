@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->date('date_expired')->nullable();
             $table->boolean('sold_out')->default(false);
             $table->boolean('enabled')->default(true);
+            $table->foreignId('id_warehouse')->nullable();
+            $table->foreignId('id_location')->nullable();
         });
     }
 

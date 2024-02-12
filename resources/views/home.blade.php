@@ -2,7 +2,7 @@
 @section('content')
     <div class="d-flex flex-wrap flex-stack my-5">
         <!--begin::Heading-->
-        <h3 class="fw-bolder my-2">Apps List
+        <h3 class="fw-bolder my-2">List Module Apps
             <span class="fs-6 text-gray-400 fw-bold ms-1"></span>
         </h3>
         <!--end::Heading-->

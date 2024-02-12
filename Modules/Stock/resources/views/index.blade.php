@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header mt-3">
             <div class="float-start">
-                Stock List
+                Stock Converter
             </div>
             <div class="float-end">
                 <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
@@ -90,7 +90,7 @@
         <div class="card-body">
             @can('create-stock')
                 <a href="{{ route('stock.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
-                    New Stock </a>
+                    New Stock Converter </a>
                 <a href="javascript:;" class="btn btn-primary btn-sm my-2"><i class="bi bi-plus-circle"></i>
                     Stock Opname </a>
                 <a href="javascript:;" class="btn btn-warning btn-sm my-2"><i class="bi bi-plus-circle"></i>
@@ -101,7 +101,6 @@
             @endcan
 
             <div class="table-responsive">
-
                 <table class="table align-middle table-row-dashed fs-6 gy-5">
                     <thead>
                         <tr>
@@ -196,7 +195,7 @@
                                         <!--end::Svg Icon-->
                                         <div class="d-flex flex-column">
                                             <h4 class="mb-1 text-danger">This is an alert</h4>
-                                            <span>No Stock Product Found</span>
+                                            <span>No Stock Converter Product Found</span>
                                         </div>
                                     </div>
                                 </td>
