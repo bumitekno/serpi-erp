@@ -28,7 +28,6 @@ use Maatwebsite\Excel\Facades\Excel;
 class SalesController extends Controller
 {
 
-
     /**
      * Instantiate a new SalesController instance.
      */
@@ -102,6 +101,9 @@ class SalesController extends Controller
             ->orderByDesc('total_sales')
             ->get();
 
+        //saldo awal bulan 
+        $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->first();
+
         return view('sales::index')->with([
             'transaction' => $transaction,
             'keyword' => $request->search,
@@ -118,7 +120,8 @@ class SalesController extends Controller
             'chart_pending' => $total_pending_chart,
             'top_product' => $product_top,
             'startdate' => $startdate,
-            'enddate' => $enddate
+            'enddate' => $enddate,
+            'open_balance' => empty($saldo_awal) ? 0 : number_format($saldo_awal->amount, 0, ',', '.')
         ]);
     }
 
@@ -425,6 +428,19 @@ class SalesController extends Controller
     {
         Session::put('tax', empty($request->tax) ? 0 : Str::replace('.', '', $request->tax));
         Session::flash('success', 'Tax has been add successfully !');
+        return redirect()->back();
+    }
+
+    /** store open balance */
+    public function storeopenbal(Request $request): RedirectResponse
+    {
+        BalanceSales::updateOrCreate([
+            'date_balance' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('Y-m-d')
+        ], [
+            'amount' => $request->amount_balance
+        ]);
+
+        Session::flash('success', ' Open Balance is saved successfully !');
         return redirect()->back();
     }
 

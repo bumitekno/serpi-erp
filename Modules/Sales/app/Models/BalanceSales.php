@@ -12,6 +12,11 @@ class BalanceSales extends Model
 {
     use HasFactory, LogsActivity;
 
+    protected $table = 'balance_sales';
+
+    protected $guarded = [];
+    protected $guard_name = 'web';
+
     /**
      * The attributes that are mass assignable.
      */
