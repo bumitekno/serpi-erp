@@ -649,46 +649,47 @@
                     @forelse ($product as $products)
                         <div class="col-md-6 col-lg-4 col-xl-3">
                             <!--begin::Card-->
-                            <div class="card h-100">
-                                <!--begin::Card body-->
-                                <div class="card-body d-flex justify-content-center text-center flex-column p-8">
-                                    <!--begin::Name-->
-                                    <a href="javascript:;" data-id="{{ $products->id }}" id="addcart"
-                                        class="text-gray-800 text-hover-primary d-flex flex-column">
-                                        <!--begin::Image-->
-                                        <div class="symbol symbol-100px mb-5">
-                                            @if (!empty($products->image_product))
-                                                <img src="{{ Storage::url($products->image_product) }}" alt="Product"
-                                                    class="w-100 h-150px" />
-                                            @else
-                                                <img src="https://fakeimg.pl/100x150" alt="Product"
-                                                    class="w-100 h-150px" />
-                                            @endif
+                            <a href="javascript:;" data-id="{{ $products->id }}" id="addcart">
+                                <div class="card h-100">
+                                    <!--begin::Card body-->
+                                    <div class="card-body d-flex justify-content-center text-center flex-column p-8">
+                                        <!--begin::Name-->
+                                        <div class="text-gray-800 text-hover-primary d-flex flex-column">
+                                            <!--begin::Image-->
+                                            <div class="symbol symbol-100px mb-5">
+                                                @if (!empty($products->image_product))
+                                                    <img src="{{ Storage::url($products->image_product) }}"
+                                                        alt="Product" class="w-100 h-150px" />
+                                                @else
+                                                    <img src="https://fakeimg.pl/100x150" alt="Product"
+                                                        class="w-100 h-150px" />
+                                                @endif
+                                            </div>
+                                            <!--end::Image-->
+                                            <!--begin::Title-->
+                                            <div class="fs-5 fw-bolder mb-2">{{ $products->name ?? '' }}</div>
+                                            <!--end::Title-->
                                         </div>
-                                        <!--end::Image-->
-                                        <!--begin::Title-->
-                                        <div class="fs-5 fw-bolder mb-2">{{ $products->name ?? '' }}</div>
-                                        <!--end::Title-->
-                                    </a>
-                                    <!--end::Name-->
+                                        <!--end::Name-->
 
-                                    <div class="fs-7 fw-bold mb-3 badge badge-light-success">
-                                        {{ empty($products->price_sell) ? 0 : number_format($products->price_sell, 0, ',', '.') }}
+                                        <div class="fs-7 fw-bold mb-3 badge badge-light-success">
+                                            {{ empty($products->price_sell) ? 0 : number_format($products->price_sell, 0, ',', '.') }}
+                                        </div>
+
+                                        <!--begin::Description-->
+                                        <div class="fs-7 fw-bold badge badge-info mb-3  ">
+                                            {{ $products->category_product?->name }}
+                                        </div>
+                                        <!--end::Description-->
+
+                                        <div class="fs-7 fw-bold badge badge-light-primary">
+                                            {{ empty($products->stock_last) ? 0 : $products->stock_last }}
+                                        </div>
+
                                     </div>
-
-                                    <!--begin::Description-->
-                                    <div class="fs-7 fw-bold badge badge-info mb-3  ">
-                                        {{ $products->category_product?->name }}
-                                    </div>
-                                    <!--end::Description-->
-
-                                    <div class="fs-7 fw-bold badge badge-light-primary">
-                                        {{ empty($products->stock_last) ? 0 : $products->stock_last }}
-                                    </div>
-
+                                    <!--end::Card body-->
                                 </div>
-                                <!--end::Card body-->
-                            </div>
+                            </a>
                             <!--end::Card-->
                         </div>
                     @empty
