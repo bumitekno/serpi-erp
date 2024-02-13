@@ -26,6 +26,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
+use Modules\Sales\app\Http\Controllers\ReportDaily;
 
 class SalesController extends Controller
 {
@@ -152,6 +153,35 @@ class SalesController extends Controller
             'list_departement' => $departement,
             'departement_default' => $departement_default
         ]);
+    }
+
+    /** download file daily report  */
+
+    public function reportdaily($departement)
+    {
+        $sum_transaction_success_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->where('date_sales', Carbon::now()->format('Y-m-d'))->sum('total_transaction');
+        if ($departement == 'all') {
+            //saldo awal bulan 
+            $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->sum('amount');
+            $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->sum('amount');
+            $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->sum('amount');
+        } else {
+            //saldo awal bulan 
+            $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('amount');
+            $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('amount');
+            $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('amount');
+        }
+
+        $report = [
+            'open_balance' => empty($saldo_awal) ? 0 : number_format($saldo_awal, 0, '.', ','),
+            'daily_income' => empty($income) ? 0 : number_format($income, 0, '.', ','),
+            'daily_expense' => empty($expense) ? 0 : number_format($expense, 0, '.', ','),
+            'daily_sales' => empty($sum_transaction_success_today) ? 0 : number_format($sum_transaction_success_today, 0, '.', ','),
+            'close_balance' => number_format($saldo_awal + $income + $sum_transaction_success_today - $expense, 0, '.', ','),
+            'departement' => $departement == 'all' ? 'All Departement' : Departement::find($departement)?->name
+        ];
+
+        return Excel::download(new ReportDaily($report), 'report_daily.xlsx');
     }
 
     /**
@@ -954,7 +984,7 @@ class SalesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
         //
     }

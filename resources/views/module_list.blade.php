@@ -35,16 +35,18 @@
                 $list_permission = Spatie\Permission\Models\Permission::select('name', 'module')
                     ->where('module', '=', $nav_route->module)
                     ->get()
-                    ->toArray();
+                    ->pluck('name');
+
                 $text_route = strtolower(Str::replace('_', '', $nav_route->module));
                 if ($text_route == 'product') {
                     $text_route = 'productpos';
                 }
                 $route_name = route($text_route . '.index');
             @endphp
+
             @canany($list_permission)
                 <!--begin::Col-->
-                <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="col-md-6 col-lg-4 col-xl-3 @if ($text_route == 'methodpayment') d-none @endif ">
                     <!--begin::Card-->
                     <div class="card h-100">
                         <!--begin::Card body-->

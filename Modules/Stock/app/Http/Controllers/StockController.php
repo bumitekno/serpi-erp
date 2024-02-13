@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Stock\app\Models\Stock;
+use Modules\Stock\app\Models\StockOpname;
 use Modules\Warehouse\app\Models\Warehouse;
 use Modules\Location\app\Models\Location;
 use Modules\UnitProduct\app\Models\UnitProduct;
@@ -13,6 +14,8 @@ use Modules\ProductPos\app\Models\ProductPos;
 use Modules\Purchase\app\Models\TransactionPurchase;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
+
 
 class StockController extends Controller
 {
@@ -104,6 +107,55 @@ class StockController extends Controller
                 })->rawColumns(['action'])->make();
         }
         return view('stock::create_stock_purchase');
+    }
+
+    /** ajax product  */
+    public function ajaxproduct(Request $request)
+    {
+        $product = ProductPos::where(['id' => $request->id, 'id_warehouse' => $request->id_warehouse, 'id_location' => $request->id_location])->first()->toArray();
+        return response()->json(['data' => $product], 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+
+    public function createopname(Request $request)
+    {
+
+        return view('stock::createopname')->with([
+            'unit' => UnitProduct::query()->get(),
+            'product' => ProductPos::query()->get(),
+            'warehouse' => Warehouse::query()->get(),
+            'location' => Location::query()->get()
+        ]);
+    }
+
+    public function storeopname(Request $request)
+    {
+        foreach ($request->addmore['product'] as $key => $val) {
+            $items = [
+                'id_product' => $val,
+                'id_unit' => $request->addmore['units'][$key],
+                'stock_before' => $request->addmore['qty_before'][$key],
+                'stock_after' => $request->addmore['qty_after'][$key],
+                'difference' => $request->addmore['qty_difference'][$key],
+                'id_warehouse' => $request->warehouse,
+                'id_location' => $request->location,
+                'date_opname' => Carbon::now()->format('Y-m-d')
+            ];
+            $create_opname = StockOpname::create($items);
+            if (!empty($create_opname)) {
+                ProductPos::where([
+                    'id' => $create_opname->id_product,
+                    'id_warehouse' => $create_opname->id_warehouse,
+                    'id_location' => $create_opname->id_location
+                ])->update(['stock_last' => $create_opname->stock_after]);
+            }
+        }
+
+        Session::flash('success', 'Transaction  Stock Opname is successfully !');
+        return redirect()->back();
     }
 
     /**

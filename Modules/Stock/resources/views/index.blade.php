@@ -91,7 +91,8 @@
             @can('create-stock')
                 <a href="{{ route('stock.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i>
                     New Stock Converter </a>
-                <a href="javascript:;" class="btn btn-primary btn-sm my-2"><i class="bi bi-plus-circle"></i>
+                <a href="{{ route('stock.createopname') }}" class="btn btn-primary btn-sm my-2"><i
+                        class="bi bi-plus-circle"></i>
                     Stock Opname </a>
                 <a href="javascript:;" class="btn btn-warning btn-sm my-2"><i class="bi bi-plus-circle"></i>
                     Transfer Warehouse </a>

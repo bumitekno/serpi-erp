@@ -18,4 +18,7 @@ Route::group([], function () {
     Route::resource('stock', StockController::class)->names('stock');
     Route::post('stock/search', [StockController::class, 'index'])->name('stock.search');
     Route::get('stock/in/purchase', [StockController::class, 'createstokP'])->name('stock.createstockp');
+    Route::get('stock/opname/create', [StockController::class, 'createopname'])->name('stock.createopname');
+    Route::post('stock/list/product', [StockController::class, 'ajaxproduct'])->name('stock.ajaxproduct');
+    Route::post('stock/opname/store', [StockController::class, 'storeopname'])->name('stock.storeopname');
 });

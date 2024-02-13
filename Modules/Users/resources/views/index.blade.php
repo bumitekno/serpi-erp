@@ -171,20 +171,18 @@
                                             <!--begin::Label-->
                                             <label class="required fw-bold fs-6 mb-2">Password</label>
                                             <!--end::Label-->
-                                            {!! Form::password('password', [
-                                                'placeholder' => 'Password',
-                                                'class' => 'form-control form-control-solid mb-3 mb-lg-0',
-                                            ]) !!}
+                                            <input type="password"
+                                                class="form-control form-control form-control-solid mb-3 mb-lg-0"
+                                                id="password" name="password" placeholder="Password">
                                         </div>
 
                                         <div class="fv-row mb-7">
                                             <!--begin::Label-->
                                             <label class="required fw-bold fs-6 mb-2">Confirm Password</label>
                                             <!--end::Label-->
-                                            {!! Form::password('confirmpassword', [
-                                                'placeholder' => 'Confirm Password',
-                                                'class' => 'form-control form-control-solid mb-3 mb-lg-0',
-                                            ]) !!}
+                                            <input type="password" class="form-control form-control-solid mb-3 mb-lg-0"
+                                                id="confirmpassword" name="confirmpassword"
+                                                placeholder="Confirm Password">
                                         </div>
 
                                         <!--begin::Input group-->
@@ -192,7 +190,15 @@
                                             <!--begin::Label-->
                                             <label class="required fw-bold fs-6 mb-5">Role</label>
                                             <!--end::Label-->
-                                            {!! Form::select('user_role[]', $roles, [], ['class' => 'form-control', 'multiple']) !!}
+                                            <select class="form-select" multiple aria-label="Roles" id="roles"
+                                                name="user_role[]">
+                                                @forelse ($roles as $role)
+                                                    <option value="{{ $role }}">
+                                                        {{ $role }}
+                                                    </option>
+                                                @empty
+                                                @endforelse
+                                            </select>
                                         </div>
                                         <!--end::Input group-->
                                     </div>

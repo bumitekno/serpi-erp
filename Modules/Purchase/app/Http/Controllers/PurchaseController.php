@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Stock\app\Models\Stock;
 use Modules\UnitProduct\app\Models\UnitProduct;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 

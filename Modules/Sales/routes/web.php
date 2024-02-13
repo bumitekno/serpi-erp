@@ -40,4 +40,5 @@ Route::group([], function () {
     Route::get('sales/edit/cancel', [SalesController::class, 'canceledit'])->name('sales.canceledit');
     Route::get('sales/download/transaction', [SalesController::class, 'download_transaction'])->name('sales.download_transaction');
     Route::post('sales/open/balance', [SalesController::class, 'storeopenbal'])->name('sales.storeopenbal');
+    Route::get('sales/report/daily/{departement}', [SalesController::class, 'reportdaily'])->name('sales.reportdaily');
 });

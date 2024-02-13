@@ -22,6 +22,7 @@ class UsersController extends Controller
      */
     public function __construct()
     {
+        $this->middleware('auth');
         $this->middleware('permission:create-user|edit-user|delete-user', ['only' => ['index', 'show']]);
         $this->middleware('permission:create-user', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit-user', ['only' => ['edit', 'update']]);
@@ -80,16 +81,6 @@ class UsersController extends Controller
         $user = User::create($data_send);
 
         $user->assignRole($request->input('user_role'));
-
-        $role = Role::where('name', '=', $request->input('user_role'))->first();
-
-        $rolePermissions = DB::table("role_has_permissions")->where("role_id", $role->id)
-            ->pluck('permission_id')
-            ->all();
-
-        //$permissions = Permission::pluck('id', 'id')->all();
-
-        $user->syncPermissions($rolePermissions);
 
         return response()->json(['message' => 'User created successfully', 'redirect' => route('users.index')], 200);
 

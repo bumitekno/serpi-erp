@@ -2,7 +2,6 @@
 
 namespace Modules\Sales\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 

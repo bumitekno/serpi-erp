@@ -397,9 +397,13 @@
     @can('report-sales')
         <div class="card mb-3">
             <div class="card-header">
+                <div class="card-title">
+                    <span class="card-label">Daily Report </span>
+                </div>
                 <div class="card-toolbar">
                     <div class="mb-3 row">
-                        <div class="col-md-12">
+                        <div class="col-lg-8">
+                            <label for="depart" class="form-label">Departement</label>
                             <select class="form-select" data-control="select2" data-placeholder="Select Departement"
                                 name="departement">
                                 @foreach ($list_departement as $departements)
@@ -412,13 +416,18 @@
                                 </option>
                             </select>
                         </div>
+                        <div class="col-lg-4">
+                            <a href="javascript:;" class="btn btn-info btn-sm my-8 py-4  download-report"><i
+                                    class="bi bi-arrow-down"></i>
+                                Download </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body html-report" id="html-content-holder">
 
                 <h3 class="card-title text-center">
-                    <span class="card-label fw-bolder fs-3 mb-1">Daily Report Cashir (Today) </span>
+                    <span class="card-label fw-bolder fs-3 mb-1"> Report Cashir (Today) </span>
                 </h3>
 
                 <div class="d-flex align-items-sm-center mb-7">
@@ -686,6 +695,13 @@
             var start = $('input[name=datefilter]').attr('data-stardate');
             var end = $('input[name=datefilter]').attr('data-enddate');
             window.location.href = "{{ route('sales.download_transaction') }}?from=" + start + "&to=" + end;
+        });
+
+        $('body').on('click', '.download-report', function(e) {
+            var departement = $('select[name=departement] option:selected').val();
+            var url = "{{ route('sales.reportdaily', ['departement' => ':departement']) }}";
+            url = url.replace(':departement', departement);
+            window.location.href = url;
         });
 
         $(".kt_datepicker").flatpickr({
