@@ -21,4 +21,5 @@ Route::group([], function () {
     Route::get('stock/opname/create', [StockController::class, 'createopname'])->name('stock.createopname');
     Route::post('stock/list/product', [StockController::class, 'ajaxproduct'])->name('stock.ajaxproduct');
     Route::post('stock/opname/store', [StockController::class, 'storeopname'])->name('stock.storeopname');
+    Route::get('stock/download/opname', [StockController::class, 'download_stockopname'])->name('stock.download_stockopname');
 });

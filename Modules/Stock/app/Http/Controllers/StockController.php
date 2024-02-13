@@ -15,6 +15,8 @@ use Modules\Purchase\app\Models\TransactionPurchase;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Stock\app\Http\Controllers\StockOpnameExport;
 
 
 class StockController extends Controller
@@ -122,6 +124,30 @@ class StockController extends Controller
 
     public function createopname(Request $request)
     {
+        if ($request->ajax()) {
+            $data_trans = StockOpname::with('products', 'units', 'location', 'warehouse')->latest()->get();
+            return DataTables::of($data_trans)
+                ->addIndexColumn()
+                ->editColumn('date_opname', function ($row) {
+                    return empty($row->date_opname) ? '-' : Carbon::parse($row->date_opname)->translatedFormat('d F Y');
+                })
+                ->editColumn('warehouse', function ($row) {
+                    return $row->warehouse?->name;
+                })
+                ->editColumn('location', function ($row) {
+                    return $row->location?->name_location;
+                })
+                ->editColumn('product', function ($row) {
+                    return $row->products?->name;
+                })
+                ->editColumn('code_product', function ($row) {
+                    return $row->products?->code_product;
+                })
+                ->editColumn('unit', function ($row) {
+                    return $row->units?->name;
+                })
+                ->make();
+        }
 
         return view('stock::createopname')->with([
             'unit' => UnitProduct::query()->get(),
@@ -131,30 +157,55 @@ class StockController extends Controller
         ]);
     }
 
+    /** export excel stockopname */
+
+    public function download_stockopname()
+    {
+        $report = StockOpname::with('products', 'units', 'location', 'warehouse')->latest()->get();
+        return Excel::download(new StockOpnameExport($report), 'stock_opname.xls');
+    }
+
     public function storeopname(Request $request)
     {
+
         foreach ($request->addmore['product'] as $key => $val) {
-            $items = [
-                'id_product' => $val,
-                'id_unit' => $request->addmore['units'][$key],
-                'stock_before' => $request->addmore['qty_before'][$key],
-                'stock_after' => $request->addmore['qty_after'][$key],
-                'difference' => $request->addmore['qty_difference'][$key],
+            $checkProduct = ProductPos::where([
+                'id' => $val,
                 'id_warehouse' => $request->warehouse,
                 'id_location' => $request->location,
-                'date_opname' => Carbon::now()->format('Y-m-d')
-            ];
-            $create_opname = StockOpname::create($items);
-            if (!empty($create_opname)) {
-                ProductPos::where([
-                    'id' => $create_opname->id_product,
-                    'id_warehouse' => $create_opname->id_warehouse,
-                    'id_location' => $create_opname->id_location
-                ])->update(['stock_last' => $create_opname->stock_after]);
+            ])->first();
+
+            if (empty($checkProduct)) {
+                $check = true;
+            } else {
+                $check = false;
+                $items = [
+                    'id_product' => $val,
+                    'id_unit' => $request->addmore['units'][$key],
+                    'stock_before' => $request->addmore['qty_before'][$key],
+                    'stock_after' => $request->addmore['qty_after'][$key],
+                    'difference' => $request->addmore['qty_difference'][$key],
+                    'id_warehouse' => $request->warehouse,
+                    'id_location' => $request->location,
+                    'date_opname' => Carbon::now()->format('Y-m-d')
+                ];
+                $create_opname = StockOpname::create($items);
+                if (!empty($create_opname)) {
+                    ProductPos::where([
+                        'id' => $create_opname->id_product,
+                        'id_warehouse' => $create_opname->id_warehouse,
+                        'id_location' => $create_opname->id_location
+                    ])->update(['stock_last' => $create_opname->stock_after]);
+                }
             }
         }
 
-        Session::flash('success', 'Transaction  Stock Opname is successfully !');
+        if ($check == false) {
+            Session::flash('success', 'Transaction  Stock Opname is successfully !');
+        } else {
+            Session::flash('error', 'Transaction  Stock Opname is failed, Product Not Found !');
+        }
+
         return redirect()->back();
     }
 
