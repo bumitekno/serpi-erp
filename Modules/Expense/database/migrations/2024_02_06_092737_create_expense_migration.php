@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->foreignId('id_expense')->nullable();
             $table->foreignId('id_departement')->nullable();
             $table->string('amount')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

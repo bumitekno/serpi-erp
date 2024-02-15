@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Modules\Users\app\Http\Requests\UpdateUserRequest;
-use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {

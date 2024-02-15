@@ -11,7 +11,7 @@ class ProductPosExportController implements FromView
     public function view(): View
     {
         return view('productpos::export', [
-            'product' => ProductPos::with('category_product')->get()
+            'product' => ProductPos::with(['category_product', 'warehouse', 'location'])->orderByDesc('id_warehouse')->get()
         ]);
     }
 }

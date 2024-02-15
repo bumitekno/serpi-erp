@@ -12,6 +12,8 @@
             <th>Stock Min </th>
             <th>Stock Max</th>
             <th>Expired Date </th>
+            <th>Warehouse </th>
+            <th>Location </th>
         </tr>
     </thead>
     <tbody>
@@ -29,6 +31,8 @@
                 <td>{{ $product?->stock_max }}</td>
                 <td>{{ empty($product->date_expired) ? '-' : \Carbon\Carbon::parse($product->date_expired)->translatedFormat('d F Y') }}
                 </td>
+                <td>{{ $product?->warehouse?->name }}</td>
+                <td>{{ $product?->location?->name_location }}</td>
             </tr>
         @endforeach
     </tbody>

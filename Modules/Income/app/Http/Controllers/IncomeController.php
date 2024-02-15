@@ -123,7 +123,8 @@ class IncomeController extends Controller
             'id_income' => $request->id_income,
             'amount' => $request->amount_trans,
             'id_user' => Auth::user()->id,
-            'id_departement' => $request->departement
+            'id_departement' => $request->departement,
+            'note' => $request->note
         ]);
         Session::flash('success', ' Transaction ' . $request->name_trans . 'is  add successfuly.');
         return redirect()->back();
@@ -184,7 +185,8 @@ class IncomeController extends Controller
             'date_transaction' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('Y-m-d'),
             'time_transaction' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('H:i:s'),
             'amount' => $request->amount_trans,
-            'id_departement' => $request->departement
+            'id_departement' => $request->departement,
+            'note' => $request->note
         ]);
         Session::flash('success', ' Transaction Income ' . $request->name_iname_transnput . 'is  change successfuly.');
         return redirect()->back();

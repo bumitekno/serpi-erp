@@ -29,7 +29,9 @@ class ProductPostImport implements ToModel, WithStartRow, WithHeadingRow
             'code_product' => $row['code'],
             'category' => $row['id_category'],
             'description' => $row['description'],
-            'enabled' => 1
+            'enabled' => 1,
+            'id_warehouse' => $row['id_warehouse'],
+            'id_location' => $row['id_location']
         ];
 
         if (!empty($row['expired_date']))

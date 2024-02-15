@@ -18,6 +18,8 @@
                 <td style="text-align: center; font-size:10px">Stock Min</td>
                 <td style="text-align: center; font-size:10px">Stock Max</td>
                 <td style="text-align: center; font-size:10px">Expired</td>
+                <td style="text-align: center; font-size:10px">ID Warehouse</td>
+                <td style="text-align: center; font-size:10px">ID Location</td>
             </thead>
         </table>
         <tbody>
@@ -44,6 +46,10 @@
                 <td style="text-align: center; background-color:#7dd8ff; font-size:10px">stock_min &nbsp;</td>
                 <td style="text-align: center; background-color:#7dd8ff; font-size:10px">stock_max &nbsp;</td>
                 <td style="text-align: center; background-color:#7dd8ff; font-size:10px">expired_date &nbsp;</td>
+                <td style="text-align: center; background-color:#7dd8ff; font-size:10px">id_warehouse &nbsp;<span
+                        style="color: red">*</span></td>
+                <td style="text-align: center; background-color:#7dd8ff; font-size:10px">id_location &nbsp;<span
+                        style="color: red">*</span></td>
             </thead>
         </table>
         <tbody>

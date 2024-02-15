@@ -63,6 +63,12 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Note </label>
+                            <div class="col-md-6">
+                                <textarea name="note" class="form-control" placeholder="Insert Note"></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
                             <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Save">
                         </div>
                     </form>
@@ -76,6 +82,7 @@
                                 <th>Date</th>
                                 <th>Name</th>
                                 <th>Amount</th>
+                                <th> Note </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -139,6 +146,10 @@
                     {
                         data: 'amount',
                         name: 'amount'
+                    },
+                    {
+                        data: 'note',
+                        name: 'note'
                     },
                     {
                         data: 'action',

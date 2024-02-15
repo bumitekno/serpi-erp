@@ -45,7 +45,11 @@
                     <div class="aside-user d-flex align-items-sm-center justify-content-center py-5">
                         <!--begin::Symbol-->
                         <div class="symbol symbol-50px">
-                            <img src="{{ asset('assets/media/avatars/150-26.jpg') }}" alt="" />
+                            @if (!empty(Auth()->user()->avatar))
+                                <img src="{{ Storage::url(Auth()->user()->avatar) }}" alt="" />
+                            @else
+                                <img src="{{ asset('assets/media/avatars/150-26.jpg') }}" alt="" />
+                            @endif
                         </div>
                         <!--end::Symbol-->
                         <!--begin::Wrapper-->
@@ -100,8 +104,13 @@
                                                 <!--begin::Avatar-->
                                                 <div class="symbol symbol-50px me-5">
                                                     <div class="symbol symbol-50px">
-                                                        <img src="{{ asset('assets/media/avatars/150-26.jpg') }}"
-                                                            alt="" />
+                                                        @if (!empty(Auth()->user()->avatar))
+                                                            <img src="{{ Storage::url(Auth()->user()->avatar) }}"
+                                                                alt="" />
+                                                        @else
+                                                            <img src="{{ asset('assets/media/avatars/150-26.jpg') }}"
+                                                                alt="" />
+                                                        @endif
                                                     </div>
                                                 </div>
                                                 <!--end::Avatar-->
@@ -121,6 +130,11 @@
                                         <!--begin::Menu separator-->
                                         <div class="separator my-2"></div>
                                         <!--end::Menu separator-->
+
+                                        <div class="menu-item px-5">
+                                            <a href="{{ route('profil.index') }}" class="menu-link px-5">My
+                                                Profiles</a>
+                                        </div>
 
                                         <!--begin::Menu item-->
                                         <div class="menu-item px-5">
@@ -253,6 +267,7 @@
                                     </li>
                                     <!--end::Item-->
 
+
                                     @can('report-daily-pos')
                                         <li class="breadcrumb-item">
                                             <span class="bullet bg-gray-200 w-5px h-2px"></span>
@@ -269,73 +284,22 @@
                                             <span class="bullet bg-gray-200 w-5px h-2px"></span>
                                         </li>
 
-                                        @if (!empty(request()->segment(1)) && request()->segment(1) == 'expense')
-                                            <li class="breadcrumb-item">
-                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
-                                            </li>
-
-                                            @can('create-sales')
-                                                <li class="breadcrumb-item text-muted">
-                                                    <a href="{{ route('sales.index') }}" class="text-hover-primary">
-                                                        Sales
-                                                    </a>
-                                                </li>
-                                            @endcan
-
-                                            <li class="breadcrumb-item">
-                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
-                                            </li>
-
-                                            @can('create-purchase')
-                                                <li class="breadcrumb-item  text-muted">
-                                                    <a href="{{ route('purchase.index') }}" class="text-hover-primary">
-                                                        Purchase
-                                                    </a>
-                                                </li>
-                                            @endcan
-                                        @elseif (!empty(request()->segment(1)) && request()->segment(1) == 'income')
-                                            <li class="breadcrumb-item">
-                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
-                                            </li>
-
-                                            @can('create-sales')
-                                                <li class="breadcrumb-item text-muted">
-                                                    <a href="{{ route('sales.index') }}" class="text-hover-primary">
-                                                        Sales
-                                                    </a>
-                                                </li>
-                                            @endcan
-
-                                            <li class="breadcrumb-item">
-                                                <span class="bullet bg-gray-200 w-5px h-2px"></span>
-                                            </li>
-
-                                            @can('create-purchase')
-                                                <li class="breadcrumb-item text-muted">
-                                                    <a href="{{ route('purchase.index') }}" class="text-hover-primary">
-                                                        Purchase
-                                                    </a>
+                                        @if (request()->segment(2) == 'dailypos')
+                                            @can('report-daily-pos')
+                                                <li class="breadcrumb-item text-dark">
+                                                    <span class="text-hover-primary">Report
+                                                    </span>
                                                 </li>
                                             @endcan
                                         @else
-                                            @if (request()->segment(2) == 'dailypos')
-                                                @can('report-daily-pos')
-                                                    <li class="breadcrumb-item text-dark">
-                                                        <span class="text-hover-primary">Report
-                                                        </span>
-                                                    </li>
-                                                @endcan
-                                            @else
-                                                <li class="breadcrumb-item text-dark">
-                                                    <a href="{{ route(request()->segment(1) . '.index') }}"
-                                                        class="text-hover-primary">
-                                                        {{ Str::title(request()->segment(1)) }}
-                                                    </a>
-                                                </li>
-                                            @endif
+                                            <li class="breadcrumb-item text-dark">
+                                                <a href="{{ route(request()->segment(1) . '.index') }}"
+                                                    class="text-hover-primary">
+                                                    {{ Str::title(request()->segment(1)) }}
+                                                </a>
+                                            </li>
                                         @endif
                                     @endif
-
                                 </ul>
                                 <!--end::Breadcrumb-->
                             </div>
@@ -349,7 +313,13 @@
                                         <div class="cursor-pointer symbol symbol-30px symbol-md-40px"
                                             data-kt-menu-trigger="click" data-kt-menu-attach="parent"
                                             data-kt-menu-placement="bottom-end">
-                                            <img src="{{ asset('assets/media/avatars/150-26.jpg') }}" alt="user">
+                                            @if (!empty(Auth()->user()->avatar))
+                                                <img src="{{ Storage::url(Auth()->user()->avatar) }}"
+                                                    alt="user" />
+                                            @else
+                                                <img src="{{ asset('assets/media/avatars/150-26.jpg') }}"
+                                                    alt="user">
+                                            @endif
                                         </div>
                                         <!--begin::Menu-->
                                         <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px"
@@ -359,8 +329,14 @@
                                                 <div class="menu-content d-flex align-items-center px-3">
 
                                                     <div class="symbol symbol-50px me-5">
-                                                        <img alt="Logo"
-                                                            src="{{ asset('assets/media/avatars/150-26.jpg') }}">
+
+                                                        @if (!empty(Auth()->user()->avatar))
+                                                            <img src="{{ Storage::url(Auth()->user()->avatar) }}"
+                                                                alt="Logo" />
+                                                        @else
+                                                            <img alt="Logo"
+                                                                src="{{ asset('assets/media/avatars/150-26.jpg') }}">
+                                                        @endif
                                                     </div>
 
                                                     <!--begin::Username-->
@@ -378,6 +354,11 @@
                                             </div>
 
                                             <div class="separator my-2"></div>
+
+                                            <div class="menu-item px-5">
+                                                <a href="{{ route('profil.index') }}" class="menu-link px-5">My
+                                                    Profiles</a>
+                                            </div>
 
                                             <!--begin::Menu item-->
                                             <div class="menu-item px-5">

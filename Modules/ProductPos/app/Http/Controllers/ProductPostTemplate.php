@@ -44,8 +44,8 @@ class ProductPostTemplate implements FromView, ShouldAutoSize, WithStyles, WithC
         $sheet->mergeCells('A3:n3')->setCellValue('A3', "1. Semua cell diwajibkan menggunakan format text");
         $sheet->mergeCells('A4:n4')->setCellValue('A4', "2. Kode Product Harus Unique ");
         $sheet->mergeCells('A5:n5')->setCellValue('A5', "3. Isi ID Category bisa lihat sheet Data Category ");
-        $sheet->mergeCells('A6:n6');
-        $sheet->mergeCells('A7:n7');
+        $sheet->mergeCells('A6:n6')->setCellValue('A6', "4. Isi ID Warehouse bisa lihat sheet Data Warehouse ");
+        $sheet->mergeCells('A7:n7')->setCellValue('A6', "4. Isi ID Location bisa lihat sheet Data Location ");
         $sheet->mergeCells('A8:n8');
         $sheet->getStyle('A9:N9')->getFont()->setBold(true);
 

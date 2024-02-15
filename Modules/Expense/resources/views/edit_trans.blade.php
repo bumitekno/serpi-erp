@@ -62,6 +62,14 @@
                             placeholder="0" value="{{ $expense->amount }}">
                     </div>
                 </div>
+
+                <div class="mb-3 row">
+                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Note </label>
+                    <div class="col-md-6">
+                        <textarea name="note" class="form-control" placeholder="Insert Note">{{ $expense->note }}</textarea>
+                    </div>
+                </div>
+
                 <div class="mb-3 row">
                     <input type="submit" class="col-md-3 offset-md-5 btn btn-primary" value="Save">
                 </div>

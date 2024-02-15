@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->time('time_transaction')->nullable();
             $table->foreignId('id_user')->nullable();
             $table->foreignId('id_income')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }
