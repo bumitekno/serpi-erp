@@ -268,8 +268,7 @@
                     success: function(r) {
                         index_id.find('input.qty_before').val(r.data
                             .stock_last);
-                        index_id.find('select.units').select2().val(1).change();
-                        index_id.find('select.units').select2('enable', false);
+                        index_id.find('select.units').select2().val('1').change();
                         index_id.find('select.units').css('pointer-events', 'none');
                     },
                     error: function(e) {}

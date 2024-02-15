@@ -31,12 +31,5 @@ class RolesDatabaseSeeder extends Seeder
             'edit-product',
             'delete-product'
         ]);
-
-        $productManager = Role::create(['name' => 'Product Manager', 'guard_name' => 'web']);
-        $productManager->givePermissionTo([
-            'create-product',
-            'edit-product',
-            'delete-product'
-        ]);
     }
 }

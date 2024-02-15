@@ -26,7 +26,7 @@ class UnitProductDatabaseSeeder extends Seeder
         ]);
 
         UnitProduct::create([
-            'name' => 'Bal'
+            'name' => 'Lusin'
         ]);
 
         UnitProduct::create([

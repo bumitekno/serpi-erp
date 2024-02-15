@@ -54,7 +54,7 @@
             </div>
             <div class="float-end">
                 @if (request()->get('import') == true && !empty(request()->get('import')))
-                    <a href="{{ url()->previous() }}" class="btn btn-sm btn-dark my-2 "> Back </a>
+                    <a href="{{ route('purchase.index') }}" class="btn btn-sm btn-dark my-2 "> Back to Purchase </a>
                     @if ($transaction->transfer_stock == 0)
                         <a href="{{ route('purchase.storetransfer', $transaction->id) }}"
                             class="btn btn-sm btn-info my-2 ">Transfer Stock </a>
