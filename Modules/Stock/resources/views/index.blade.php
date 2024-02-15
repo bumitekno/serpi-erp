@@ -94,8 +94,7 @@
                 <a href="{{ route('stock.createopname') }}" class="btn btn-primary btn-sm my-2"><i
                         class="bi bi-plus-circle"></i>
                     Stock Opname </a>
-                <a href="javascript:;" class="btn btn-warning btn-sm my-2"><i class="bi bi-plus-circle"></i>
-                    Transfer Warehouse </a>
+
                 <a href="{{ route('stock.createstockp') }}" class="btn btn-default btn-sm my-2"><i
                         class="bi bi-plus-circle"></i>
                     Stock In Purchase </a>

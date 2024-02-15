@@ -45,6 +45,68 @@
     </div>
 @endpush
 
+
+@push('modals')
+    <div class="modal fade" tabindex="-1" id="kt_modal_transfer">
+        <div class="modal-dialog modal-lg">
+            <form name="move" method="POST" action="{{ route('productpos.movewarehouse') }}">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title"> Moving Product Warehouse </h3>
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="product">
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Warehouse</label>
+                            <div class="col-md-6">
+                                <select class="form-select @error('warehouse') is-invalid @enderror" data-control="select2"
+                                    data-placeholder="Select Warehouse" name="warehouse" required>
+                                    <option></option>
+                                    @foreach ($warehouse as $warehouses)
+                                        <option value="{{ $warehouses->id }}"> {{ $warehouses->name }} </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('warehouse'))
+                                    <span class="text-danger">{{ $errors->first('warehouse') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Location</label>
+                            <div class="col-md-6">
+                                <select class="form-select @error('location') is-invalid @enderror" data-control="select2"
+                                    data-placeholder="Select Location" name="location" required>
+                                    <option></option>
+                                    @foreach ($location as $locations)
+                                        <option value="{{ $locations->id }}"> {{ $locations->name_location }} </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('location'))
+                                    <span class="text-danger">{{ $errors->first('location') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary"> Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endpush
+
 @section('content')
     <div class="card">
         <div class="card-header mt-3">
@@ -102,9 +164,13 @@
                 <div class="fw-bolder me-5">
                     <span class="me-2" data-kt-product-table-select="selected_count"></span>Selected
                 </div>
-                <a href="javascript:;" class="btn btn-dark btn-sm my-2" data-kt-product-table-select="print_selected"><i
-                        class="bi bi-printer"></i>
+                <a href="javascript:;" class="btn btn-dark btn-sm my-2 me-2"
+                    data-kt-product-table-select="print_selected"><i class="bi bi-printer"></i>
                     Barcode Label Printing </a>
+
+                <a href="javascript:;" class="btn btn-warning btn-sm my-2" id="transfer_warehouse"><i
+                        class="bi bi-filter-square"></i>
+                    Moving Warehouse </a>
             </div>
 
             <div class="table-responsive">
@@ -362,6 +428,17 @@
                         }
                     });
             });
+        });
+
+
+        $('body').on('click', '#transfer_warehouse', function() {
+
+            var uniqueArray = ls.filter(function(item, pos) {
+                return ls.indexOf(item) == pos;
+            });
+
+            $('input[name=product]').val(uniqueArray);
+            $('#kt_modal_transfer').modal('show');
         });
 
         var afterPrint = function() {

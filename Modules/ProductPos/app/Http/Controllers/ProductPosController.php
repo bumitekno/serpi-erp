@@ -50,7 +50,12 @@ class ProductPosController extends Controller
             $product = ProductPos::with('category_product')->latest()->paginate(10);
         }
 
-        return view('productpos::index')->with(['products' => $product, 'keyword' => $request->search]);
+        return view('productpos::index')->with([
+            'products' => $product,
+            'keyword' => $request->search,
+            'location' => Location::query()->get(),
+            'warehouse' => Warehouse::query()->get()
+        ]);
     }
 
     /**
@@ -64,6 +69,19 @@ class ProductPosController extends Controller
             'warehouse' => Warehouse::query()->get()
         ]);
     }
+
+
+    /**
+     * Store a move warehouse created resource in storage.
+     */
+
+    public function movewarehouse(Request $request)
+    {
+        ProductPos::whereIn('id', explode(',', $request->product))->update(['id_location' => $request->location, 'id_warehouse' => $request->warehouse]);
+        return redirect()->route('productpos.index')
+            ->withSuccess('Product is change successfully.');
+    }
+
 
     /**
      * Store a newly created resource in storage.

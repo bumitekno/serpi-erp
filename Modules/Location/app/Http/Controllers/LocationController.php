@@ -13,7 +13,7 @@ class LocationController extends Controller
 {
 
     /**
-     * Instantiate a new ProductController instance.
+     * Instantiate a new LocationController instance.
      */
     public function __construct()
     {

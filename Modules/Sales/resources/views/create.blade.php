@@ -76,7 +76,7 @@
                             <!--begin::Input-->
                             <input type="text" name="amount_balance"
                                 class="form-control form-control-solid mb-3 mb-lg-0 kt_inputmask"
-                                placeholder="Insert Amount Balance " data-type="currency" required="required" />
+                                placeholder="Insert Amount Balance " required="required" />
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
@@ -979,6 +979,20 @@
             defaultDate: "{{ $date_transaction }}"
         });
 
+        // Currency
+        Inputmask({
+            "numericInput": true,
+            "clearMaskOnLostFocus": true,
+            "removeMaskOnSubmit": true,
+            "placeholder": "",
+            "autoUnmask": true,
+            'digits': 0,
+            'rightAlign': false,
+            'allowMinus': false,
+            'alias': 'currency',
+            'groupSeparator': '.'
+        }).mask(".kt_inputmask");
+
         $('input[data-kt-product-table-filter="search"]').on('keydown', function(event) {
             if (event.keyCode == 13) {
                 if ($(this).val().length == 0) {
@@ -1202,7 +1216,6 @@
             $('input[name=customer_invoice]').val(customer_invoce);
             $('input[name=departement_invoice]').val(departement_invoice);
         });
-
 
 
         const formpaymenet = document.getElementById('kt_docs_formvalidation_text_p');

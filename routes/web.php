@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReportDailyPosController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,3 +25,8 @@ Route::prefix('home')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('dashboard');
     Route::get('module/{module}', [HomeController::class, 'checkroute'])->middleware('auth')->name('checkroute');
 });
+
+Route::prefix('report')->group(function () {
+    Route::get('dailypos', [ReportDailyPosController::class, 'index'])->name('report.dailypost');
+    Route::get('export/dailypos', [ReportDailyPosController::class, 'downloadreportD'])->name('report.downloadreportD');
+})->middleware('auth');

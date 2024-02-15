@@ -120,6 +120,7 @@ class SalesController extends Controller
                 $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('amount');
                 $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('amount');
                 $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('amount');
+                $sum_transaction_success_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->where('date_sales', Carbon::now()->format('Y-m-d'))->where('id_departement', $request->get('departement'))->sum('total_transaction');
             }
         } else {
             //saldo awal bulan 
@@ -170,6 +171,7 @@ class SalesController extends Controller
             $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('amount');
             $income = TransactionIncome::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('amount');
             $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('amount');
+            $sum_transaction_success_today = TransactionSales::where('saved_trans', '=', '0')->where('status', '=', '1')->where('date_sales', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement)->sum('total_transaction');
         }
 
         $report = [
@@ -250,7 +252,7 @@ class SalesController extends Controller
             $total_cart = $subtotal - $discount_cart + $tax_cart;
         }
 
-        $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->sum('amount');
+        $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement_default)->sum('amount');
 
         return view('sales::create')->with([
             'ponumber' => empty(Session::get('ponumber')) ? $nextInvoiceNumber : Session::get('ponumber'),
@@ -497,7 +499,8 @@ class SalesController extends Controller
     public function storeopenbal(Request $request): RedirectResponse
     {
         BalanceSales::updateOrCreate([
-            'date_balance' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('Y-m-d')
+            'date_balance' => Carbon::createFromFormat('d/m/Y', $request->date_trans)->format('Y-m-d'),
+            'id_departement' => $request->departement_balance
         ], [
             'amount' => $request->amount_balance,
             'id_departement' => $request->departement_balance

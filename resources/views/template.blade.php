@@ -252,6 +252,18 @@
                                             class="text-muted text-hover-primary">Home</a>
                                     </li>
                                     <!--end::Item-->
+
+                                    @can('report-daily-pos')
+                                        <li class="breadcrumb-item">
+                                            <span class="bullet bg-gray-200 w-5px h-2px"></span>
+                                        </li>
+
+                                        <li class="breadcrumb-item text-muted">
+                                            <a href="{{ route('report.dailypost') }}"
+                                                class="text-muted text-hover-primary">Report Daily Pos </a>
+                                        </li>
+                                    @endcan
+
                                     @if (!empty(request()->segment(1)) && request()->segment(1) != 'home')
                                         <li class="breadcrumb-item">
                                             <span class="bullet bg-gray-200 w-5px h-2px"></span>
@@ -306,14 +318,24 @@
                                                 </li>
                                             @endcan
                                         @else
-                                            <li class="breadcrumb-item text-dark">
-                                                <a href="{{ route(request()->segment(1) . '.index') }}"
-                                                    class="text-hover-primary">
-                                                    {{ Str::title(request()->segment(1)) }}
-                                                </a>
-                                            </li>
+                                            @if (request()->segment(2) == 'dailypos')
+                                                @can('report-daily-pos')
+                                                    <li class="breadcrumb-item text-dark">
+                                                        <span class="text-hover-primary">Report
+                                                        </span>
+                                                    </li>
+                                                @endcan
+                                            @else
+                                                <li class="breadcrumb-item text-dark">
+                                                    <a href="{{ route(request()->segment(1) . '.index') }}"
+                                                        class="text-hover-primary">
+                                                        {{ Str::title(request()->segment(1)) }}
+                                                    </a>
+                                                </li>
+                                            @endif
                                         @endif
                                     @endif
+
                                 </ul>
                                 <!--end::Breadcrumb-->
                             </div>

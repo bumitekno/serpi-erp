@@ -74,7 +74,6 @@
                     @endif
                     <!--end::Action-->
                 @endif
-
             </div>
         </div>
 

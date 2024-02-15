@@ -25,4 +25,5 @@ Route::group([], function () {
         Route::get('importview/import', [ProductPosController::class, 'importview'])->name('tools-productpos.importview');
     });
     Route::post('productpos/printbarcode/label', [ProductPosController::class, 'printbarcode'])->name('productpos.printbarcode');
+    Route::post('productpos/moving/warehouse', [ProductPosController::class, 'movewarehouse'])->name('productpos.movewarehouse');
 });

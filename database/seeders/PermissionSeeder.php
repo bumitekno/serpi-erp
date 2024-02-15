@@ -219,5 +219,14 @@ class PermissionSeeder extends Seeder
         foreach ($permission_module_expense as $permission) {
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'expense', 'group_modules' => 'expense']);
         }
+
+        /** report module */
+        $permissions_module_report = [
+            'report-daily-pos'
+        ];
+        // Looping and Inserting Array's Permissions Module Method Payment into Permission Table
+        foreach ($permissions_module_report as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'reportpos', 'group_modules' => 'report']);
+        }
     }
 }
