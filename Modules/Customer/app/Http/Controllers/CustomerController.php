@@ -9,6 +9,8 @@ use App\Models\Customer;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Modules\Sales\app\Models\TransactionSales;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
@@ -73,10 +75,37 @@ class CustomerController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $customer = Customer::find($id);
-        return view('customer::show')->with(['customer' => $customer]);
+
+        if ($request->ajax()) {
+            $transaction = TransactionSales::with(['departement', 'methodpayment', 'operator'])->where('id_customer', $customer->id)->get();
+            return DataTables::of($transaction)
+                ->addIndexColumn()
+                ->editColumn('total_transaction', function ($row) {
+                    return empty($row->total_transaction) ? 0 : number_format($row->total_transaction, 0, ',', '.');
+                })
+                ->editColumn('amount', function ($row) {
+                    return empty($row->amount) ? 0 : number_format($row->amount, 0, ',', '.');
+                })
+                ->editColumn('date_transaction', function ($row) {
+                    return empty($row->date_sales) ? '-' : Carbon::parse($row->date_sales)->translatedFormat('d F Y');
+                })
+                ->editColumn('departement', function ($row) {
+                    return empty($row->departement) ? '-' : $row->departement->name;
+                })
+                ->editColumn('methodpayment', function ($row) {
+                    return empty($row->methodpayment) ? '-' : $row->methodpayment->name;
+                })
+                ->addColumn('code_transaction', function ($row) {
+                    $btn = '<a href="' . route('sales.show', $row->id) . '">' . $row->code_transaction . '</a>';
+                    return $btn;
+                })->rawColumns(['code_transaction'])->make();
+        }
+
+        $total_transaction = TransactionSales::where('id_customer', $customer->id)->sum('total_transaction');
+        return view('customer::show')->with(['customer' => $customer, 'total_transaction' => $total_transaction]);
     }
 
     /**

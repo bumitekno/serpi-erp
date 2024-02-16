@@ -64,6 +64,63 @@
     </div>
 @endpush
 
+@push('modals')
+    <div class="modal fade" tabindex="-1" id="kt_modal_settingpos">
+        <div class="modal-dialog">
+            <form id="kt_docs_formvalidationko" class="form" action="{{ route('sales.storesettpos') }}" autocomplete="off"
+                method="POST">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal Settings POS </h5>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span class="svg-icon svg-icon-2x"></span>
+                        </div>
+                        <!--end::Close-->
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3 row">
+                            <label class="form-check form-switch form-check-custom form-check-solid">
+                                <input class="form-check-input" type="checkbox" value="1" name="stock_minus"
+                                    @if ($settingpos?->stock_minus == 1) checked="checked" @endif />
+                                <span class="form-check-label">
+                                    Stock Minus
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="mb-3 row ml-3">
+                            <label class="form-check form-switch form-check-custom form-check-solid">
+                                <input class="form-check-input" type="checkbox" value="1" name="multi_unit"
+                                    @if ($settingpos?->sales_multi_unit == 1) checked="checked" @endif />
+                                <span class="form-check-label">
+                                    Multi Unit Product
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="mb-3 ml-3">
+                            <label for="exampleFormControlInput1" class="required form-label">Note Receipt Sales</label>
+                            <textarea class="form-control form-control-solid text-left" placeholder="Note Receipt" name="noteset">{{ $settingpos?->footprint }}</textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endpush
+
 @section('content')
 
     @can('dashboard-sales')
@@ -137,7 +194,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none">
                                 <rect x="8" y="9" width="3" height="10" rx="1.5" fill="black"></rect>
-                                <rect opacity="0.5" x="13" y="5" width="3" height="14" rx="1.5" fill="black">
+                                <rect opacity="0.5" x="13" y="5" width="3" height="14" rx="1.5"
+                                    fill="black">
                                 </rect>
                                 <rect x="18" y="11" width="3" height="8" rx="1.5" fill="black"></rect>
                                 <rect x="3" y="13" width="3" height="6" rx="1.5" fill="black"></rect>
@@ -499,7 +557,7 @@
                         @csrf
                         <div class="d-flex align-items-center position-relative my-1">
                             <input type="text" data-kt-subscription-table-filter="search"
-                                class="form-control form-control-solid w-250px ps-14 me-3 " id="keyword"
+                                class="form-control form-control-solid w-240px ps-14 me-3 " id="keyword"
                                 placeholder="Search Code" name="search" value="{{ empty($keyword) ? '' : $keyword }}">
 
                             <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
@@ -531,7 +589,7 @@
                         </div>
                     </form>
                     <div class="position-relative my-1">
-                        <input class="form-control form-control-solid w-250px ps-3 text-center  me-3 " name="datefilter"
+                        <input class="form-control form-control-solid w-250px ps-3 text-center me-4 " name="datefilter"
                             placeholder="Pick date range " id="kt_daterangepicker_1" data-stardate="{{ $startdate }}"
                             data-enddate="{{ $enddate }}" value="{{ $startdate }} - {{ $enddate }}" />
                     </div>
@@ -540,10 +598,15 @@
                                 class="bi bi-arrow-down"></i>
                             Export </a>
                     @endcan
+
                 </div>
             </div>
             <div class="float-end">
                 @can('create-sales')
+                    <a href="javascript:;" class="btn btn-dark btn-sm my-2" data-bs-toggle="modal"
+                        data-bs-target="#kt_modal_settingpos"><i class="bi bi-gear"></i>
+                        Settings </a>
+
                     <a href="javascript:;" class="btn btn-dark btn-sm my-2" data-bs-toggle="modal"
                         data-bs-target="#kt_modal_openbalance"><i class="bi bi-plus-circle"></i>
                         Input Balance </a>
@@ -564,6 +627,9 @@
                             class="bi bi-plus-circle"></i>
                         Expense </a>
                 @endcan
+
+
+
             </div>
         </div>
         <div class="card-body">

@@ -187,7 +187,8 @@ class StockController extends Controller
                     'difference' => $request->addmore['qty_difference'][$key],
                     'id_warehouse' => $request->warehouse,
                     'id_location' => $request->location,
-                    'date_opname' => Carbon::now()->format('Y-m-d')
+                    'date_opname' => Carbon::now()->format('Y-m-d'),
+                    'note' => $request->addmore['note'][$key]
                 ];
                 $create_opname = StockOpname::create($items);
                 if (!empty($create_opname)) {

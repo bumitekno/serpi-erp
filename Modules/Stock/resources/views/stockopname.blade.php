@@ -15,6 +15,7 @@
             <th>Difference </th>
             <th>Warehouse </th>
             <th>Location </th>
+            <th> Note </th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +31,7 @@
                 <td>{{ $reports?->difference }}</td>
                 <td>{{ $reports->warehouse?->name }}</td>
                 <td>{{ $reports->location?->name_location }}</td>
+                <td>{{ $reports?->note }}</td>
             </tr>
         @empty
         @endforelse

@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::table('transaction_sales', function (Blueprint $table) {
             $table->string('total_transaction')->nullable();
             $table->boolean('saved_trans')->default(false);
+            $table->string('file')->nullable();
         });
     }
 

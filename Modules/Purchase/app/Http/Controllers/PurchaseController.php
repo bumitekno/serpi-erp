@@ -170,6 +170,7 @@ class PurchaseController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
         //
         $request->validate([
             'supplier' => 'required',
@@ -201,9 +202,9 @@ class PurchaseController extends Controller
             $send_data['note'] = $request->note_purchase;
         }
 
-        if ($request->hasFile('image_product')) {
-            $imageName = time() . '.' . $request->image_product->extension();
-            $path = $request->file('image_purchase')->storeAs('/upload/purchase/images', $imageName, 'public');
+        if ($request->hasFile('image_purchase')) {
+            $imageName = time() . '.' . $request->image_purchase->extension();
+            $path = $request->file('image_purchase')->storeAs('/upload/photo/transaction', $imageName, 'public');
             $send_data['file_doc'] = $path;
         }
 

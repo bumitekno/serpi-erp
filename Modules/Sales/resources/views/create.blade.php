@@ -317,8 +317,8 @@
                         <div class="mb-3 row fv-row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Unit</label>
                             <div class="col-md-8">
-                                <select class="form-select" data-control="select2" data-placeholder="Select Unit"
-                                    name="units_cart" required="required">
+                                <select class="form-select units_cart" data-control="select2"
+                                    data-placeholder="Select Unit" name="units_cart" required="required">
                                     <option></option>
                                     @foreach ($unit as $units)
                                         <option value="{{ $units->id }}">
@@ -344,7 +344,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="editpostcart">Save changes</button>
                     </div>
                 </div>
             </form>
@@ -356,7 +356,7 @@
     <div class="modal fade" tabindex="-1" id="kt_modal_payment">
         <div class="modal-dialog" id="modallg-append">
             <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('sales.store') }}"
-                autocomplete="off" method="POST">
+                autocomplete="off" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <input type="hidden" name="number_invoice">
@@ -411,6 +411,15 @@
                                     class="form-control  mb-3 mb-lg-0 form-control-solid" placeholder="0 "
                                     data-type="currency" readonly="readonly" data-currency="{{ $total_cart }}"
                                     value="{{ number_format($total_cart, 0, ',', '.') }}" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row fv-row d-none " id="transferfile">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">File
+                                Transfer
+                            </label>
+                            <div class="col-md-8">
+                                <input type="file" name="file" class="form-control">
                             </div>
                         </div>
 
@@ -1024,7 +1033,7 @@
                         }
                     },
                     error: function(errMsg) {
-                        console.log(errMsg);
+                        alert(errMsg.responseJSON.message);
                     }
                 });
             }
@@ -1253,8 +1262,12 @@
         $('body').on('change', 'select[name=methodpayment]', function(e) {
             if (e.target.value > 1) {
                 $('#list-nominal').addClass('d-none');
+                if (e.target.value == '2' || e.target.value == '4') {
+                    $('#transferfile').removeClass('d-none');
+                }
             } else {
                 $('#list-nominal').removeClass('d-none');
+                $('#transferfile').addClass('d-none');
             }
         });
 
@@ -1402,10 +1415,15 @@
                     $('input[name="price_cart"]').val(df);
                     $('select[name="units_cart"]').select2();
                     $('select[name="units_cart"]').val(data.data.unit_id).trigger("change");
+
                     $('input[name="qty_cart"]').val(data.data.qty);
                     $('input[name="id_cart"]').val(data.data.id);
 
                     $('#kt_modal_edit_cart').modal('show');
+
+                    @if ($sales_multi_unit == 0)
+                        $('select.units_cart').attr('disabled', 'disabled');
+                    @endif
 
                 },
                 error: function(errMsg) {
@@ -1414,6 +1432,11 @@
             });
         });
 
+        @if ($sales_multi_unit == 0)
+            $('body').on('click', 'button#editpostcart', function() {
+                $('select.units_cart').removeAttr('disabled');
+            });
+        @endif
         //charge 
         $('body').on('keyup', 'input[name=amount_payment]', function(e) {
             if (e.target.value.length > 0) {

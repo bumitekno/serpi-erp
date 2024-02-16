@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('stock_before')->nullable();
             $table->string('stock_after')->nullable();
             $table->string('difference')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

@@ -366,6 +366,26 @@
                             </div>
                         </div>
                         <!--end::Item-->
+
+                        @if (!empty($transaction->file))
+                            <!--begin::Overlay-->
+                            <a class="d-block overlay" data-fslightbox="lightbox-basic"
+                                href="{{ Storage::url($transaction->file) }}">
+                                <!--begin::Image-->
+                                <div class="overlay-wrapper bgi-no-repeat bgi-position-center bgi-size-cover card-rounded min-h-175px"
+                                    style="background-image:url('{{ Storage::url($transaction->file) }}')">
+                                </div>
+                                <!--end::Image-->
+
+                                <!--begin::Action-->
+                                <div class="overlay-layer card-rounded bg-dark bg-opacity-25 shadow">
+                                    <i class="bi bi-eye-fill text-white fs-3x"></i>
+                                </div>
+                                <!--end::Action-->
+                            </a>
+                            <!--end::Overlay-->
+                        @endif
+
                     </div>
                     <!--end::Invoice 2 sidebar-->
                 </div>
@@ -415,6 +435,7 @@
     </div>
 @endsection
 @push('scripts')
+    <script src="{{ asset('assets/plugins/custom/fslightbox/fslightbox.bundle.js') }}"></script>
     <script type="text/javascript">
         $(".kt_datepicker").flatpickr({
             dateFormat: "d/m/Y",

@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\Purchase\app\Models;
+namespace Modules\Sales\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Purchase\Database\factories\PurchaseCreditFactory;
+use Modules\Sales\Database\factories\SettingPosFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class PurchaseCredit extends Model
+class SettingPos extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $table = 'transaction_purchase_credit';
+    protected $table = 'setting_pos_sales';
 
     protected $guarded = [];
     protected $guard_name = 'web';
@@ -22,16 +22,16 @@ class PurchaseCredit extends Model
      */
     protected $fillable = [];
 
-    protected static function newFactory(): PurchaseCreditFactory
+    protected static function newFactory(): SettingPosFactory
     {
-        //return PurchaseCreditFactory::new();
+        //return SettingPosFactory::new();
     }
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['id_transaction_purchase', 'date_credit'])
+            ->logOnly(['footprint', 'stock_minus', 'sales_multi_unit'])
             ->setDescriptionForEvent(fn(string $eventName) => "This model has been {$eventName}")
-            ->useLogName('TransactionPurchaseCredit');
+            ->useLogName('SettingPOS');
     }
 }

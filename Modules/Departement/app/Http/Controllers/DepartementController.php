@@ -12,6 +12,7 @@ use Modules\Sales\app\Models\TransactionSales;
 use Modules\Purchase\app\Models\TransactionPurchase;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class DepartementController extends Controller
 {
@@ -70,7 +71,7 @@ class DepartementController extends Controller
             'id_location' => 'required'
         ]);
 
-        $create = Departement::create([
+        $input = [
             'code' => str::random(5),
             'name' => $request->name_input,
             'contact' => $request->contact_input,
@@ -78,7 +79,16 @@ class DepartementController extends Controller
             'address' => $request->address_input,
             'id_warehouse' => $request->id_warehouse,
             'id_location' => $request->id_location
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+
+            $imageName = time() . '.' . $request->avatar->extension();
+            $path = $request->file('avatar')->storeAs('/upload/photo/profiles', $imageName, 'public');
+            $input['image'] = $path;
+        }
+
+        $create = Departement::create($input);
 
         Session::flash('success', ' Departement ' . $request->name_input . 'is  add successfuly.');
         return redirect()->back();
@@ -120,14 +130,28 @@ class DepartementController extends Controller
             'id_location' => 'required'
         ]);
 
-        $update = Departement::find($id)->update([
+        $update = Departement::find($id);
+
+        $input = [
             'name' => $request->name_input,
             'contact' => $request->contact_input,
             'email' => $request->email_input,
             'address' => $request->address_input,
             'id_warehouse' => $request->id_warehouse,
             'id_location' => $request->id_location
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+            if (!empty($update->image)) {
+                if (Storage::exists($update->image))
+                    Storage::delete($update->image);
+            }
+            $imageName = time() . '.' . $request->avatar->extension();
+            $path = $request->file('avatar')->storeAs('/upload/photo/profiles', $imageName, 'public');
+            $input['image'] = $path;
+        }
+
+        $update = $update->update($input);
 
         Session::flash('success', ' Departement ' . $request->name_input . 'is  change successfuly.');
         return redirect()->back();

@@ -42,7 +42,8 @@ class TransactionSales extends Model
         'note',
         'adjustment_amount',
         'total_transaction',
-        'saved_trans'
+        'saved_trans',
+        'file'
     ];
 
     public function operator()

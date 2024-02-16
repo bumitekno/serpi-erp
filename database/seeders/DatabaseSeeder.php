@@ -19,6 +19,7 @@ use Modules\Stock\database\seeders\StockDatabaseSeeder;
 use Modules\Location\database\seeders\LocationDatabaseSeeder;
 use Modules\Income\database\seeders\IncomeDatabaseSeeder;
 use Modules\Expense\database\seeders\ExpenseDatabaseSeeder;
+use Modules\Sales\database\seeders\SalesDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,7 +43,8 @@ class DatabaseSeeder extends Seeder
             WarehouseDatabaseSeeder::class,
                 //StockDatabaseSeeder::class,
             IncomeDatabaseSeeder::class,
-            ExpenseDatabaseSeeder::class
+            ExpenseDatabaseSeeder::class,
+            SalesDatabaseSeeder::class,
         ]);
     }
 }

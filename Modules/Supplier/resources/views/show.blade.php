@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-xl-4 mb-10">
 
             <div class="card">
                 <div class="card-header mt-3">
@@ -62,5 +62,73 @@
                 </div>
             </div>
         </div>
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header mt-3">
+                    <div class="float-start">
+                        Information Transaction
+                    </div>
+                    <div class="float-end text-info">
+                        {{ number_format($total_transaction, 0, ',', '.') }}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered data-table">
+                        <thead>
+                            <th>#</th>
+                            <th> Code </th>
+                            <th> Date</th>
+                            <th> Amount</th>
+                            <th> Departement </th>
+                            <th> Method</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+    <script>
+        $(function() {
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('supplier.show', $supplier->id) }}",
+                order: [],
+                columnDefs: [{
+                    "targets": [0]
+                }],
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'code_transaction',
+                        name: 'code_transaction'
+                    },
+                    {
+                        data: 'date_transaction',
+                        name: 'date_transaction'
+                    },
+                    {
+                        data: 'amount',
+                        name: 'amount'
+                    },
+                    {
+                        data: 'departement',
+                        name: 'departement'
+                    },
+                    {
+                        data: 'methodpayment',
+                        name: 'methodpayment'
+                    }
+                ]
+            });
+
+        });
+    </script>
+@endpush

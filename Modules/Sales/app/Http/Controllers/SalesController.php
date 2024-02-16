@@ -13,6 +13,7 @@ use Modules\Sales\app\Models\TransactionSalesItem;
 use Modules\Sales\app\Models\SalesCredit;
 use Modules\Sales\app\Http\Controllers\SalesExportController;
 use Modules\Sales\app\Models\BalanceSales;
+use Modules\Sales\app\Models\SettingPos;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\UnitProduct\app\Models\UnitProduct;
 use Modules\Stock\app\Models\Stock;
@@ -129,6 +130,8 @@ class SalesController extends Controller
             $expense = TransactionExpense::where('date_transaction', Carbon::now()->format('Y-m-d'))->where('id_departement', Departement::first()?->id)->sum('amount');
         }
 
+        $settingPos = SettingPos::first();
+
         return view('sales::index')->with([
             'transaction' => $transaction,
             'keyword' => $request->search,
@@ -152,7 +155,8 @@ class SalesController extends Controller
             'daily_sales' => empty($sum_transaction_success_today) ? 0 : number_format($sum_transaction_success_today, 0, ',', '.'),
             'close_balance' => number_format($saldo_awal + $income + $sum_transaction_success_today - $expense, 0, ',', '.'),
             'list_departement' => $departement,
-            'departement_default' => $departement_default
+            'departement_default' => $departement_default,
+            'settingpos' => $settingPos
         ]);
     }
 
@@ -254,6 +258,8 @@ class SalesController extends Controller
 
         $saldo_awal = BalanceSales::where('date_balance', Carbon::now()->format('Y-m-d'))->where('id_departement', $departement_default)->sum('amount');
 
+        $settingPos = SettingPos::first();
+
         return view('sales::create')->with([
             'ponumber' => empty(Session::get('ponumber')) ? $nextInvoiceNumber : Session::get('ponumber'),
             'product' => $product,
@@ -274,7 +280,8 @@ class SalesController extends Controller
             'operator' => empty(Auth::user()->name) ? '-' : Auth::user()->name,
             'edit_trans' => $edit_trans,
             'nominal_opsi_cash' => $this->generatecur($total_cart),
-            'open_balance' => empty($saldo_awal) ? true : false
+            'open_balance' => empty($saldo_awal) ? true : false,
+            'sales_multi_unit' => $settingPos?->sales_multi_unit
         ]);
     }
 
@@ -296,6 +303,30 @@ class SalesController extends Controller
         }
 
         return $listArray;
+    }
+
+
+    /** store setting pos */
+    public function storesettpos(Request $request)
+    {
+
+        if (empty($request->stock_minus)) {
+            $input['stock_minus'] = 0;
+        } else {
+            $input['stock_minus'] = $request->stock_minus;
+        }
+
+        if (empty($request->multi_unit)) {
+            $input['sales_multi_unit'] = 0;
+        } else {
+            $input['sales_multi_unit'] = $request->multi_unit;
+        }
+        $input['footprint'] = $request->noteset;
+
+        SettingPos::first()->update($input);
+        Session::flash('success', 'Setting POS  is change successfully');
+        return redirect()->back();
+
     }
 
 
@@ -321,32 +352,67 @@ class SalesController extends Controller
         $product = ProductPos::with('category_product')->where('id', '=', $id)->first();
         $departement = Departement::where('id', '=', $departement)->first();
         $cart = Session::get('cart');
+        $settingPos = SettingPos::first();
 
-        if (!empty($cart[$product['id']])) {
-            $cart[$product['id']]['qty'] += 1;
-            $cart[$product['id']]['qty_convert'] += 1;
-            $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
+        if ($settingPos?->stock_minus == false) {
+            if ($product->stock_last < 1) {
+                Session::put('cart', $cart);
+                Session::flash('error', 'Item ' . $product?->name . ' Failed added to Cart!, Insufficient product stock');
+            } else {
+                if (!empty($cart[$product['id']])) {
+                    $cart[$product['id']]['qty'] += 1;
+                    $cart[$product['id']]['qty_convert'] += 1;
+                    $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
+                } else {
+                    $id_unit = UnitProduct::first();
+
+                    $cart[$product->id] = array(
+                        "id" => $product->id,
+                        "code_product" => $product->code_product,
+                        "name_product" => $product->name,
+                        "price_unit" => $product->price_sell,
+                        "unit_id" => $id_unit?->id,
+                        "unit_name" => $id_unit?->name,
+                        "image_product" => $product->image_product,
+                        "qty" => 1,
+                        "qty_convert" => 1, // convert ke satuan terkecil
+                        "check_convert" => false,
+                        "subtotal" => $product->price_sell * 1,
+                        'location' => $departement?->id_location
+                    );
+                }
+
+                Session::put('cart', $cart);
+                Session::flash('success', 'Item ' . $product?->name . ' successfully added to Cart!');
+            }
         } else {
-            $id_unit = UnitProduct::first();
+            if (!empty($cart[$product['id']])) {
+                $cart[$product['id']]['qty'] += 1;
+                $cart[$product['id']]['qty_convert'] += 1;
+                $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
+            } else {
+                $id_unit = UnitProduct::first();
 
-            $cart[$product->id] = array(
-                "id" => $product->id,
-                "code_product" => $product->code_product,
-                "name_product" => $product->name,
-                "price_unit" => $product->price_sell,
-                "unit_id" => $id_unit?->id,
-                "unit_name" => $id_unit?->name,
-                "image_product" => $product->image_product,
-                "qty" => 1,
-                "qty_convert" => 1, // convert ke satuan terkecil
-                "check_convert" => false,
-                "subtotal" => $product->price_sell * 1,
-                'location' => $departement?->id_location
-            );
+                $cart[$product->id] = array(
+                    "id" => $product->id,
+                    "code_product" => $product->code_product,
+                    "name_product" => $product->name,
+                    "price_unit" => $product->price_sell,
+                    "unit_id" => $id_unit?->id,
+                    "unit_name" => $id_unit?->name,
+                    "image_product" => $product->image_product,
+                    "qty" => 1,
+                    "qty_convert" => 1, // convert ke satuan terkecil
+                    "check_convert" => false,
+                    "subtotal" => $product->price_sell * 1,
+                    'location' => $departement?->id_location
+                );
+            }
+
+            Session::put('cart', $cart);
+            Session::flash('success', 'Item ' . $product?->name . ' successfully added to Cart!');
         }
 
-        Session::put('cart', $cart);
-        Session::flash('success', 'Item ' . $product?->name . ' successfully added to Cart!');
         return redirect()->back();
     }
 
@@ -362,32 +428,67 @@ class SalesController extends Controller
     public function scancart(Request $request)
     {
         $product = ProductPos::with('category_product')->where('code_product', '=', $request->code)->first();
-        if (!empty($product)) {
-            $cart = Session::get('cart');
-            if (!empty($cart[$product['id']])) {
-                $cart[$product['id']]['qty'] += 1;
-                $cart[$product['id']]['qty_convert'] += 1;
-                $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
+        $settingPos = SettingPos::first();
+        if ($settingPos?->stock_minus == false) {
+            if ($product->stock_last < 1) {
+                return response()->json(['refresh' => false, 'message' => 'Scan Barcode failed, Insufficient product stock '], 403);
             } else {
-                $id_unit = UnitProduct::first();
-                $cart[$product->id] = array(
-                    "id" => $product->id,
-                    "code_product" => $product->code_product,
-                    "name_product" => $product->name,
-                    "price_unit" => $product->price_sell,
-                    "unit_id" => $id_unit?->id,
-                    "unit_name" => $id_unit?->name,
-                    "qty" => 1,
-                    "qty_convert" => 1, // convert ke satuan terkecil
-                    "check_convert" => false,
-                    "subtotal" => $product->price_sell * 1
-                );
+                if (!empty($product)) {
+                    $cart = Session::get('cart');
+                    if (!empty($cart[$product['id']])) {
+                        $cart[$product['id']]['qty'] += 1;
+                        $cart[$product['id']]['qty_convert'] += 1;
+                        $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
+                    } else {
+                        $id_unit = UnitProduct::first();
+                        $cart[$product->id] = array(
+                            "id" => $product->id,
+                            "code_product" => $product->code_product,
+                            "name_product" => $product->name,
+                            "price_unit" => $product->price_sell,
+                            "unit_id" => $id_unit?->id,
+                            "unit_name" => $id_unit?->name,
+                            "qty" => 1,
+                            "qty_convert" => 1, // convert ke satuan terkecil
+                            "check_convert" => false,
+                            "subtotal" => $product->price_sell * 1
+                        );
+                    }
+                    Session::put('cart', $cart);
+                    return response()->json(['refresh' => true, 'message' => 'Scan Barcode successfull'], 200);
+                } else {
+                    return response()->json(['refresh' => false, 'message' => 'Scan Barcode failed'], 403);
+                }
             }
-            Session::put('cart', $cart);
-            return response()->json(['refresh' => true, 'message' => 'Scan Barcode successfull'], 200);
         } else {
-            return response()->json(['refresh' => false, 'message' => 'Scan Barcode failed'], 403);
+            if (!empty($product)) {
+                $cart = Session::get('cart');
+                if (!empty($cart[$product['id']])) {
+                    $cart[$product['id']]['qty'] += 1;
+                    $cart[$product['id']]['qty_convert'] += 1;
+                    $cart[$product['id']]['subtotal'] += $cart[$product['id']]['price_unit'] * 1;
+                } else {
+                    $id_unit = UnitProduct::first();
+                    $cart[$product->id] = array(
+                        "id" => $product->id,
+                        "code_product" => $product->code_product,
+                        "name_product" => $product->name,
+                        "price_unit" => $product->price_sell,
+                        "unit_id" => $id_unit?->id,
+                        "unit_name" => $id_unit?->name,
+                        "qty" => 1,
+                        "qty_convert" => 1, // convert ke satuan terkecil
+                        "check_convert" => false,
+                        "subtotal" => $product->price_sell * 1
+                    );
+                }
+                Session::put('cart', $cart);
+                return response()->json(['refresh' => true, 'message' => 'Scan Barcode successfull'], 200);
+            } else {
+                return response()->json(['refresh' => false, 'message' => 'Scan Barcode failed'], 403);
+            }
         }
+
     }
 
     /** update cart All */
@@ -410,39 +511,100 @@ class SalesController extends Controller
     public function updatecart(Request $request)
     {
         $cart = Session::get('cart');
+        $settingPos = SettingPos::first();
         if (!empty($cart[$request->id_cart])) {
-            if ($request->qty_cart > 0) {
-                $unit = UnitProduct::where('id', $request->units_cart)->first();
-                if (!empty($unit)) {
-                    //convert satuan unit menyebabkan subtotal berubah 
-                    $stock_unit = Stock::where(['id_product' => $request->id_cart, 'id_unit' => $unit?->id, 'id_location' => $cart[$request->id_cart]['location']])->first();
-                    if (!empty($stock_unit)) {
-                        $cart[$request->id_cart]['unit_id'] = $unit?->id;
-                        $cart[$request->id_cart]['unit_name'] = $unit?->name;
-                        $cart[$request->id_cart]['qty'] = $request->qty_cart;
-                        $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $stock_unit->qty_convert;
-                        $cart[$request->id_cart]['check_convert'] = true;
-                        $cart[$request->id_cart]['qty_convert'] = empty($stock_unit->qty_convert) ? 1 : $stock_unit->qty_convert; //convert ke satuan terkecil
-                        $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
-                        $notif = 'success';
-                    } else {
-                        $message = ' Stock Unit ' . $cart[$request->id_cart]['name_product'] . ' ' . $unit?->name . '  not found .';
-                        $notif = 'error';
-                        $unitdefault = UnitProduct::first();
-                        $cart[$request->id_cart]['unit_id'] = $unitdefault?->id;
-                        $cart[$request->id_cart]['unit_name'] = $unitdefault?->name;
-                        $cart[$request->id_cart]['qty'] = $request->qty_cart;
-                        $cart[$request->id_cart]['check_convert'] = false;
-                        $cart[$request->id_cart]['qty_convert'] = $request->qty_cart; // convert ke satuan terkecil
-                    }
-                } else {
-                    $message = $cart[$request->id_cart]['name_product'] . ' Unit not found .';
+            if ($settingPos?->stock_minus == false) {
+                $product = ProductPos::with('category_product')->where('id', '=', $cart[$request->id_cart])->first();
+                if ($product->stock_last < $request->qty_cart) {
+                    $message = $cart[$request->id_cart]['name_product'] . ' Insufficient product stock.';
                     $notif = 'error';
+                } else {
+                    if ($request->qty_cart > 0) {
+                        $unit = UnitProduct::where('id', $request->units_cart)->first();
+                        if (!empty($unit)) {
+                            //convert satuan unit menyebabkan subtotal berubah 
+                            $stock_unit = Stock::where(['id_product' => $request->id_cart, 'id_unit' => $unit?->id, 'id_location' => $cart[$request->id_cart]['location']])->first();
+                            if (!empty($stock_unit)) {
+                                $cart[$request->id_cart]['unit_id'] = $unit?->id;
+                                $cart[$request->id_cart]['unit_name'] = $unit?->name;
+                                $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                                $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $stock_unit->qty_convert;
+                                $cart[$request->id_cart]['check_convert'] = true;
+                                $cart[$request->id_cart]['qty_convert'] = empty($stock_unit->qty_convert) ? 1 : $stock_unit->qty_convert; //convert ke satuan terkecil
+                                $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
+                                $notif = 'success';
+                            } else {
+
+                                $unitdefault = UnitProduct::first();
+
+                                if ($unitdefault?->id == $request->units_cart) {
+                                    $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
+                                    $notif = 'success';
+                                } else {
+                                    $message = ' Stock Unit ' . $cart[$request->id_cart]['name_product'] . ' ' . $unit?->name . '  not found .';
+                                    $notif = 'error';
+                                }
+
+                                $cart[$request->id_cart]['unit_id'] = $unitdefault?->id;
+                                $cart[$request->id_cart]['unit_name'] = $unitdefault?->name;
+                                $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                                $cart[$request->id_cart]['check_convert'] = false;
+                                $cart[$request->id_cart]['qty_convert'] = $request->qty_cart; // convert ke satuan terkecil
+                                $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $request->qty_cart;
+                            }
+                        } else {
+                            $message = $cart[$request->id_cart]['name_product'] . ' Unit not found .';
+                            $notif = 'error';
+                        }
+                    } else {
+                        unset($cart[$request->id_cart]);
+                        $message = $cart[$request->id_cart]['name_product'] . ' has been delete data successfully.';
+                        $notif = 'success';
+                    }
                 }
             } else {
-                unset($cart[$request->id_cart]);
-                $message = $cart[$request->id_cart]['name_product'] . ' has been delete data successfully.';
-                $notif = 'success';
+                if ($request->qty_cart > 0) {
+                    $unit = UnitProduct::where('id', $request->units_cart)->first();
+                    if (!empty($unit)) {
+                        //convert satuan unit menyebabkan subtotal berubah 
+                        $stock_unit = Stock::where(['id_product' => $request->id_cart, 'id_unit' => $unit?->id, 'id_location' => $cart[$request->id_cart]['location']])->first();
+                        if (!empty($stock_unit)) {
+                            $cart[$request->id_cart]['unit_id'] = $unit?->id;
+                            $cart[$request->id_cart]['unit_name'] = $unit?->name;
+                            $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                            $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $stock_unit->qty_convert;
+                            $cart[$request->id_cart]['check_convert'] = true;
+                            $cart[$request->id_cart]['qty_convert'] = empty($stock_unit->qty_convert) ? 1 : $stock_unit->qty_convert; //convert ke satuan terkecil
+                            $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
+                            $notif = 'success';
+                        } else {
+
+                            $unitdefault = UnitProduct::first();
+
+                            if ($unitdefault?->id == $request->units_cart) {
+                                $message = $cart[$request->id_cart]['name_product'] . ' has been update data successfully.';
+                                $notif = 'success';
+                            } else {
+                                $message = ' Stock Unit ' . $cart[$request->id_cart]['name_product'] . ' ' . $unit?->name . '  not found .';
+                                $notif = 'error';
+                            }
+
+                            $cart[$request->id_cart]['unit_id'] = $unitdefault?->id;
+                            $cart[$request->id_cart]['unit_name'] = $unitdefault?->name;
+                            $cart[$request->id_cart]['qty'] = $request->qty_cart;
+                            $cart[$request->id_cart]['check_convert'] = false;
+                            $cart[$request->id_cart]['qty_convert'] = $request->qty_cart; // convert ke satuan terkecil
+                            $cart[$request->id_cart]['subtotal'] = $cart[$request->id_cart]['price_unit'] * $request->qty_cart;
+                        }
+                    } else {
+                        $message = $cart[$request->id_cart]['name_product'] . ' Unit not found .';
+                        $notif = 'error';
+                    }
+                } else {
+                    unset($cart[$request->id_cart]);
+                    $message = $cart[$request->id_cart]['name_product'] . ' has been delete data successfully.';
+                    $notif = 'success';
+                }
             }
 
             Session::put('cart', $cart);
@@ -593,6 +755,12 @@ class SalesController extends Controller
                 'saved_trans' => false
             ];
 
+            if ($request->hasFile('file')) {
+                $imageName = time() . '.' . $request->file->extension();
+                $path = $request->file('file')->storeAs('/upload/photo/transaction', $imageName, 'public');
+                $transaction['file'] = $path;
+            }
+
             $create_transaction = $trans->update($transaction);
             $id = $transFind->id;
 
@@ -615,6 +783,12 @@ class SalesController extends Controller
                 'status' => $request->methodpayment == 3 ? false : true,
                 'saved_trans' => false
             ];
+
+            if ($request->hasFile('file')) {
+                $imageName = time() . '.' . $request->file->extension();
+                $path = $request->file('file')->storeAs('/upload/photo/transaction', $imageName, 'public');
+                $transaction['file'] = $path;
+            }
 
             $create_transaction = TransactionSales::create($transaction);
 
@@ -858,7 +1032,13 @@ class SalesController extends Controller
     {
         $information = TransactionSales::with(['customer', 'methodpayment', 'departement', 'operator'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
-        return view('sales::printsmall')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'route' => $route]);
+        $settingpos_footprint = SettingPos::first()?->footprint;
+        return view('sales::printsmall')->with([
+            'transaction' => $information,
+            'detail_transaction' => $detail_information,
+            'route' => $route,
+            'footprint' => $settingpos_footprint
+        ]);
     }
 
     /** pay_credit */

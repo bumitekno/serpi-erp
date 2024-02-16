@@ -9,6 +9,8 @@ use App\Models\Supplier;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Modules\Purchase\app\Models\TransactionPurchase;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class SupplierController extends Controller
 {
@@ -73,10 +75,36 @@ class SupplierController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $supplier = Supplier::find($id);
-        return view('supplier::show')->with(['supplier' => $supplier]);
+
+        if ($request->ajax()) {
+            $transaction = TransactionPurchase::with(['departement', 'methodpayment', 'operator'])->where('id_supplier', $supplier->id)->get();
+            return DataTables::of($transaction)
+                ->addIndexColumn()
+
+                ->editColumn('amount', function ($row) {
+                    return empty($row->amount) ? 0 : number_format($row->amount, 0, ',', '.');
+                })
+                ->editColumn('date_transaction', function ($row) {
+                    return empty($row->date_purchase) ? '-' : Carbon::parse($row->date_purchase)->translatedFormat('d F Y');
+                })
+                ->editColumn('departement', function ($row) {
+                    return empty($row->departement) ? '-' : $row->departement->name;
+                })
+                ->editColumn('methodpayment', function ($row) {
+                    return empty($row->methodpayment) ? '-' : $row->methodpayment->name;
+                })
+                ->addColumn('code_transaction', function ($row) {
+                    $btn = '<a href="' . route('purchase.show', $row->id) . '">' . $row->code_transaction . '</a>';
+                    return $btn;
+                })->rawColumns(['code_transaction'])->make();
+        }
+
+        $total_transaction = TransactionPurchase::where('id_supplier', $supplier->id)->sum('amount');
+
+        return view('supplier::show')->with(['supplier' => $supplier, 'total_transaction' => $total_transaction]);
     }
 
     /**

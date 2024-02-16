@@ -31,6 +31,10 @@
             text-align: center;
         }
 
+        .receipt_header img {
+            margin-bottom: 10px;
+        }
+
         .receipt_header h1 {
             font-size: 20px;
             margin-bottom: 5px;
@@ -150,10 +154,12 @@
 
         <div class="receipt_header">
             @if (!empty($transaction->departement->image))
-                <img alt="Logo" src="{{ Storage::url($transaction->departement->image) }}">
+                <img alt="Logo" src="{{ Storage::url($transaction->departement->image) }}" width="100px"
+                    height="100px">
             @else
                 <img alt="Logo" src="{{ asset('assets/media/svg/brand-logos/code-lab.svg') }}">
             @endif
+            <br>
 
             <h1>{{ Str::title($transaction->departement?->name) }}</h1>
             <h2>Address: {{ $transaction->departement?->address }} <span>Tel:
@@ -292,10 +298,9 @@
             </div>
 
         </div>
-
-
-        <h3>Thank You!</h3>
-
+        <h3>
+            <p>{{ $footprint }}</p>
+        </h3>
     </div>
 
     <script>

@@ -54,6 +54,7 @@
                                 <th>Stock Before </th>
                                 <th>Stock After </th>
                                 <th>Difference </th>
+                                <th>Note</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -112,6 +113,9 @@
                                             <span
                                                 class="text-danger">{{ $errors->first('addmore.qty_difference.*') }}</span>
                                         @endif
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control textarea" name="addmore[note][]"></textarea>
                                     </td>
 
                                     <td>

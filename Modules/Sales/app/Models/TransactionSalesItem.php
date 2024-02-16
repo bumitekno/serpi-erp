@@ -42,8 +42,8 @@ class TransactionSalesItem extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['code_transaction'])
+            ->logOnly(['id_transaction_sales'])
             ->setDescriptionForEvent(fn(string $eventName) => "This model has been {$eventName}")
-            ->useLogName('TransactionPurchase');
+            ->useLogName('TransactionSalesItem');
     }
 }
