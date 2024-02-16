@@ -32,12 +32,12 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="html-append" id="printarea"></div>
+                    <div class="html-append grid-container" id="printarea"></div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="kt_print_preview" onclick="printDiv()"> Print Preview
+                    <button type="button" class="btn btn-primary" id="kt_print_preview" data-list=""> Print Preview
                     </button>
                 </div>
             </div>
@@ -400,6 +400,7 @@
                         success: function(r) {
                             $('.html-append').html(r.data);
                             $('#kt_modal_printlabel').modal('show');
+                            $('#kt_print_preview').attr('data-list', r.list_array);
                         },
                         error: function(e) {
                             Swal.fire({
@@ -441,37 +442,12 @@
             $('#kt_modal_transfer').modal('show');
         });
 
-        var afterPrint = function() {
-            window.location.reload();
-        };
 
-        function printDiv() {
-            var headstr = "<html><head><title>Printing Label</title></head><body>";
-            var footstr = "</body></html>";
-            var newstrstyle = document.getElementsByTagName("style")[0].innerHTML; // is this right? -> yes it is
-            var newstr = document.getElementById("printarea").innerHTML;
-            var oldstr = document.body.innerHTML;
-            document.body.innerHTML =
-                headstr +
-                "<style>" +
-                newstrstyle +
-                "</style>" +
-                newstr +
-                "</div>" + // closing the added div
-                footstr;
-            window.print();
-            document.body.innerHTML = oldstr;
-            return false;
-        }
-
-        if (window.matchMedia) {
-            var mediaQueryList = window.matchMedia('print');
-            mediaQueryList.addListener(function(mql) {
-                if (!mql.matches) {
-                    afterPrint();
-                }
-            });
-        }
-        window.onafterprint = afterPrint;
+        $('body').on('click', '#kt_print_preview', function() {
+            var listc = $(this).data('list');
+            var url = "{{ route('productpos.printlabelpage', ['listarray' => ':listarray']) }}";
+            url = url.replace(':listarray', listc);
+            console.log(url);
+        });
     </script>
 @endpush

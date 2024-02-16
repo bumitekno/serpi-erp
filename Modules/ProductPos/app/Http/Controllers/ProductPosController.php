@@ -140,11 +140,11 @@ class ProductPosController extends Controller
     /** print barcode */
     public function printbarcode(Request $request)
     {
-        $check_product = ProductPos::whereIn('id', $request->product_id)->select('id', 'code_product', 'name')->get();
+        $check_product = ProductPos::whereIn('id', $request->product_id)->select('id', 'code_product', 'name', 'price_sell')->get();
         $generator = new BarcodeGeneratorPNG();
         $html = '';
         if (!empty($check_product)) {
-            $html .= '<div class="row g-6 g-xl-9 mb-6 mb-xl-9">';
+            $html .= '<div class="row g-6 g-xl-9 mb-6 mb-xl-9 grid-item ">';
             foreach (collect($check_product) as $product) {
                 $html .= '<div class="col-md-6 col-lg-4 col-xl-3">';
                 $html .= '<div class="mb-2">';
@@ -152,13 +152,37 @@ class ProductPosController extends Controller
                 $html .= '</div>';
                 $html .= '<div class="fs-7 fw-bolder mb-2">' . Str::title($product->name) . '</div>';
                 $html .= '<div class="fs-7 fw-bolder mb-2">' . $product->code_product . '</div>';
+                $html .= '<div class="fs-7 fw-bolder mb-2">' . number_format($product->price_sell, 0, ',', '.') . '</div>';
                 $html .= '</div>';
             }
             $html .= '</div>';
-            return response()->json(['data' => $html, 'message' => 'Data Printing Label Barcode Found'], 200);
+            return response()->json(['data' => $html, 'message' => 'Data Printing Label Barcode Found', 'list_array' => $request->product_id], 200);
         } else {
             return response()->json(['data' => '', 'message' => 'Data Printing Label Barcode Not Found'], 403);
         }
+    }
+
+    /** print barcode with halaman */
+    public function printlabelpage($listarray)
+    {
+        $collect = explode(',', $listarray);
+        $check_product = ProductPos::whereIn('id', $collect)->select('id', 'code_product', 'name', 'price_sell')->get();
+        $generator = new BarcodeGeneratorPNG();
+        $html = '';
+        $html .= '<div class="row g-6 g-xl-9 mb-6 mb-xl-9 grid-item ">';
+        foreach (collect($check_product) as $product) {
+            $html .= '<div class="col-md-6 col-lg-4 col-xl-3">';
+            $html .= '<div class="mb-2">';
+            $html .= '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode($product->code_product, $generator::TYPE_CODE_128)) . '">';
+            $html .= '</div>';
+            $html .= '<div class="fs-7 fw-bolder mb-2">' . Str::title($product->name) . '</div>';
+            $html .= '<div class="fs-7 fw-bolder mb-2">' . $product->code_product . '</div>';
+            $html .= '<div class="fs-7 fw-bolder mb-2">' . number_format($product->price_sell, 0, ',', '.') . '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+
+        return view('productpos::printbarcode')->with(['html' => $html]);
     }
 
     /**

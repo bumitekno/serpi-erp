@@ -26,4 +26,5 @@ Route::group([], function () {
     });
     Route::post('productpos/printbarcode/label', [ProductPosController::class, 'printbarcode'])->name('productpos.printbarcode');
     Route::post('productpos/moving/warehouse', [ProductPosController::class, 'movewarehouse'])->name('productpos.movewarehouse');
+    Route::get('productpos/print/barcode/{listarray}', [ProductPosController::class, 'printlabelpage'])->name('productpos.printlabelpage');
 });
