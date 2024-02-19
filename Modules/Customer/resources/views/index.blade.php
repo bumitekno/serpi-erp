@@ -3,7 +3,7 @@
 @push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_customer">
         <form id="kt_docs_formvalidation_text" class="form" action="{{ route('customer.store') }}" autocomplete="off"
-            method="POST">
+            method="POST" enctype="multipart/form-data">
             @csrf
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -19,6 +19,53 @@
                     </div>
 
                     <div class="modal-body">
+
+
+                        <div class="mb-3 row">
+                            <!--begin::Label-->
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">Avatar</label>
+                            <!--end::Label-->
+                            <div class="col-md-6">
+                                <div class="image-input image-input-outline" data-kt-image-input="true"
+                                    style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                    <div class="image-input-wrapper w-125px h-125px"
+                                        style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                    </div>
+                                    <!--end::Preview existing avatar-->
+                                    <!--begin::Label-->
+                                    <label
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <!--begin::Inputs-->
+                                        <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="avatar_remove" />
+                                        <!--end::Inputs-->
+                                    </label>
+                                    <!--end::Label-->
+                                    <!--begin::Cancel-->
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <!--end::Cancel-->
+                                    <!--begin::Remove-->
+                                    <span
+                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
+                                        <i class="bi bi-x fs-2"></i>
+                                    </span>
+                                    <!--end::Remove-->
+                                </div>
+                                <!--begin::Hint-->
+
+                                <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+                                <!--end::Hint-->
+                            </div>
+                            <!--end::Image input-->
+                        </div>
+
                         <!--begin::Input group-->
                         <div class="fv-row mb-10">
                             <!--begin::Label-->
@@ -138,7 +185,11 @@
                     <div class="card-body d-flex flex-center flex-column pt-12 p-9">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-65px symbol-circle mb-5">
-                            <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="image">
+                            @if (!empty($customers->image))
+                                <img src="{{ Storage::url($customers->image) }}" alt="image">
+                            @else
+                                <img src="{{ asset('assets/media/avatars/blank.png') }}" alt="image">
+                            @endif
                             <div
                                 class="bg-success position-absolute border border-4 border-white h-15px w-15px rounded-circle translate-middle start-100 top-100 ms-n3 mt-n3">
                             </div>

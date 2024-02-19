@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Modules\Sales\app\Models\TransactionSales;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -61,13 +62,22 @@ class CustomerController extends Controller
             'address_input' => 'required',
         ]);
 
-        Customer::create([
+
+        $input = [
             'code' => Str::random(5),
             'name' => $request->name_input,
             'email' => $request->email_input,
             'contact' => $request->contact_input,
             'address' => $request->address_input
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+            $imageName = time() . '.' . $request->avatar->extension();
+            $path = $request->file('avatar')->storeAs('/upload/photo/profiles', $imageName, 'public');
+            $input['image'] = $path;
+        }
+
+        Customer::create($input);
         Session::flash('success', ' Customer ' . $request->name . 'is  add successfuly.');
         return redirect()->back();
     }
@@ -132,12 +142,27 @@ class CustomerController extends Controller
 
         $customer = Customer::find($id);
 
-        $customer->update([
+        $input = [
             'name' => $request->name_input,
             'email' => $request->email_input,
             'contact' => $request->contact_input,
             'address' => $request->address_input
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+
+            if (!empty($customer->image))
+                if (Storage::exists($customer->image)) {
+                    Storage::delete($customer->image);
+                }
+
+
+            $imageName = time() . '.' . $request->avatar->extension();
+            $path = $request->file('avatar')->storeAs('/upload/photo/profiles', $imageName, 'public');
+            $input['image'] = $path;
+        }
+
+        $customer->update($input);
         Session::flash('success', ' Customer ' . $request->name_input . 'is  Change successfuly.');
         return redirect()->back();
     }

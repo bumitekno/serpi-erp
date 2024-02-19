@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Modules\Purchase\app\Models\TransactionPurchase;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class SupplierController extends Controller
 {
@@ -61,13 +62,21 @@ class SupplierController extends Controller
             'address_input' => 'required',
         ]);
 
-        Supplier::create([
+        $input = [
             'code' => Str::random(5),
             'name' => $request->name_input,
             'email' => $request->email_input,
             'contact' => $request->contact_input,
             'address' => $request->address_input
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+            $imageName = time() . '.' . $request->avatar->extension();
+            $path = $request->file('avatar')->storeAs('/upload/photo/profiles', $imageName, 'public');
+            $input['image'] = $path;
+        }
+
+        Supplier::create($input);
         Session::flash('success', ' Supplier ' . $request->name . 'is  add successfuly.');
         return redirect()->back();
     }
@@ -114,7 +123,6 @@ class SupplierController extends Controller
     {
         $supplier = Supplier::find($id);
         return view('supplier::edit')->with(['supplier' => $supplier]);
-        ;
     }
 
     /**
@@ -132,12 +140,25 @@ class SupplierController extends Controller
 
         $supplier = Supplier::find($id);
 
-        $supplier->update([
+        $input = [
             'name' => $request->name_input,
             'email' => $request->email_input,
             'contact' => $request->contact_input,
             'address' => $request->address_input
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+            if (!empty($supplier->image))
+                if (Storage::exists($supplier->image)) {
+                    Storage::delete($supplier->image);
+                }
+
+            $imageName = time() . '.' . $request->avatar->extension();
+            $path = $request->file('avatar')->storeAs('/upload/photo/profiles', $imageName, 'public');
+            $input['image'] = $path;
+        }
+
+        $supplier->update($input);
         Session::flash('success', ' Supplier ' . $request->name_input . 'is  Change successfuly.');
         return redirect()->back();
     }

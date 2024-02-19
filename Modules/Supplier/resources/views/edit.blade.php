@@ -1,19 +1,19 @@
-@extends('customer::layouts.master')
+@extends('supplier::layouts.master')
 
 @section('content')
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <form name="edit" action="{{ route('customer.update', $customer->id) }}" method="POST"
+            <form name="edit" action="{{ route('supplier.update', $supplier->id) }}" method="POST"
                 id="kt_docs_formvalidation_text" class="form" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="card">
                     <div class="card-header mt-3">
                         <div class="float-start">
-                            Customer Edit Information
+                            Supplier Edit Information
                         </div>
                         <div class="float-end">
-                            <a href="{{ route('customer.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
+                            <a href="{{ route('supplier.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -25,9 +25,9 @@
                             <div class="col-md-6">
                                 <div class="image-input image-input-outline" data-kt-image-input="true"
                                     style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
-                                    @if (!empty($customer->image))
+                                    @if (!empty($supplier->image))
                                         <div class="image-input-wrapper w-125px h-125px"
-                                            style="background-image: url({{ Storage::url($customer->image) }});">
+                                            style="background-image: url({{ Storage::url($supplier->image) }});">
                                         </div>
                                     @else
                                         <div class="image-input-wrapper w-125px h-125px"
@@ -77,7 +77,7 @@
 
                             <!--begin::Input-->
                             <input type="text" name="name_input" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Insert Name " value="{{ $customer->name }}" />
+                                placeholder="Insert Name " value="{{ $supplier->name }}" />
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
@@ -90,7 +90,7 @@
 
                             <!--begin::Input-->
                             <input type="email" name="email_input" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="insert Email" value="{{ $customer->email }}" />
+                                placeholder="insert Email" value="{{ $supplier->email }}" />
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
@@ -103,7 +103,7 @@
 
                             <!--begin::Input-->
                             <input type="number" name="contact_input" class="form-control form-control-solid mb-3 mb-lg-0"
-                                placeholder="Insert Contact " value="{{ $customer->contact }}" />
+                                placeholder="Insert Contact " value="{{ $supplier->contact }}" />
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
@@ -115,7 +115,7 @@
                             <!--end::Label-->
 
                             <!--begin::Input-->
-                            <textarea name="address_input" class="form-control form-control-solid" placeholder="Insert Address">{{ $customer->address }}</textarea>
+                            <textarea name="address_input" class="form-control form-control-solid" placeholder="Insert Address">{{ $supplier->address }}</textarea>
                             <!--end::Input-->
                         </div>
 

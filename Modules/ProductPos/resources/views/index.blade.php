@@ -157,6 +157,8 @@
                 @can('download-product')
                     <a href="{{ route('tools-productpos.download') }}" class="btn btn-default btn-sm my-2"><i
                             class="bi bi-file-arrow-down-fill"></i>Template</a>
+                    <a href="{{ route('productpos.printlabelpageAll') }}" target="_blank"
+                        class="btn btn-default btn-sm my-2"><i class="bi bi-printer"></i>Print Barcode All Product </a>
                 @endcan
             </div>
 
@@ -447,7 +449,11 @@
             var listc = $(this).data('list');
             var url = "{{ route('productpos.printlabelpage', ['listarray' => ':listarray']) }}";
             url = url.replace(':listarray', listc);
-            console.log(url);
+            Object.assign(document.createElement('a'), {
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                href: url,
+            }).click();
         });
     </script>
 @endpush
