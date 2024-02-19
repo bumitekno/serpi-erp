@@ -174,6 +174,19 @@
             <div>{{ $transaction->customer?->contact }}</div>
             <div>{{ $transaction->customer?->email }}</div>
             <div class="hr"></div>
+
+            @if (!empty($shipping))
+                <div>Shipping to </div>
+                <div>{{ Str::title($shipping?->first_name) }}</div>
+                <div>{{ Str::title($shipping?->last_name) }}</div>
+                <div>{{ $shipping?->phone }}</div>
+                <div>{{ $shipping?->address }}</div>
+                <div>{{ $shipping?->postal_cody }}</div>
+                <div>{{ $shipping?->city }}</div>
+                <div>{{ $shipping?->country_code }}</div>
+                <div class="hr"></div>
+            @endif
+
             <br>
             <div>Invoice {{ $transaction->code_transaction }}</div>
             <div>Note {{ $transaction?->note }}</div>
@@ -265,6 +278,12 @@
                             <td colspan="3"></td>
                             <td>Tax</td>
                             <td> {{ empty($transaction->tax_amount) ? 0 : number_format($transaction->tax_amount, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>Fee Shipping</td>
+                            <td> {{ empty($transaction->fee_shipping) ? 0 : number_format($transaction->fee_shipping, 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>

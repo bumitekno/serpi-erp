@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('total_transaction')->nullable();
             $table->boolean('saved_trans')->default(false);
             $table->string('file')->nullable();
+            $table->string('fee_shipping')->nullable();
         });
     }
 

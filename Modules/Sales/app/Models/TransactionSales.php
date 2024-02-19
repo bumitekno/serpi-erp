@@ -43,7 +43,8 @@ class TransactionSales extends Model
         'adjustment_amount',
         'total_transaction',
         'saved_trans',
-        'file'
+        'file',
+        'fee_shipping'
     ];
 
     public function operator()

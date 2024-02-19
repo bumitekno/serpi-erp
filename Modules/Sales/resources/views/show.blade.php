@@ -142,7 +142,7 @@
                             <!--begin::Row-->
                             <div class="row g-5 mb-12">
                                 <!--end::Col-->
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <!--end::Label-->
                                     <div class="fw-bold fs-7 text-gray-600 mb-1">Customer:</div>
                                     <!--end::Label-->
@@ -159,7 +159,7 @@
                                 </div>
                                 <!--end::Col-->
                                 <!--end::Col-->
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <!--end::Label-->
                                     <div class="fw-bold fs-7 text-gray-600 mb-1">Departement Store :</div>
                                     <!--end::Label-->
@@ -174,6 +174,29 @@
                                     <!--end::Description-->
                                 </div>
                                 <!--end::Col-->
+
+                                @if (!empty($shipping))
+                                    <div class="col-sm-4">
+                                        <!--end::Label-->
+                                        <div class="fw-bold fs-7 text-gray-600 mb-1">Shipping To :</div>
+                                        <!--end::Label-->
+                                        <!--end::Text-->
+                                        <div class="fw-bolder fs-6 text-gray-800"> {{ $shipping?->first_name }}
+                                            {{ $shipping?->last_name }}
+                                        </div>
+                                        <div class="fw-bolder fs-6 text-gray-800"> {{ $shipping?->phone }} </div>
+                                        <!--end::Text-->
+                                        <!--end::Description-->
+                                        <div class="fw-bold fs-7 text-gray-600">
+                                            {{ $shipping?->address }}
+                                            <br>{{ $shipping?->city }}
+                                            <br>{{ $shipping?->postal_code }}
+                                            <br> {{ $shipping?->country_code }}
+                                        </div>
+                                        <!--end::Description-->
+                                    </div>
+                                @endif
+
                             </div>
                             <!--end::Row-->
                             <!--begin::Content-->
@@ -275,6 +298,19 @@
                                             <!--begin::Number-->
                                             <div class="text-end fw-bolder fs-6 text-gray-800">
                                                 {{ empty($transaction->tax_amount) ? 0 : number_format($transaction->tax_amount, 0, ',', '.') }}
+                                            </div>
+                                            <!--end::Number-->
+                                        </div>
+                                        <!--end::Item-->
+
+                                        <!--begin::Item-->
+                                        <div class="d-flex flex-stack mb-3">
+                                            <!--begin::Accountnumber-->
+                                            <div class="fw-bold pe-10 text-gray-600 fs-7">Fee Shipping </div>
+                                            <!--end::Accountnumber-->
+                                            <!--begin::Number-->
+                                            <div class="text-end fw-bolder fs-6 text-gray-800">
+                                                {{ empty($transaction->fee_shipping) ? 0 : number_format($transaction->fee_shipping, 0, ',', '.') }}
                                             </div>
                                             <!--end::Number-->
                                         </div>

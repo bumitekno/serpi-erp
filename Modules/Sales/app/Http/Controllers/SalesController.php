@@ -14,6 +14,7 @@ use Modules\Sales\app\Models\SalesCredit;
 use Modules\Sales\app\Http\Controllers\SalesExportController;
 use Modules\Sales\app\Models\BalanceSales;
 use Modules\Sales\app\Models\SettingPos;
+use Modules\Sales\app\Models\Shipping;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\UnitProduct\app\Models\UnitProduct;
 use Modules\Stock\app\Models\Stock;
@@ -752,7 +753,8 @@ class SalesController extends Controller
                 'discount_amount' => $discount_cart,
                 'tax_amount' => $tax_cart,
                 'status' => $request->methodpayment == 3 ? false : true,
-                'saved_trans' => false
+                'saved_trans' => false,
+                'fee_shipping' => empty($request->fee_ship) ? 0 : Str::replace('.', '', $request->fee_ship)
             ];
 
             if ($request->hasFile('file')) {
@@ -763,6 +765,32 @@ class SalesController extends Controller
 
             $create_transaction = $trans->update($transaction);
             $id = $transFind->id;
+
+            //shipping sales 
+            if (!empty($request->shipping)) {
+
+                $check_shipping = Shipping::where([
+                    'id_transaction' => $create_transaction->id,
+                    'type_transaction' => 'sales'
+                ])->first();
+
+                if (!empty($check_shipping)) {
+                    $check_shipping->delete();
+                }
+
+                $field_shipping = [
+                    'id_transaction' => $create_transaction->id,
+                    'type_transaction' => 'sales',
+                    'first_name' => $request->first_name_ship,
+                    'last_name' => $request->last_name_ship,
+                    'phone' => $request->phone_ship,
+                    'city' => $request->city_ship,
+                    'postal_code' => $request->postal_code_ship,
+                    'country_code' => $request->country_ship,
+                    'address' => $request->address_ship
+                ];
+                Shipping::create($field_shipping);
+            }
 
         } else {
 
@@ -781,7 +809,8 @@ class SalesController extends Controller
                 'discount_amount' => $discount_cart,
                 'tax_amount' => $tax_cart,
                 'status' => $request->methodpayment == 3 ? false : true,
-                'saved_trans' => false
+                'saved_trans' => false,
+                'fee_shipping' => empty($request->fee_ship) ? 0 : Str::replace('.', '', $request->fee_ship)
             ];
 
             if ($request->hasFile('file')) {
@@ -791,6 +820,22 @@ class SalesController extends Controller
             }
 
             $create_transaction = TransactionSales::create($transaction);
+
+            //shipping sales 
+            if (!empty($request->shipping)) {
+                $field_shipping = [
+                    'id_transaction' => $create_transaction->id,
+                    'type_transaction' => 'sales',
+                    'first_name' => $request->first_name_ship,
+                    'last_name' => $request->last_name_ship,
+                    'phone' => $request->phone_ship,
+                    'city' => $request->city_ship,
+                    'postal_code' => $request->postal_code_ship,
+                    'country_code' => $request->country_ship,
+                    'address' => $request->address_ship
+                ];
+                Shipping::create($field_shipping);
+            }
 
             if (!empty($cart) && !empty($create_transaction)) {
                 foreach ($cart as $key => $val) {
@@ -1024,7 +1069,14 @@ class SalesController extends Controller
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
         $credit_information = SalesCredit::where('id_transaction_sales', $information->id)->get();
         $total_credit = SalesCredit::where('id_transaction_sales', $information->id)->sum('amount');
-        return view('sales::show')->with(['transaction' => $information, 'detail_transaction' => $detail_information, 'credit_transaction' => $credit_information, 'total_credit' => $total_credit]);
+        $Shipping = Shipping::where('id_transaction', $information->id)->where('type_transaction', 'sales')->first();
+        return view('sales::show')->with([
+            'transaction' => $information,
+            'detail_transaction' => $detail_information,
+            'credit_transaction' => $credit_information,
+            'total_credit' => $total_credit,
+            'shipping' => $Shipping
+        ]);
     }
 
     /** print struk small */
@@ -1032,12 +1084,14 @@ class SalesController extends Controller
     {
         $information = TransactionSales::with(['customer', 'methodpayment', 'departement', 'operator'])->find($id);
         $detail_information = TransactionSalesItem::with(['products', 'units'])->where('id_transaction_sales', $information->id)->get();
+        $Shipping = Shipping::where('id_transaction', $information->id)->where('type_transaction', 'sales')->first();
         $settingpos_footprint = SettingPos::first()?->footprint;
         return view('sales::printsmall')->with([
             'transaction' => $information,
             'detail_transaction' => $detail_information,
             'route' => $route,
-            'footprint' => $settingpos_footprint
+            'footprint' => $settingpos_footprint,
+            'shipping' => $Shipping
         ]);
     }
 

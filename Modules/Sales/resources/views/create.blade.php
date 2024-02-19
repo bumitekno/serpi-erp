@@ -403,13 +403,106 @@
                         </div>
 
                         <div class="mb-3 row fv-row">
+                            <div class="col-md-4 col-form-label text-md-end text-start"></div>
+                            <div class="col-md-8">
+                                <label class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input shipping " type="checkbox" value="1"
+                                        name="shipping" />
+                                    <span class="form-check-label">
+                                        Add Shipments Address
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="add_shipping d-none">
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">First Name
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="text" name="first_name_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="first name" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">Last Name
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="text" name="last_name_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="last name" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">Phone
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="text" name="phone_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="phone" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">Fee Shipping
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="text" name="fee_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0 kt_inputmask"
+                                        placeholder="0" />
+                                    <a href="https://berdu.id/cek-ongkir" target="_blank"
+                                        class="btn btn-primary mt-3 mb-3">
+                                        <i class="bi bi-truck"></i> Check Fee Shipment </a>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">Address
+                                </label>
+                                <div class="col-md-8">
+                                    <textarea name="address_ship" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="adress"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">City
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="text" name="city_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="city" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">Postal Code
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="number" name="postal_code_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="postal code" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row fv-row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start">Country
+                                </label>
+                                <div class="col-md-8">
+                                    <input type="text" name="country_ship"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="country" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3 row fv-row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Total
                                 Payment
                             </label>
                             <div class="col-md-8">
                                 <input type="text" name="total_payment"
-                                    class="form-control  mb-3 mb-lg-0 form-control-solid" placeholder="0 "
+                                    class="form-control  mb-3 mb-lg-0 form-control-solid " placeholder="0 "
                                     data-type="currency" readonly="readonly" data-currency="{{ $total_cart }}"
+                                    data-currency_before="{{ $total_cart }}"
                                     value="{{ number_format($total_cart, 0, ',', '.') }}" />
                             </div>
                         </div>
@@ -1257,6 +1350,111 @@
             }
         );
 
+        //shipping 
+        $('body').on('change', 'input.shipping', function() {
+            //$(this).checked = !$(this).checked;
+            if ($(this).is(':checked')) {
+                $("input[name='shipping']:checkbox").prop("checked", false);
+                $(this).prop("checked", true);
+                $('.add_shipping').removeClass('d-none');
+
+                validatorpayment.addField('first_name_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' First name is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('last_name_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' Last name is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('phone_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' Phone  is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('address_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' Address  is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('fee_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' Fee Shipping  is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('city_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' City is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('postal_code_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' Postal Code is required'
+                        }
+                    }
+                });
+
+                validatorpayment.addField('country_ship', {
+                    validators: {
+                        //add validator for this field
+                        notEmpty: {
+                            message: ' Country is required'
+                        }
+                    }
+                });
+
+            } else {
+                $(this).prop("checked", false);
+                $('.add_shipping').addClass('d-none');
+                validatorpayment.removeField('first_name_ship');
+                validatorpayment.removeField('last_name_ship');
+                validatorpayment.removeField('phone_ship');
+                validatorpayment.removeField('fee_ship');
+                validatorpayment.removeField('address_ship');
+            }
+        });
+
+        //add biaya fee calc
+        $('body').on('keyup', 'input[name=fee_ship]', function(e) {
+            var total_payment_before = $('input[name=total_payment]').data('currency_before');
+            if (e.target.value.length > 0) {
+                var replace_currency = e.target.value.replace(/\D/g, "");
+                var change = parseInt(total_payment_before) + parseInt(replace_currency);
+                $('input[name=total_payment]').attr('data-currency', change);
+                $('input[name=total_payment]').val(formatNumber(change.toString()));
+            } else {
+                $('input[name=total_payment]').attr('data-currency', total_payment_before);
+                $('input[name=total_payment]').val(formatNumber(total_payment_before));
+            }
+        });
+
         //method payment 
 
         $('body').on('change', 'select[name=methodpayment]', function(e) {
@@ -1277,7 +1475,7 @@
             $('input[name=amount_payment]').val(formatNumber(money.toString()));
             var total_payment = $('input[name=total_payment]').data('currency');
             var change = parseInt(money) - parseInt(total_payment);
-            console.log(change);
+
             if (change > 0) {
                 var dfc = formatNumber(change.toString());
                 $('input[name="change"]').attr('data-currency', change.toString());
