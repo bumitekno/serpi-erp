@@ -74,18 +74,6 @@ class PermissionSeeder extends Seeder
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'departement', 'group_modules' => 'master']);
         }
 
-        //module method Payment
-        /*
-        $permissions_module_method_payment = [
-            'create-method-payment',
-            'edit-method-payment',
-            'delete-method-payment'
-        ];
-
-        // Looping and Inserting Array's Permissions Module Method Payment into Permission Table
-        foreach ($permissions_module_method_payment as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'method_payment', 'group_modules' => 'master']);
-        }*/
 
         //module product
         $permissions_module_product = [
@@ -222,7 +210,8 @@ class PermissionSeeder extends Seeder
 
         /** report module */
         $permissions_module_report = [
-            'report-daily-pos'
+            'report-daily-pos',
+            'report-shipment'
         ];
         // Looping and Inserting Array's Permissions Module Method Payment into Permission Table
         foreach ($permissions_module_report as $permission) {

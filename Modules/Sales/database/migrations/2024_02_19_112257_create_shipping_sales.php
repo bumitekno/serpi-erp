@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->string('phone')->nullable();
             $table->string('country_code')->nullable();
             $table->text('address')->nullable();
+            $table->string('number_tracking')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Sales\Database\factories\ShippingFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Modules\Sales\app\Models\TransactionSales;
 
 class Shipping extends Model
 {
@@ -33,5 +34,10 @@ class Shipping extends Model
             ->logOnly(['id_transaction', 'type_transaction', 'phone'])
             ->setDescriptionForEvent(fn(string $eventName) => "This model has been {$eventName}")
             ->useLogName('Shipping');
+    }
+
+    public function sales()
+    {
+        return $this->belongsTo(TransactionSales::class, 'id_transaction', 'id');
     }
 }

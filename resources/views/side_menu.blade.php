@@ -286,7 +286,7 @@
 
 @canany(['report-daily-pos'])
     <div data-kt-menu-trigger="click"
-        class="menu-item menu-accordion mb-1  {{ request()->is('customer*') || request()->is('supplier*') || request()->is('departement*') ? 'show' : '' }} ">
+        class="menu-item menu-accordion mb-1  {{ request()->is('report*') ? 'show' : '' }} ">
         <span class="menu-link">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen051.svg-->
@@ -307,9 +307,10 @@
             <span class="menu-arrow"></span>
         </span>
         <div class="menu-sub menu-sub-accordion">
+
             @canany(['report-daily-pos'])
                 <div class="menu-item">
-                    <a class="menu-link {{ request()->is('report*') ? 'active' : '' }} "
+                    <a class="menu-link {{ request()->segment(2) == 'dailypost' ? 'active' : '' }} "
                         href="{{ route('report.dailypost') }}">
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
@@ -319,6 +320,17 @@
                 </div>
             @endcanany
 
+            @canany(['report-shipment'])
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->segment(2) == 'shipments' ? 'active' : '' }} "
+                        href="{{ route('report.shipment') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Report Shipment </span>
+                    </a>
+                </div>
+            @endcanany
         </div>
     </div>
 @endcanany

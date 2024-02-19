@@ -284,7 +284,7 @@
                                             <span class="bullet bg-gray-200 w-5px h-2px"></span>
                                         </li>
 
-                                        @if (request()->segment(2) == 'dailypos')
+                                        @if (request()->segment(2) == 'dailypost' || request()->segment(2) == 'shipments')
                                             @can('report-daily-pos')
                                                 <li class="breadcrumb-item text-dark">
                                                     <span class="text-hover-primary">Report
