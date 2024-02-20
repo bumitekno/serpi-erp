@@ -3,6 +3,7 @@
 namespace Modules\Expense\database\seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Expense\app\Models\Expense;
 
 class ExpenseDatabaseSeeder extends Seeder
 {
@@ -12,5 +13,8 @@ class ExpenseDatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call([]);
+        Expense::create([
+            'name' => 'Withdraw'
+        ]);
     }
 }

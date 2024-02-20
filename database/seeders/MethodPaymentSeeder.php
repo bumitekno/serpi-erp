@@ -29,5 +29,9 @@ class MethodPaymentSeeder extends Seeder
         MethodPayment::create([
             'name' => 'E-wallet'
         ]);
+
+        MethodPayment::create([
+            'name' => 'Card Member'
+        ]);
     }
 }

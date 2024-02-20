@@ -638,44 +638,6 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="name"
-                                    class="col-md-4 col-form-label text-md-end text-start">Customer</label>
-                                <div class="col-md-8">
-                                    <div class="float-start">
-                                        <select class="form-select @error('customer') is-invalid @enderror"
-                                            data-control="select2" data-placeholder="Select customer" name="customer">
-                                            <option></option>
-                                            @foreach ($customer as $customers)
-                                                <option value="{{ $customers->id }}"
-                                                    @if ($customer_default == $customers->id) selected="selected" @endif>
-                                                    {{ $customers->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        @if ($errors->has('customer'))
-                                            <span class="text-danger">{{ $errors->first('customer') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="float-end">
-                                        <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2"
-                                            data-bs-toggle="modal" data-bs-target="#kt_modal_customer">
-                                            <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->
-                                            <span class="svg-icon svg-icon-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-person-fill-add"
-                                                    viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                                    <path
-                                                        d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3 row">
                                 <label for="name" class="col-md-4 col-form-label text-md-end text-start">Date</label>
                                 <div class="col-md-4">
                                     <input type="date" name="date_transaction"
@@ -683,6 +645,67 @@
                                     @if ($errors->has('date_transaction'))
                                         <span class="text-danger">{{ $errors->first('date_transaction') }}</span>
                                     @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3 row">
+                                <label for="name"
+                                    class="col-md-4 col-form-label text-md-end text-start">Customer</label>
+                                <div class="col-md-8">
+
+                                    <select class="form-select @error('customer') is-invalid @enderror"
+                                        data-control="select2" data-placeholder="Select customer" name="customer">
+                                        <option></option>
+                                        @foreach ($customer as $customers)
+                                            <option value="{{ $customers->id }}"
+                                                @if ($customer_default == $customers->id) selected="selected" @endif>
+                                                {{ $customers->name }} </option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('customer'))
+                                        <span class="text-danger">{{ $errors->first('customer') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="name" class="col-md-4 col-form-label text-md-end text-start"></label>
+                                <div class="d-flex col-md-8">
+                                    <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2 me-2 "
+                                        data-bs-toggle="modal" data-bs-target="#kt_modal_customer">
+                                        <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->
+                                        <span class="svg-icon svg-icon-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                                <path
+                                                    d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
+                                            </svg>
+                                        </span>
+                                    </a>
+                                    <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2"
+                                        id="topupwith">
+                                        <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->
+                                        <span class="svg-icon svg-icon-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-credit-card-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1" />
+                                            </svg>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3 row">
+                                <label for="name"
+                                    class="col-md-4 col-form-label text-md-end text-start">Operator</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="operator" class="form-control form-control-solid"
+                                        value="{{ $operator }}" readonly="readonly">
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -702,16 +725,6 @@
                                     @if ($errors->has('departement'))
                                         <span class="text-danger">{{ $errors->first('departement') }}</span>
                                     @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3 row">
-                                <label for="name"
-                                    class="col-md-4 col-form-label text-md-end text-start">Operator</label>
-                                <div class="col-md-8">
-                                    <input type="text" name="operator" class="form-control form-control-solid"
-                                        value="{{ $operator }}" readonly="readonly">
                                 </div>
                             </div>
                         </div>

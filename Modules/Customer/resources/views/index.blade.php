@@ -20,7 +20,6 @@
 
                     <div class="modal-body">
 
-
                         <div class="mb-3 row">
                             <!--begin::Label-->
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Avatar</label>
@@ -196,7 +195,7 @@
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Name-->
-                        <a href="#"
+                        <a href="javascript:;"
                             class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">{{ $customers?->name }}</a>
                         <!--end::Name-->
                         <!--begin::Position-->
@@ -219,6 +218,18 @@
                                         </a>
                                     @endcan
                                 </div>
+
+                                <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
+                                    @can('show-customer')
+                                        <a href="{{ route('customer.cardview', $customers->id) }}"
+                                            class="btn btn-default btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="bi bi-credit-card-2-front-fill"></i>
+                                            </span>
+                                        </a>
+                                    @endcan
+                                </div>
+
                                 <!--end::Stats-->
                                 <!--begin::Stats-->
                                 <div class="border border-gray-300 border-dashed rounded min-w-80px py-3 px-4 mx-2 mb-3">
