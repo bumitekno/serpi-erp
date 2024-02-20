@@ -312,6 +312,12 @@ class CustomerController extends Controller
 
     }
 
+    /** create redirect sales  */
+    public function createpagesales($id)
+    {
+        Session::put('customer', $id);
+        return redirect()->route('sales.create');
+    }
 
     /**
      * Show the form for editing the specified resource.

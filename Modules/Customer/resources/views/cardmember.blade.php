@@ -135,11 +135,14 @@
             <!--begin::Card-->
             <div class="card mb-5 mb-xl-8">
                 <div class="card-header mt-3">
-                    <div class="float-start">
-                        <a href="{{ route('customer.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
+                    <div class="float-start d-flex mb-3">
+                        <a href="{{ route('customer.index') }}" class="btn btn-primary btn-sm me-2">&larr; List
+                            Customer </a>
+                        <a href="{{ route('customer.createpagesales', $customer->id) }}"
+                            class="btn btn-success btn-sm">&larr; New Sales </a>
                     </div>
                     <div class="float-end">
-                        Customer Information
+                        <h3 class="text-dark"> Customer Information</h3>
                     </div>
                 </div>
                 <!--begin::Card body-->

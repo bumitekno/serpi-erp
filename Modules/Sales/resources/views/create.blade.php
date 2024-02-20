@@ -516,6 +516,16 @@
                             </div>
                         </div>
 
+                        <div class="mb-3 row fv-row d-none " id="cardmember">
+                            <label for="name" class="col-md-4 col-form-label text-md-end text-start">
+                                Number Member Card
+                            </label>
+                            <div class="col-md-8">
+                                <input type="number" name="number_membercard" class="form-control"
+                                    placeholder="Inser Number Member Card ">
+                            </div>
+                        </div>
+
                         <div class="mb-3 row fv-row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Amount
                             </label>
@@ -672,7 +682,8 @@
                                 <label for="name" class="col-md-4 col-form-label text-md-end text-start"></label>
                                 <div class="d-flex col-md-8">
                                     <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2 me-2 "
-                                        data-bs-toggle="modal" data-bs-target="#kt_modal_customer">
+                                        data-bs-toggle="modal" data-bs-target="#kt_modal_customer"
+                                        title="Add New Customer " data-bs-toggle="tooltip" data-bs-placement="bottom">
                                         <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->
                                         <span class="svg-icon svg-icon-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -685,7 +696,8 @@
                                         </span>
                                     </a>
                                     <a href="javascript:;" class="btn btn-bg-light btn-icon-info btn-text-info mb-2"
-                                        id="topupwith">
+                                        id="topupwith" data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="Top Up Or Withdraw">
                                         <!--begin::Svg Icon | path: icons/duotune/general/gen006.svg-->
                                         <span class="svg-icon svg-icon-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -1471,14 +1483,35 @@
         //method payment 
 
         $('body').on('change', 'select[name=methodpayment]', function(e) {
+
             if (e.target.value > 1) {
                 $('#list-nominal').addClass('d-none');
+                $('#cardmember').addClass('d-none');
                 if (e.target.value == '2' || e.target.value == '4') {
                     $('#transferfile').removeClass('d-none');
+                    $('input[name=amount_payment]').val('');
+                } else if (e.target.value == '5') {
+                    $('#transferfile').addClass('d-none');
+                    $('#cardmember').removeClass('d-none');
+                    validatorpayment.addField('number_membercard', {
+                        validators: {
+                            //add validator for this field
+                            notEmpty: {
+                                message: ' Number Member Card is required'
+                            }
+                        }
+                    });
+
+                    var total_payment_before = $('input[name=total_payment]').data('currency_before');
+                    $('input[name=amount_payment]').val(formatNumber(total_payment_before.toString()));
+
                 }
             } else {
                 $('#list-nominal').removeClass('d-none');
                 $('#transferfile').addClass('d-none');
+                $('#cardmember').addClass('d-none');
+                validatorpayment.removeField('number_membercard');
+                $('input[name=amount_payment]').val('');
             }
         });
 
@@ -1812,5 +1845,21 @@
                 $('#kt_modal_openbalance').modal('show');
             });
         @endif
+
+        // top up or withdraw 
+        $('body').on('click', '#topupwith', function() {
+            var customer_invoce = $('select[name=customer] option:selected').val();
+            if (customer_invoce == '') {
+                alert('Please choose customer');
+            } else {
+                var url = "{{ route('customer.cardview', ['id' => ':id']) }}";
+                url = url.replace(':id', customer_invoce);
+                Object.assign(document.createElement('a'), {
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    href: url,
+                }).click();
+            }
+        });
     </script>
 @endpush

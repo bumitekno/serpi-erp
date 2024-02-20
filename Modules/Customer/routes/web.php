@@ -23,4 +23,5 @@ Route::group([], function () {
     Route::get('customer/cardview/{id}/{status}', [CustomerController::class, 'updatecard'])->name('customer.updatecard');
     Route::get('customer/transcard/{customerid}', [CustomerController::class, 'ajax_trans_viewcard'])->name('customer.ajax_trans_viewcard');
     Route::post('customer/trans/topwithdraw', [CustomerController::class, 'storetranscard'])->name('customer.storetranscard');
+    Route::get('customer/sales/{id}', [CustomerController::class, 'createpagesales'])->name('customer.createpagesales');
 });

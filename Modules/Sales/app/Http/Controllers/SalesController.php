@@ -20,6 +20,8 @@ use Modules\UnitProduct\app\Models\UnitProduct;
 use Modules\Stock\app\Models\Stock;
 use App\Models\MethodPayment;
 use App\Models\Departement;
+use App\Models\CardMember;
+use App\Models\TransCardMember;
 use Modules\CategoryProduct\app\Models\CategoryProduct;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +31,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\Sales\app\Http\Controllers\ReportDaily;
+
 
 class SalesController extends Controller
 {
@@ -683,6 +686,23 @@ class SalesController extends Controller
         $discount_cart = empty(Session::get('discount')) ? 0 : Session::get('discount');
         $tax_cart = empty(Session::get('tax')) ? 0 : Session::get('tax');
         $cart = Session::get('cart');
+        $checkStep = false;
+        //check payment with card member 
+        if ($request->methodpayment == '5') {
+            $checkMember = CardMember::where(['id_customer' => $request->customer_invoice, 'number_card' => $request->number_membercard])->first();
+            if (empty($checkMember)) {
+                $checkStep = false;
+                Session::flash('error', 'Transaction is failed, Card Number ' . $request->number_membercard . ' not found !');
+                return redirect()->back();
+            } else {
+                if ($checkMember->balance < Str::replace('.', '', $request->amount_payment)) {
+                    Session::flash('error', 'Transaction is failed,  Card Number ' . $checkMember->number_card . ' the balance is not sufficient  !');
+                    return redirect()->back();
+                } else {
+                    $checkStep = true;
+                }
+            }
+        }
 
         //check transaction saved 
         $trans = TransactionSales::where('code_transaction', $request->number_invoice);
@@ -882,6 +902,46 @@ class SalesController extends Controller
             }
 
             $id = $create_transaction->id;
+        }
+
+        //new step
+        if ($request->methodpayment == '5' && $checkStep == true) {
+            $withdraw = TransCardMember::create([
+                'id_member' => $checkMember->id,
+                'nominal' => Str::replace('.', '', $request->amount_payment),
+                'type' => 'withdraw',
+                'date_trans' => Carbon::now(),
+                'ref_trans' => $id,
+            ]);
+            if (!empty($withdraw)) {
+                $checkMember->update(['balance' => intval($checkMember->balance - $withdraw->nominal)]); // update balance withdraw
+                $record = TransactionExpense::latest()->first();
+                if (!empty($record)) {
+                    $expNum = explode('-', $record->code_transaction);
+                    //check first day in a year
+                    if (date('Y-01-01') == date('Y-m-d')) {
+                        $nextInvoiceNumber = 'EX-' . date('Y') . '-1';
+                    } else {
+                        //increase 1 with last invoice number
+                        $nextInvoiceNumber = $expNum[0] . '-' . $expNum[1] . '-' . $expNum[2] + 1;
+                    }
+                } else {
+                    $nextInvoiceNumber = 'EX-' . date('Y') . '-1';
+                }
+
+                TransactionExpense::create([
+                    'ref_trans' => $id,
+                    'code_transaction' => $nextInvoiceNumber,
+                    'name_transaction' => 'Withdraw Card Member ' . $checkMember->number_card . ' for purchase product shopping from transaction sales ',
+                    'date_transaction' => Carbon::parse($withdraw->datetrans)->format('Y-m-d'),
+                    'time_transaction' => Carbon::parse($withdraw->datetrans)->format('H:i:s'),
+                    'id_user' => Auth::user()->id,
+                    'id_expense' => 1,
+                    'amount' => $withdraw->nominal,
+                    'id_departement' => $request->departement_invoice,
+                    'note' => 'Withdraw Card Member  ' . $checkMember->number_card . ' for purchase product shopping from transaction sales '
+                ]);
+            }
         }
 
         if (!empty($create_transaction) && !empty($create_item_sales)) {
@@ -1233,9 +1293,23 @@ class SalesController extends Controller
     {
         //
         $trans = TransactionSales::find($id);
+        if ($trans->id_method_payment == '5') {
+            $card = TransCardMember::where('ref_trans', $id)->first();
+            if (!empty($card)) {
+                //update Balance Card Member 
+                $update_balance = CardMember::where('id', $card->id_member)->first();
+                if (!empty($update_balance->balance)) {
+                    $update_balance->update(['balance' => intval($update_balance->balance + $trans->total_transaction)]);
+                }
+                $card->delete();
+            }
+            TransactionExpense::where('ref_trans', $id)->delete();
+        }
+
         $trans->note = 'cancel';
         $trans->status = false;
         $trans->save();
+
         $departement = Departement::where('id', $trans->id_departement)->first();
         $transitem = TransactionSalesItem::where('id_transaction_sales', $trans->id)->get();
         if (!empty($transitem)) {

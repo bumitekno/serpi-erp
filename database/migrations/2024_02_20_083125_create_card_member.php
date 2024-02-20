@@ -26,6 +26,7 @@ return new class extends Migration {
             $table->string('nominal')->nullable();
             $table->enum('type', ['topup', 'withdraw'])->default('topup');
             $table->dateTime('date_trans')->nullable();
+            $table->foreignId('ref_trans')->nullable();
             $table->timestamps();
         });
     }

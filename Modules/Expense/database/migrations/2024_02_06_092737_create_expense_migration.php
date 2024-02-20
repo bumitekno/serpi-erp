@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->foreignId('id_departement')->nullable();
             $table->string('amount')->nullable();
             $table->text('note')->nullable();
+            $table->foreignId('ref_trans')->nullable();
             $table->timestamps();
         });
     }
