@@ -19,6 +19,8 @@ use Modules\UnitProduct\app\Models\UnitProduct;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Purchase\app\Http\Controllers\PurchaseExportController;
 
 class PurchaseController extends Controller
 {
@@ -450,5 +452,16 @@ class PurchaseController extends Controller
         ]);
         Session::flash('success', ' Supplier ' . $request->name . 'is  add successfuly.');
         return redirect()->back();
+    }
+
+    /** download files export transaction sales */
+    public function download_transaction(Request $request)
+    {
+        if (!empty($request->get('from')) && !empty($request->get('to'))) {
+            $startdate = Carbon::createFromFormat('d/m/Y', $request->get('from'))->format('Y-m-d');
+            $enddate = Carbon::createFromFormat('d/m/Y', $request->get('to'))->format('Y-m-d');
+            $transaction = TransactionPurchase::with(['supplier', 'methodpayment', 'departement'])->whereBetween('date_purchase', [$startdate, $enddate])->get();
+            return Excel::download(new PurchaseExportController($transaction), 'purchase-export.xlsx');
+        }
     }
 }

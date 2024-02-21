@@ -217,5 +217,14 @@ class PermissionSeeder extends Seeder
         foreach ($permissions_module_report as $permission) {
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'reportpos', 'group_modules' => 'report']);
         }
+
+        $permissions_module_system_setting = [
+            'log-activity',
+            'setting-aplication'
+        ];
+
+        foreach ($permissions_module_system_setting as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'system', 'group_modules' => 'system']);
+        }
     }
 }

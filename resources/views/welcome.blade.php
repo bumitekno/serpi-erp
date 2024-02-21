@@ -5,19 +5,26 @@
 
 <head>
     <base href="../../../">
-    <title>Service Enterprice Resource Planning Indonesia </title>
+    <title>
+        {{ empty(Session::get('title_web')) ? 'Service Enterprice Resource Planning Indonesia' : Session::get('title_web') }}
+    </title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <meta name="description" content="Service Enterprice Resource Planning Indonesia From PT.Bumi Tekno Indonesia" />
-    <meta name="keywords" content="ERP Indonesia " />
+    <meta name="description"
+        content="{{ empty(Session::get('description_web')) ? 'Service Enterprice Resource Planning Indonesia From PT.Bumi Tekno Indonesia' : Session::get('description_web') }}" />
+    <meta name="keywords"
+        content=" {{ empty(Session::get('keyword_web')) ? 'ERP Indonesia' : Session::get('keyword_web') }} " />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Service Enterprice Resource Planning Indonesia " />
+    <meta property="og:title"
+        content="{{ empty(Session::get('title_web')) ? 'Service Enterprice Resource Planning Indonesia' : Session::get('title_web') }} " />
     <meta property="og:url" content="{{ url('/') }}" />
-    <meta property="og:site_name" content="serpi.id" />
+    <meta property="og:site_name" content="{{ url('/') }}" />
     <link rel="canonical" href="{{ url('/') }}" />
-    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <link rel="shortcut icon"
+        href="{{ empty(Session::get('logo')) ? asset('assets/media/logos/favicon.ico') : Storage::url(Session::get('logo')) }}" />
+    <!--begin::Fonts-->
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
     <!--end::Fonts-->
@@ -38,8 +45,12 @@
             <!--begin::Content-->
             <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
                 <!--begin::Logo-->
-                <a href="{{ url('/') }}" class="mb-12 d-none">
-                    <img alt="Logo" src="{{ asset('assets/media/logos/logo-2.svg') }}" class="h-40px" />
+                <a href="{{ url('/') }}" class="mb-12">
+                    @if (empty(Session::get('logo')))
+                        <img alt="Logo" src="{{ asset('assets/media/logos/logo-2.svg') }}" class="h-100px" />
+                    @else
+                        <img src="{{ Storage::url(Session::get('logo')) }}" alt="Logo" class="h-100px" />
+                    @endif
                 </a>
                 <!--end::Logo-->
                 <!--begin::Wrapper-->
@@ -49,7 +60,20 @@
                         <!--begin::Heading-->
                         <div class="text-center mb-10">
                             <!--begin::Title-->
-                            <h1 class="text-dark mb-3">ERP </h1>
+                            <h1 class="text-dark mb-3">ERP System </h1>
+
+                            @if ($message = Session::get('success'))
+                                <div class="alert alert-success text-center" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @endif
+
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-danger text-center" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @endif
+
                             <!--end::Title-->
                             <!--begin::Link-->
                             <div class="text-gray-400 fw-bold fs-4 d-none">New Here?

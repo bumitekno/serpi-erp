@@ -251,7 +251,6 @@
     <div class="card">
         <div class="card-header mt-3">
             <div class="float-start">
-                Purchase Order
                 <div class="d-flex">
 
                     <form name="filter" method="POST" action="{{ route('purchase.filter-history') }}">
@@ -294,6 +293,11 @@
                             placeholder="Pick date range " id="kt_daterangepicker_1" data-stardate="{{ $startdate }}"
                             data-enddate="{{ $enddate }}" value="{{ $startdate }} - {{ $enddate }}" />
                     </div>
+                    @can('download-purchase')
+                        <a href="javascript:;" class="btn btn-info btn-sm my-2 download-files"><i
+                                class="bi bi-arrow-down"></i>
+                            Export </a>
+                    @endcan
                 </div>
             </div>
             <div class="float-end">
@@ -435,6 +439,12 @@
         }, function(start, end, label) {
             window.location.href = "{{ route('purchase.filter-history') }}?from=" + start.format(
                 'YYYY-MM-DD') + "&to=" + end.format('YYYY-MM-DD');
+        });
+
+        $('body').on('click', '.download-files', function() {
+            var start = $('input[name=datefilter]').attr('data-stardate');
+            var end = $('input[name=datefilter]').attr('data-enddate');
+            window.location.href = "{{ route('purchase.download_transaction') }}?from=" + start + "&to=" + end;
         });
     </script>
 @endpush

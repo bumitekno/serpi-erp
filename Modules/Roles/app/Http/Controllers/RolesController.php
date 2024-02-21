@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Activitylog\Contracts\Activity;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Modules\Roles\app\Http\Requests\UpdateRoleRequest;
 use Modules\Roles\app\Http\Requests\StoreRoleRequest;
 
@@ -51,6 +53,19 @@ class RolesController extends Controller
         $permissions = Permission::whereIn('id', $request->permissions)->get(['name'])->toArray();
 
         $role->syncPermissions($permissions);
+
+        $userModel = Auth::user()->id;
+
+        activity()
+            ->causedBy($userModel)
+            ->performedOn($role)
+            ->tap(function (Activity $activity) use ($request) {
+                $activity->log_name = ' Create new roles ' . $request->name;
+            })
+            ->withProperties(['name' => $request->name])
+            ->event('created')
+            ->log('created');
+
         return redirect()->route('roles.index')
             ->withSuccess('New role is added successfully.');
     }
@@ -100,6 +115,18 @@ class RolesController extends Controller
 
         $role->syncPermissions($permissions);
 
+        $userModel = Auth::user()->id;
+
+        activity()
+            ->causedBy($userModel)
+            ->performedOn($role)
+            ->tap(function (Activity $activity) use ($request) {
+                $activity->log_name = ' Update roles ' . $request->name;
+            })
+            ->withProperties(['name' => $request->name])
+            ->event('updated')
+            ->log('updated');
+
         return redirect()->back()
             ->withSuccess('Role is updated successfully.');
     }
@@ -117,6 +144,19 @@ class RolesController extends Controller
             abort(403, 'CAN NOT DELETE SELF ASSIGNED ROLE');
         }
         $role->delete();
+
+        $userModel = Auth::user()->id;
+
+        activity()
+            ->causedBy($userModel)
+            ->performedOn($role)
+            ->tap(function (Activity $activity) use ($role) {
+                $activity->log_name = ' Update roles ' . $role->name;
+            })
+            ->withProperties(['name' => $role->name])
+            ->event('deleted')
+            ->log('deleted');
+
         return redirect()->route('roles.index')
             ->withSuccess('Role is deleted successfully.');
     }

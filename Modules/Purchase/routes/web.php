@@ -21,4 +21,5 @@ Route::group([], function () {
     Route::post('purchase/history/filter', [PurchaseController::class, 'index'])->name('purchase.filter-history');
     Route::get('purchase/history/filter', [PurchaseController::class, 'index'])->name('purchase.filter-history');
     Route::get('purchase/transfer/stock/{id}', [PurchaseController::class, 'storetransfer'])->name('purchase.storetransfer');
+    Route::get('puchase/export/trans', [PurchaseController::class, 'download_transaction'])->name('purchase.download_transaction');
 });

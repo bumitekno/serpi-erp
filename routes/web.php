@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ReportDailyPosController;
 use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\SystemController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,4 +43,15 @@ Route::prefix('report')->group(function () {
 Route::prefix('profil')->group(function () {
     Route::get('index', [ProfilController::class, 'index'])->name('profil.index');
     Route::put('storeupdate', [ProfilController::class, 'storeupdate'])->name('profil.storeupdate');
+})->middleware('auth');
+
+Route::prefix('system')->group(function () {
+    Route::prefix('log-activity')->group(function () {
+        Route::get('index', [SystemController::class, 'index'])->name('log-activity.index');
+        Route::get('delete/{id}', [SystemController::class, 'destroy'])->name('log-activity.destroy');
+    });
+    Route::prefix('settings')->group(function () {
+        Route::get('index', [SystemController::class, 'settingApps'])->name('settings.settingApps');
+        Route::post('index', [SystemController::class, 'settingStore'])->name('settings.settingStore');
+    });
 })->middleware('auth');

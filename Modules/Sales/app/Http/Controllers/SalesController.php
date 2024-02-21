@@ -1315,11 +1315,13 @@ class SalesController extends Controller
         if (!empty($transitem)) {
             foreach ($transitem as $item) {
                 $checkStocklast = ProductPos::find($item->id_product);
-
                 $unit = Stock::where(['id_product' => $item->id_product, 'id_warehouse' => $departement->id_warehouse, 'id_location' => $departement->id_location])->first();
-
                 if (!empty($checkStocklast->stock_last) && !empty($unit)) {
                     $updatelast = intval($checkStocklast->stock_last) + intval($unit->qty_convert * $item->qty);
+                    $checkStocklast->stock_last = $updatelast;
+                    $checkStocklast->save();
+                } else if (!empty($checkStocklast->stock_last) && empty($unit)) {
+                    $updatelast = intval($checkStocklast->stock_last) + intval($item->qty);
                     $checkStocklast->stock_last = $updatelast;
                     $checkStocklast->save();
                 }

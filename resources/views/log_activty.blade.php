@@ -1,16 +1,12 @@
-@extends('stock::layouts.master')
+@extends('template')
 @section('content')
     <div class="card">
         <div class="card-header mt-3">
             <div class="float-start">
-                <a href="{{ route('stock.index') }}" class="btn btn-primary btn-sm me-2">&larr; Back</a> Create Stock Purchase
-            </div>
-            <div class="float-end">
                 <div class="d-flex align-items-center position-relative my-1">
                     <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                     <span class="svg-icon svg-icon-3 position-absolute ms-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1"
                                 transform="rotate(45 17.0365 15.1223)" fill="black"></rect>
                             <path
@@ -23,20 +19,30 @@
                         class="form-control form-control-solid form-select-sm w-150px ps-9" placeholder="Search Code">
                 </div>
             </div>
+            <div class="float-end">
+                <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm">&larr; Back</a>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table align-middle table-row-dashed fs-6 gy-5" id="table-datatables">
+                <h3 class="text-dark">Log Activity</h3>
+                <table class="table table-bordered data-table">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th> Code </th>
-                            <th> Date</th>
-                            <th> Transfer</th>
-                            <th> Action</th>
+                            <th>No</th>
+                            <th>Log</th>
+                            <th>Description</th>
+                            <th> Event </th>
+                            <th> Couser ID </th>
+                            <th> Couser Type </th>
+                            <th> Properties </th>
+                            <th> Created </th>
+                            <th> Update </th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -47,10 +53,10 @@
     <script>
         $(function() {
 
-            var table = $('#table-datatables').DataTable({
+            var table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('stock.createstockp') }}",
+                ajax: "{{ route('log-activity.index') }}",
                 order: [],
                 columnDefs: [{
                     "targets": [0]
@@ -60,22 +66,40 @@
                         name: 'id'
                     },
                     {
-                        data: 'code_transaction',
-                        name: 'code_transaction'
+                        data: 'log_name',
+                        name: 'log_name'
                     },
                     {
-                        data: 'date_purchase',
-                        name: 'date_purchase'
+                        data: 'description',
+                        name: 'description'
                     },
                     {
-                        data: 'transfer_stock',
-                        name: 'transfer_stock'
+                        data: 'event',
+                        name: 'event'
+                    },
+                    {
+                        data: 'causer_id',
+                        name: 'causer_id'
+                    },
+                    {
+                        data: 'causer_type',
+                        name: 'causer_type'
+                    },
+                    {
+                        data: 'properties',
+                        name: 'properties'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'updated_at',
+                        name: 'updated_at'
                     },
                     {
                         data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
+                        name: 'action'
                     },
                 ]
             });

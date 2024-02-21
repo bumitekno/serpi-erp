@@ -1,15 +1,14 @@
 <table class="table align-middle table-row-dashed fs-6 gy-5">
     <thead>
         <tr>
-            <th colspan="10">Report Sales</th>
+            <th colspan="10">Report Purchase</th>
         </tr>
         <tr>
             <th>#</th>
             <th> Code </th>
             <th> Date</th>
-            <th> Total</th>
             <th> Amount</th>
-            <th> Customer </th>
+            <th> Supplier </th>
             <th> Departement </th>
             <th> Method</th>
             <th> Status </th>
@@ -23,14 +22,13 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ empty($transactions->code_transaction) ? '-' : $transactions->code_transaction }}
                 </td>
-                <td>{{ empty($transactions->date_sales) ? '-' : \Carbon\Carbon::parse($transactions->date_sales)->translatedFormat('d F Y') }}
-                    {{ empty($transactions->time_sales) ? '-' : \Carbon\Carbon::parse($transactions->time_sales)->translatedFormat('H:i:s') }}
+                <td>{{ empty($transactions->date_purchase) ? '-' : \Carbon\Carbon::parse($transactions->date_purchase)->translatedFormat('d F Y') }}
+                    {{ empty($transactions->time_purchase) ? '-' : \Carbon\Carbon::parse($transactions->time_purchase)->translatedFormat('H:i:s') }}
                 </td>
-                <td>{{ empty($transactions->total_transaction) ? 0 : number_format($transactions->total_transaction, 0, '.', ',') }}
-                </td>
+
                 <td>{{ empty($transactions->amount) ? 0 : number_format($transactions->amount, 0, '.', ',') }}
                 </td>
-                <td>{{ empty($transactions->customer) ? '-' : $transactions->customer?->name }}</td>
+                <td>{{ empty($transactions->supplier) ? '-' : $transactions->supplier?->name }}</td>
                 <td>{{ empty($transactions->departement) ? '-' : $transactions->departement?->name }}
                 </td>
 
@@ -55,7 +53,7 @@
             <tr>
                 <td colspan="13">
                     <span class="text-danger text-center">
-                        <strong>No Sales Found!</strong>
+                        <strong>No Purchase Found!</strong>
                     </span>
                 </td>
             </tr>

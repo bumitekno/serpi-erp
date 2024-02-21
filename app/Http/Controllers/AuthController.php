@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\SettingApp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Spatie\Activitylog\Contracts\Activity;
 
 
 class AuthController extends Controller
@@ -17,6 +19,20 @@ class AuthController extends Controller
     public function index()
     {
         //
+        $setting = SettingApp::latest()->first();
+        if (!empty($setting)) {
+            if (!empty($setting->title))
+                Session::put('title_web', $setting->title);
+
+            if (!empty($setting->keyword))
+                Session::put('keyword_web', $setting->keyword);
+
+            if (!empty($setting->description))
+                Session::put('description_web', $setting->description);
+
+            if (!empty($setting->logo))
+                Session::put('logo', $setting->logo);
+        }
         return view('welcome');
     }
 
@@ -44,6 +60,17 @@ class AuthController extends Controller
         Auth::login($user);
         Auth::user()->last_login = new \DateTime();
         Auth::user()->save();
+
+        activity()
+            ->causedBy($user->id)
+            ->performedOn($user)
+            ->tap(function (Activity $activity) use ($user) {
+                $activity->log_name = ' User ' . $user->name . ' Login to system ';
+            })
+            ->withProperties(['name' => $user->name])
+            ->event('login')
+            ->log('login');
+
         return response()->json(['message' => 'You have successfully logged in', 'redirect' => route('dashboard')], 200);
 
     }
@@ -56,6 +83,18 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $userModel = Auth::user()->id;
+        $user = User::find($userModel);
+        activity()
+            ->causedBy($userModel)
+            ->performedOn($user)
+            ->tap(function (Activity $activity) use ($user) {
+                $activity->log_name = ' User ' . $user->name . ' Logout from system ';
+            })
+            ->withProperties(['name' => $user->name])
+            ->event('logout')
+            ->log('logout');
+
         Auth::logout();
         Session::flush();
         $request->session()->invalidate();
