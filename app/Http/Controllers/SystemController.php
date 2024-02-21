@@ -10,6 +10,8 @@ use Spatie\Activitylog\Models\Activity;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use App\Console\Commands\DatabaseBackup;
+use \Illuminate\Contracts\Bus\Dispatcher;
 
 class SystemController extends Controller
 {
@@ -107,6 +109,21 @@ class SystemController extends Controller
         );
         Session::flash('success', 'Setting Apps  is change successfully');
         return redirect()->back();
+    }
+
+    public function backupdatabase(Dispatcher $dispatcher)
+    {
+        // Artisan::call('db:backup');
+        $backup = new DatabaseBackup();
+        $dispatcher->dispatchNow($backup);
+        Session::flash('info', $backup->getResponse());
+        return redirect()->back();
+    }
+
+    /** download backup */
+    public function download($storage)
+    {
+        return response()->download(storage_path('/app/backup/' . $storage));
     }
 
 }

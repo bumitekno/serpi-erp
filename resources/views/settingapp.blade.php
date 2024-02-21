@@ -1,12 +1,12 @@
 @extends('template')
 @section('content')
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-header mt-3">
             <div class="float-start">
                 <h3 class="text-dark">Setting Application </h3>
             </div>
             <div class="float-end">
-                <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm">&larr; Back</a>
+
             </div>
         </div>
         <div class="card-body">
@@ -90,6 +90,22 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            @if ($message = Session::get('info'))
+                <div class="alert alert-info text-center" role="alert">
+                    {!! $message !!}
+                </div>
+            @endif
+            <div class="float-start">
+                <h3 class="text-dark"> Backup Database </h3>
+            </div>
+            <div class="float-end">
+                <a href="{{ route('settings.backupdatabase') }}" class="btn btn-info btn-sm"> <i
+                        class="bi bi-cloud-arrow-down-fill"></i> Backup Now </a>
+            </div>
         </div>
     </div>
 @endsection

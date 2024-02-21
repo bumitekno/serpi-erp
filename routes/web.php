@@ -53,5 +53,7 @@ Route::prefix('system')->group(function () {
     Route::prefix('settings')->group(function () {
         Route::get('index', [SystemController::class, 'settingApps'])->name('settings.settingApps');
         Route::post('index', [SystemController::class, 'settingStore'])->name('settings.settingStore');
+        Route::get('backup', [SystemController::class, 'backupdatabase'])->name('settings.backupdatabase');
+        Route::get('download/backup/{filename}', [SystemController::class, 'download'])->name('settings.downloadbackup');
     });
 })->middleware('auth');
