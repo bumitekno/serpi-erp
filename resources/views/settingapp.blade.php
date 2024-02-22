@@ -19,7 +19,7 @@
                     <!--end::Label-->
                     <div class="col-md-6">
                         <div class="image-input image-input-outline" data-kt-image-input="true"
-                            style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                            style="background-image: url({{ asset('assets/media/svg/module.svg') }})">
                             <!--begin::Preview existing avatar-->
                             @if (!empty($settings->logo))
                                 <div class="image-input-wrapper w-125px h-125px"
@@ -27,7 +27,7 @@
                                 </div>
                             @else
                                 <div class="image-input-wrapper w-125px h-125px"
-                                    style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                    style="background-image: url({{ asset('assets/media/svg/module.svg') }})">
                                 </div>
                             @endif
                             <!--end::Preview existing avatar-->
@@ -47,12 +47,7 @@
                                 <i class="bi bi-x fs-2"></i>
                             </span>
                             <!--end::Cancel-->
-                            <!--begin::Remove-->
-                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
-                                <i class="bi bi-x fs-2"></i>
-                            </span>
-                            <!--end::Remove-->
+
                         </div>
                         <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
                         <!--end::Hint-->
@@ -93,19 +88,34 @@
         </div>
     </div>
     <div class="card">
+        <div class="card-header">
+            <h3 class="text-dark"> Backup & Restore Database </h3>
+        </div>
         <div class="card-body">
             @if ($message = Session::get('info'))
                 <div class="alert alert-info text-center" role="alert">
                     {!! $message !!}
                 </div>
             @endif
-            <div class="float-start">
-                <h3 class="text-dark"> Backup Database </h3>
-            </div>
-            <div class="float-end">
-                <a href="{{ route('settings.backupdatabase') }}" class="btn btn-info btn-sm"> <i
-                        class="bi bi-cloud-arrow-down-fill"></i> Backup Now </a>
-            </div>
+            <a href="{{ route('settings.backupdatabase') }}" class="btn btn-info btn-sm mb-3"> <i
+                    class="bi bi-cloud-arrow-down-fill"></i> Backup Now </a>
+
+            <form action="{{ route('settings.restoredatabase') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3 row">
+                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">File Restore </label>
+                    <div class="col-md-6">
+                        <input type="file" class="form-control" id="file" name="file" accept=".gz" required>
+                        <div class="form-text">Allowed file types: .gz</div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-6">
+                        <input type="submit" class=" btn btn-primary" value="Save">
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

@@ -51,13 +51,7 @@
                                         <i class="bi bi-x fs-2"></i>
                                     </span>
                                     <!--end::Cancel-->
-                                    <!--begin::Remove-->
-                                    <span
-                                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                                        data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
-                                        <i class="bi bi-x fs-2"></i>
-                                    </span>
-                                    <!--end::Remove-->
+
                                 </div>
                                 <!--begin::Hint-->
                                 @if ($errors->has('avatar'))

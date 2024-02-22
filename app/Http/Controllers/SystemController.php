@@ -11,7 +11,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use App\Console\Commands\DatabaseBackup;
-use \Illuminate\Contracts\Bus\Dispatcher;
+use App\Jobs\DatabaseRestore;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class SystemController extends Controller
 {
@@ -44,7 +47,7 @@ class SystemController extends Controller
                     return empty($row->causer_id) ? '-' : User::find($row->causer_id)?->name;
                 })
                 ->editColumn('action', function ($row) {
-                    $btn = '<a href="' . route('log-activity.destroy', ['id' => $row->id, 'status' => 0]) . '" class="btn btn-danger btn-sm" onclick="return confirm(`Are you sure to delete  this log ?`)">Delete</a>';
+                    $btn = '<a href="' . route('log-activity.destroy', ['id' => $row->id, 'status' => 0]) . '" class="btn btn-danger btn-sm" onclick="return confirm(`Are you sure to delete  this log ?`)"> <i class="bi bi-trash"></i>  Delete</a>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -58,6 +61,14 @@ class SystemController extends Controller
     public function destroy($id)
     {
         Activity::find($id)->delete();
+        Session::flash('success', 'Log delete is successfully');
+        return redirect()->back();
+    }
+
+    /** remove all log activity */
+    public function removeAllActivity()
+    {
+        Activity::query()->delete();
         Session::flash('success', 'Log delete is successfully');
         return redirect()->back();
     }
@@ -116,8 +127,37 @@ class SystemController extends Controller
         // Artisan::call('db:backup');
         $backup = new DatabaseBackup();
         $dispatcher->dispatchNow($backup);
+
+        $userModel = Auth::user()->id;
+        $user = User::find($userModel);
+        activity()
+            ->causedBy($userModel)
+            ->performedOn($user)
+            ->tap(function (Activity $activity) use ($user) {
+                $activity->log_name = ' User ' . $user->name . ' backup  file database ';
+            })
+            ->withProperties(['name' => $user->name])
+            ->event('backup')
+            ->log('backup');
+
         Session::flash('info', $backup->getResponse());
         return redirect()->back();
+    }
+
+    public function restoredatabase(Request $request, Dispatcher $dispatcher)
+    {
+        if ($request->hasFile('file')) {
+            $filename = time() . '.' . $request->file->extension();
+            $path = $request->file('file')->storeAs('restore', $filename);
+            $storage_path = storage_path() . "/app/" . $path;
+            $restore = new DatabaseRestore($storage_path);
+            $dispatcher->dispatchNow($restore);
+            if ($dispatcher) {
+                File::delete($storage_path);
+            }
+            Session::flash('info', $restore->getResponse());
+            return redirect()->back();
+        }
     }
 
     /** download backup */

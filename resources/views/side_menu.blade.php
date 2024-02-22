@@ -40,7 +40,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Master Management</span>
+            <span class="menu-title">Master Data</span>
             <span class="menu-arrow"></span>
         </span>
         <div class="menu-sub menu-sub-accordion">
@@ -109,7 +109,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Inventory Management</span>
+            <span class="menu-title">Inventory</span>
             <span class="menu-arrow"></span>
         </span>
         <div class="menu-sub menu-sub-accordion">
@@ -207,7 +207,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Purchase Management</span>
+            <span class="menu-title">Purchase</span>
         </a>
     </div>
 @endcan
@@ -231,7 +231,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Sales Management</span>
+            <span class="menu-title">Sales</span>
         </a>
     </div>
 @endcan
@@ -255,7 +255,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Income Management</span>
+            <span class="menu-title">Income</span>
         </a>
     </div>
 @endcan
@@ -279,7 +279,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Expense Management</span>
+            <span class="menu-title">Expense</span>
         </a>
     </div>
 @endcan
@@ -354,7 +354,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">User Management</span>
+            <span class="menu-title">Users</span>
             <span class="menu-arrow"></span>
         </span>
         <div class="menu-sub menu-sub-accordion">
@@ -364,7 +364,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">Users</span>
+                        <span class="menu-title">Users List </span>
                     </a>
                 </div>
             @endcanany
@@ -374,7 +374,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">Roles</span>
+                        <span class="menu-title">Roles List </span>
                     </a>
                 </div>
             @endcanany

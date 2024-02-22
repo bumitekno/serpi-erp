@@ -11,7 +11,7 @@ class ShipmentController extends Controller
 {
 
     /**
-     * Instantiate a new SalesController instance.
+     * Instantiate a new ShipmentController instance.
      */
     public function __construct()
     {

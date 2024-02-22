@@ -49,11 +49,13 @@ Route::prefix('system')->group(function () {
     Route::prefix('log-activity')->group(function () {
         Route::get('index', [SystemController::class, 'index'])->name('log-activity.index');
         Route::get('delete/{id}', [SystemController::class, 'destroy'])->name('log-activity.destroy');
+        Route::get('force/delete/all', [SystemController::class, 'removeAllActivity'])->name('log-activity.removeAllActivity');
     });
     Route::prefix('settings')->group(function () {
         Route::get('index', [SystemController::class, 'settingApps'])->name('settings.settingApps');
         Route::post('index', [SystemController::class, 'settingStore'])->name('settings.settingStore');
         Route::get('backup', [SystemController::class, 'backupdatabase'])->name('settings.backupdatabase');
         Route::get('download/backup/{filename}', [SystemController::class, 'download'])->name('settings.downloadbackup');
+        Route::post('upload/restore/database', [SystemController::class, 'restoredatabase'])->name('settings.restoredatabase');
     });
 })->middleware('auth');

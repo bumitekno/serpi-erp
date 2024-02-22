@@ -39,9 +39,14 @@
 
                 $text_route = strtolower(Str::replace('_', '', $nav_route->module));
                 if ($text_route == 'product') {
-                    $text_route = 'productpos';
+                    $route_name = route('productpos.index');
+                } elseif ($text_route == 'reportposdaily') {
+                    $route_name = route('report.dailypost');
+                } elseif ($text_route == 'reportshipment') {
+                    $route_name = route('report.shipment');
+                } else {
+                    $route_name = route($text_route . '.index');
                 }
-                $route_name = route($text_route . '.index');
             @endphp
 
             @canany($list_permission)

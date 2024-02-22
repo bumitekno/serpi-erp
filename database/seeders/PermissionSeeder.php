@@ -208,23 +208,14 @@ class PermissionSeeder extends Seeder
             Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'expense', 'group_modules' => 'expense']);
         }
 
-        /** report module */
-        $permissions_module_report = [
-            'report-daily-pos',
-            'report-shipment'
-        ];
-        // Looping and Inserting Array's Permissions Module Method Payment into Permission Table
-        foreach ($permissions_module_report as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'reportpos', 'group_modules' => 'report']);
-        }
 
-        $permissions_module_system_setting = [
-            'log-activity',
-            'setting-aplication'
-        ];
+        // permission report 
+        Permission::create(['name' => 'report-daily-pos', 'guard_name' => 'web', 'module' => 'reportposdaily', 'group_modules' => 'report']);
+        Permission::create(['name' => 'report-shipment', 'guard_name' => 'web', 'module' => 'reportshipment', 'group_modules' => 'report']);
 
-        foreach ($permissions_module_system_setting as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => 'web', 'module' => 'system', 'group_modules' => 'system']);
-        }
+        //permission system
+        Permission::create(['name' => 'log-activity', 'guard_name' => 'web', 'module' => 'log-activity', 'group_modules' => 'system']);
+        Permission::create(['name' => 'setting-aplication', 'guard_name' => 'web', 'module' => 'setting-aplication', 'group_modules' => 'system']);
+
     }
 }

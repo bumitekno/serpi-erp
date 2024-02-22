@@ -20,7 +20,10 @@
                 </div>
             </div>
             <div class="float-end">
-                <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm">&larr; Back</a>
+                <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm me-3 ">&larr; Back</a>
+                <a href="{{ route('log-activity.removeAllActivity') }}" class="btn btn-danger btn-sm"
+                    onclick="return confirm('Are you sure to empty all log activity?')"> <i class="bi bi-trash"></i> Empty
+                    All</a>
             </div>
         </div>
         <div class="card-body">
