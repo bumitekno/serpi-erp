@@ -10,6 +10,8 @@ use Modules\Location\app\Models\Location;
 use Modules\Warehouse\app\Models\Warehouse;
 use Modules\Sales\app\Models\TransactionSales;
 use Modules\Purchase\app\Models\TransactionPurchase;
+use Modules\Income\app\Models\TransactionIncome;
+use Modules\Expense\app\Models\TransactionExpense;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -165,8 +167,19 @@ class DepartementController extends Controller
         $departement = Departement::find($id);
         $check_transaction = TransactionSales::where('id_departement', $id)->first();
         $check_transaction2 = TransactionPurchase::where('id_departement', $id)->first();
-        if (!empty($check_transaction) && !empty($check_transaction2)) {
-            Session::flash('error', ' Departement ' . $departement->name . 'is can`t delete , because referense transaction sales and purchase .');
+        $check_transaction3 = TransactionIncome::where('id_departement', $id)->first();
+        $check_transaction4 = TransactionExpense::where('id_departement', $id)->first();
+        if (!empty($check_transaction)) {
+            Session::flash('error', ' Departement ' . $departement->name . 'is can`t delete , because referense transaction sales .');
+            return redirect()->back();
+        } elseif (!empty($check_transaction2)) {
+            Session::flash('error', ' Departement ' . $departement->name . 'is can`t delete , because referense transaction purchase .');
+            return redirect()->back();
+        } elseif (!empty($check_transaction3)) {
+            Session::flash('error', ' Departement ' . $departement->name . 'is can`t delete , because referense transaction income .');
+            return redirect()->back();
+        } else if (!empty($check_transaction4)) {
+            Session::flash('error', ' Departement ' . $departement->name . 'is can`t delete , because referense transaction  expense .');
             return redirect()->back();
         } else {
             Session::flash('success', ' Departement ' . $departement->name . 'has been delete it .');
