@@ -82,14 +82,15 @@
 @canany(['create-category-product', 'edit-category-product', 'delete-category-product', 'create-product',
     'edit-product', 'delete-product', 'import-product', 'export-product', 'create-unitproduct', 'edit-unitproduct',
     'delete-unitproduct', 'create-warehouse', 'edit-warehouse', 'delete-warehouse', 'create-location', 'edit-location',
-    'delete-location'])
+    'delete-location', 'create-stock', 'edit-stock', 'delete-stock', 'import-stock', 'export-stock'])
     <div data-kt-menu-trigger="click"
         class="menu-item menu-accordion mb-1  {{ request()->is('productpos*') ||
         request()->is('categoryproduct*') ||
         request()->is('tools-productpos*') ||
         request()->is('unitproduct*') ||
         request()->is('warehouse*') ||
-        request()->is('location*')
+        request()->is('location*') ||
+        request()->is('stock*')
             ? 'show'
             : '' }} ">
         <span class="menu-link">
