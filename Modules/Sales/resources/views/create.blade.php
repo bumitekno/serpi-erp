@@ -1501,17 +1501,18 @@
                             }
                         }
                     });
-
                     var total_payment_before = $('input[name=total_payment]').data('currency_before');
                     $('input[name=amount_payment]').val(formatNumber(total_payment_before.toString()));
-
                 }
             } else {
                 $('#list-nominal').removeClass('d-none');
                 $('#transferfile').addClass('d-none');
                 $('#cardmember').addClass('d-none');
-                validatorpayment.removeField('number_membercard');
                 $('input[name=amount_payment]').val('');
+                if (e.target.value > 1) {
+                    validatorpayment.removeField('number_membercard');
+                }
+
             }
         });
 
