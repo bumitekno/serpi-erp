@@ -19,6 +19,7 @@ use App\Models\Departement;
 use Modules\Income\app\Models\TransactionIncome;
 use Modules\Expense\app\Models\TransactionExpense;
 
+
 class CustomerController extends Controller
 {
 
@@ -376,7 +377,12 @@ class CustomerController extends Controller
         //
         $customer = Customer::find($id);
         $check_transaction = TransactionSales::where('id_customer', $id)->first();
-        if (!empty($check_transaction)) {
+        $card = CardMember::where('id_customer', $customer->id)->pluck('id');
+        $transaction = TransCardMember::whereIn('id_member', collect($card))->latest();
+        if (!empty($transaction)) {
+            Session::flash('error', ' Customer ' . $customer->name . 'is can`t delete , because referense transaction Card Member  .');
+            return redirect()->back();
+        } else if (!empty($check_transaction)) {
             Session::flash('error', ' Customer ' . $customer->name . 'is can`t delete , because referense transaction sales .');
             return redirect()->back();
         } else {

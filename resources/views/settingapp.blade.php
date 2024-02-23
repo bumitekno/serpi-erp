@@ -89,7 +89,7 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h3 class="text-dark"> Backup & Restore Database </h3>
+            <h3 class="text-dark"> Tools Database </h3>
         </div>
         <div class="card-body">
             @if ($message = Session::get('info'))
@@ -99,6 +99,14 @@
             @endif
             <a href="{{ route('settings.backupdatabase') }}" class="btn btn-info btn-sm mb-3"> <i
                     class="bi bi-cloud-arrow-down-fill"></i> Backup Now </a>
+
+            <a href="{{ route('systems.reset_trans') }}" class="btn btn-danger btn-sm mb-3"
+                onclick="return confirm('Are you sure to reset transaction ? ')"> <i class="bi bi-trash"></i> Reset
+                Transaction </a>
+
+            <a href="{{ route('systems.reset_datamaster') }}" class="btn btn-danger btn-sm mb-3"
+                onclick="return confirm('Are you sure to reset data master ? ')"> <i class="bi bi-trash"></i> Reset Data
+                Master </a>
 
             <form action="{{ route('settings.restoredatabase') }}" method="post" enctype="multipart/form-data">
                 @csrf

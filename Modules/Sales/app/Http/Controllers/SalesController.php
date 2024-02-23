@@ -136,6 +136,7 @@ class SalesController extends Controller
 
         $settingPos = SettingPos::first();
 
+
         return view('sales::index')->with([
             'transaction' => $transaction,
             'keyword' => $request->search,

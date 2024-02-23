@@ -19,6 +19,9 @@ use Modules\Location\app\Models\Location;
 use Maatwebsite\Excel\Facades\Excel;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use IlLuminate\Support\Str;
+use Modules\Sales\app\Models\TransactionSalesItem;
+use Modules\Purchase\app\Models\TransactionPurchaseItem;
+use Illuminate\Support\Facades\Session;
 
 class ProductPosController extends Controller
 {
@@ -108,7 +111,7 @@ class ProductPosController extends Controller
         if (!empty($request->pricepurchase))
             $data_send['price_purchase'] = $request->pricepurchase;
 
-        if (!empty($request->pricepurchase))
+        if (!empty($request->pricesell))
             $data_send['price_sell'] = $request->pricesell;
 
         if (!empty($request->stockmin))
@@ -260,7 +263,7 @@ class ProductPosController extends Controller
         if (!empty($request->pricepurchase))
             $data_send['price_purchase'] = $request->pricepurchase;
 
-        if (!empty($request->pricepurchase))
+        if (!empty($request->pricesell))
             $data_send['price_sell'] = $request->pricesell;
 
         if (!empty($request->stockmin))
@@ -295,15 +298,31 @@ class ProductPosController extends Controller
      */
     public function destroy($id)
     {
-        //
+
         $product = ProductPos::find($id);
-        if (!empty($product->image_product)) {
-            if (Storage::disk('public')->exists($product->image_product))
-                Storage::disk('public')->delete($product->image_product);
+
+        $check_trans_sales = TransactionSalesItem::where('id_product')->first();
+        $check_trans_purchase = TransactionPurchaseItem::where('id_product')->first();
+
+        if (!empty($check_trans_sales)) {
+
+            Session::flash('error', 'This Product ' . $product->name . ' can`t delete , because reff trans sales ');
+            return redirect()->back();
+
+        } else if (!empty($check_trans_purchase)) {
+
+            Session::flash('error', 'This Product ' . $product->name . ' can`t delete , because reff trans sales ');
+            return redirect()->back();
+
+        } else {
+            if (!empty($product->image_product)) {
+                if (Storage::disk('public')->exists($product->image_product))
+                    Storage::disk('public')->delete($product->image_product);
+            }
+            $product->delete();
+            return redirect()->route('productpos.index')
+                ->withSuccess('Product is deleted successfully.');
         }
-        $product->delete();
-        return redirect()->route('productpos.index')
-            ->withSuccess('Product is deleted successfully.');
     }
 
     /**

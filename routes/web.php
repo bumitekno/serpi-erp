@@ -27,6 +27,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('home')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('dashboard');
     Route::get('module/{module}', [HomeController::class, 'checkroute'])->middleware('auth')->name('checkroute');
+    Route::get('/statistic', [HomeController::class, 'statistic'])->middleware('auth')->name('statistic');
 });
 
 Route::prefix('report')->group(function () {
@@ -57,5 +58,7 @@ Route::prefix('system')->group(function () {
         Route::get('backup', [SystemController::class, 'backupdatabase'])->name('settings.backupdatabase');
         Route::get('download/backup/{filename}', [SystemController::class, 'download'])->name('settings.downloadbackup');
         Route::post('upload/restore/database', [SystemController::class, 'restoredatabase'])->name('settings.restoredatabase');
+        Route::get('reset/trans/all', [SystemController::class, 'reset_trans'])->name('systems.reset_trans');
+        Route::get('reset/data/master', [SystemController::class, 'reset_datamaster'])->name('systems.reset_datamaster');
     });
 })->middleware('auth');

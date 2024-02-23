@@ -63,7 +63,6 @@
         <div class="card-header mt-3">
             <div class="float-start">
                 Report Shipment
-
             </div>
             <div class="float-end">
                 <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm">&larr; Back</a>
@@ -88,7 +87,7 @@
                     class="form-control form-control-solid w-250px ps-14" placeholder="Search" />
             </div>
             <!--end::Search-->
-            <div class="table-responsive">
+            <div class="table-responsive mb-10">
                 <table class="table table-bordered data-table">
                     <thead>
                         <tr>
@@ -106,6 +105,17 @@
                     </tbody>
                 </table>
             </div>
+
+            <p class="text-info"> Information List this bottom for check tracking delivery </p>
+            <a href="https://cekresi.com" target="_blank" class="btn btn-info btn-sm mb-3"> Cekresi.com </a>
+            <a href="https://berdu.id/cek-resi" target="_blank" class="btn btn-info btn-sm mb-3"> berdu.id </a>
+            <a href="https://anteraja.id/id/tracking" target="_blank" class="btn btn-info btn-sm mb-3">
+                Anteraja.id
+            </a>
+            <a href="https://kiriminaja.com/tracking" target="_blank" class="btn btn-info btn-sm mb-3">
+                Kiriminaja.com
+            </a>
+
         </div>
     </div>
 @endsection

@@ -383,7 +383,7 @@
                                 Payment</label>
                             <div class="col-md-8">
                                 <select class="form-select" data-control="select2" data-placeholder="Select Method"
-                                    name="methodpayment">
+                                    name="methodpayment" data-dropdown-parent="#kt_modal_payment">
                                     <option></option>
                                     @foreach ($method_payment as $method_payments)
                                         <option value="{{ $method_payments->id }}"> {{ $method_payments->name }}
@@ -870,7 +870,7 @@
                                         <!--end::Description-->
 
                                         <div class="fs-7 fw-bold badge badge-light-primary">
-                                            {{ empty($products->stock_last) ? 0 : $products->stock_last }}
+                                            {{ empty($products->stock_last) ? '-' : $products->stock_last }}
                                         </div>
 
                                     </div>

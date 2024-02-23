@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TransCardMember;
 use App\Models\User;
 use App\Models\SettingApp;
 use Illuminate\Http\Request;
+use Modules\Expense\app\Models\TransactionExpense;
+use Modules\Income\app\Models\TransactionIncome;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Activitylog\Models\Activity;
 use Carbon\Carbon;
@@ -15,6 +18,15 @@ use App\Jobs\DatabaseRestore;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Modules\Sales\app\Models\BalanceSales;
+use Modules\Sales\app\Models\SalesCredit;
+use Modules\Sales\app\Models\TransactionSales;
+use Modules\Sales\app\Models\TransactionSalesItem;
+use Modules\Purchase\app\Models\PurchaseCredit;
+use Modules\Purchase\app\Models\TransactionPurchase;
+use Modules\Purchase\app\Models\TransactionPurchaseItem;
+use Illuminate\Support\Facades\Artisan;
+
 
 class SystemController extends Controller
 {
@@ -164,6 +176,34 @@ class SystemController extends Controller
     public function download($storage)
     {
         return response()->download(storage_path('/app/backup/' . $storage));
+    }
+
+    /** reset Transaction  */
+
+    public function reset_trans()
+    {
+        BalanceSales::query()->delete();
+        SalesCredit::query()->delete();
+        TransactionSales::query()->delete();
+        TransactionSalesItem::query()->delete();
+        PurchaseCredit::query()->delete();
+        TransactionPurchase::query()->delete();
+        TransactionPurchaseItem::query()->delete();
+        TransCardMember::query()->delete();
+        TransactionIncome::query()->delete();
+        TransactionExpense::query()->delete();
+        Session::flash('info', "Reset Transaction is successfully.");
+        return redirect()->back();
+    }
+
+    /** reset data  master */
+    public function reset_datamaster()
+    {
+        Artisan::call('migrate:fresh');
+        Artisan::call('db:seed --class=FreshInstall');
+        Artisan::call('config:clear');
+        Session::flash('info', "Reset Data is successfully.");
+        return redirect()->back();
     }
 
 }

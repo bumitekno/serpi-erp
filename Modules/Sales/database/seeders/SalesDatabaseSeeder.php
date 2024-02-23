@@ -16,7 +16,7 @@ class SalesDatabaseSeeder extends Seeder
         SettingPos::updateOrCreate([
             'footprint' => 'Thank You ',
             'stock_minus' => true,
-            'sales_multi_unit' => true
+            'sales_multi_unit' => false
         ]);
     }
 }

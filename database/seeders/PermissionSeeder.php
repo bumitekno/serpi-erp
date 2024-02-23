@@ -217,5 +217,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'log-activity', 'guard_name' => 'web', 'module' => 'log-activity', 'group_modules' => 'system']);
         Permission::create(['name' => 'setting-aplication', 'guard_name' => 'web', 'module' => 'setting-aplication', 'group_modules' => 'system']);
 
+        Permission::create(['name' => 'statistic', 'guard_name' => 'web', 'module' => 'statistic', 'group_modules' => 'statistic']);
+
     }
 }
