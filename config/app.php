@@ -171,6 +171,14 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Spatie\Html\HtmlServiceProvider::class,
+
+        /**
+         * Addons
+         */
+
+        App\Providers\AddonsProvider::class,
+        App\Addons\Accounting\Illuminate\AccountingServiceProvider::class
+
     ])->toArray(),
 
     /*
@@ -188,6 +196,11 @@ return [
         // 'Example' => App\Facades\Example::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Html' => Spatie\Html\Facades\Html::class,
+        /**
+         * Addons
+         */
+        'Addons' => App\Helpers\Addons::class,
+        'Accounting' => App\Addons\Accounting\Helpers\Accounting::class
     ])->toArray(),
 
 ];

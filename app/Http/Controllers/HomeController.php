@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use App\Models\Customer;
 use App\Models\Departement;
@@ -22,7 +23,8 @@ use Modules\Purchase\app\Models\TransactionPurchase;
 use Modules\Warehouse\app\Models\Warehouse;
 use Modules\ProductPos\app\Models\ProductPos;
 use Modules\Location\app\Models\Location;
-
+use App\Models\Apps\ir_model;
+use App\Helpers\Addons;
 
 
 class HomeController extends Controller
@@ -167,6 +169,72 @@ class HomeController extends Controller
         ];
 
         return view('statistic')->with($data);
+    }
+
+    /** Addons */
+    public function Addons()
+    {
+        $data = ir_model::where('state', 'base')->orderBy('name', 'ASC')->paginate(30);
+        return view('addons')->with(['data' => $data]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function install($id)
+    {
+        $data = ir_model::where('model', $id)->first();
+
+        try {
+            if (class_exists($data->technical_name)) {
+                $data->technical_name::installed();
+                $data->update([
+                    'instalation' => True,
+                ]);
+                Session::flash('success', 'Addons ' . $data->name . ' successfully installed');
+                return redirect()->back();
+            } else {
+                throw new \Exception(" Modules Addons " . $data->technical_name . ' not found ', 1);
+
+            }
+        } catch (\Exception $e) {
+            Session::flash('error', 'Addons ' . $data->name . ' failed installed' . $e->getMessage());
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uninstall($id)
+    {
+        try {
+            $data = ir_model::where('model', $id)->first();
+            $data->technical_name::uninstalled();
+            $data->update([
+                'instalation' => false,
+            ]);
+            Session::flash('success', 'Addons ' . $data->name . ' successfully uninstall');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Session::flash('error', 'Addons ' . $data->name . ' failed uninstall' . $e->getMessage() . 'Something Wrong');
+            return redirect()->back();
+        }
+    }
+
+
+    public function check_installed($request)
+    {
+        $response = Addons::cek_install_modules($request);
+
+        return response()->json([
+            'status' => 'success',
+            'result' => $response,
+        ], 200);
     }
 
 }

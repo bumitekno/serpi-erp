@@ -9,6 +9,8 @@ use Database\Seeders\SupplierSeeder;
 use Database\Seeders\DepartementSeeder;
 use Database\Seeders\MethodPaymentSeeder;
 use Database\Seeders\PermissionSeeder;
+use Database\Seeders\AddonsSeeder;
+use Database\Seeders\SettingAppSeeder;
 use Modules\Roles\database\seeders\RolesDatabaseSeeder;
 use Modules\Users\database\seeders\UsersDatabaseSeeder;
 use Modules\ProductPos\database\seeders\ProductPosDatabaseSeeder;
@@ -28,6 +30,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            AddonsSeeder::class,
             SettingAppSeeder::class,
             CustomerSeeder::class,
             SupplierSeeder::class,

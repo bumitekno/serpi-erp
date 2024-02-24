@@ -10,6 +10,7 @@ use Database\Seeders\DepartementSeeder;
 use Database\Seeders\MethodPaymentSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\SettingAppSeeder;
+use Database\Seeders\AddonsSeeder;
 use Modules\Roles\database\seeders\RolesDatabaseSeeder;
 use Modules\Users\database\seeders\UsersDatabaseSeeder;
 use Modules\Warehouse\database\seeders\WarehouseDatabaseSeeder;
@@ -17,6 +18,7 @@ use Modules\Location\database\seeders\LocationDatabaseSeeder;
 use Modules\Income\database\seeders\IncomeDatabaseSeeder;
 use Modules\Expense\database\seeders\ExpenseDatabaseSeeder;
 use Modules\Sales\database\seeders\SalesDatabaseSeeder;
+
 
 class FreshInstall extends Seeder
 {
@@ -27,6 +29,7 @@ class FreshInstall extends Seeder
     {
         //
         $this->call([
+            AddonsSeeder::class,
             SettingAppSeeder::class,
             PermissionSeeder::class,
             RolesDatabaseSeeder::class,

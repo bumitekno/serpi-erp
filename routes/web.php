@@ -28,6 +28,11 @@ Route::prefix('home')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('dashboard');
     Route::get('module/{module}', [HomeController::class, 'checkroute'])->middleware('auth')->name('checkroute');
     Route::get('/statistic', [HomeController::class, 'statistic'])->middleware('auth')->name('statistic');
+    Route::prefix('addons')->group(function () {
+        Route::get('/', [HomeController::class, 'Addons'])->name('home.addons');
+        Route::get('/install/{id}', [HomeController::class, 'install'])->name('home.install_addons');
+        Route::get('/uninstall/{id}', [HomeController::class, 'uninstall'])->name('home.uninstall_addons');
+    })->middleware('auth');
 });
 
 Route::prefix('report')->group(function () {
@@ -62,3 +67,15 @@ Route::prefix('system')->group(function () {
         Route::get('reset/data/master', [SystemController::class, 'reset_datamaster'])->name('systems.reset_datamaster');
     });
 })->middleware('auth');
+
+/** add ons */
+Route::prefix('addons')->group(function () {
+
+    // ==== Accounting ====
+    Route::group(['namespace' => '\App\Addons\Accounting\Controllers'], function () {
+        // ==== Account Account ====
+        Route::get('Account', 'AccountAccountController@index')->name('account.index');
+    });
+
+})->middleware('auth');
+

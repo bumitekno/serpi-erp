@@ -322,8 +322,7 @@
                     <!--begin::Card body-->
                     <div class="card-body d-flex justify-content-center text-center flex-column p-8">
                         <!--begin::Name-->
-                        <a href="{{ route('checkroute', ['module' => 'addon']) }}"
-                            class="text-gray-800 text-hover-primary d-flex flex-column">
+                        <a href="{{ route('home.addons') }}" class="text-gray-800 text-hover-primary d-flex flex-column">
                             <!--begin::Image-->
                             <div class="symbol symbol-60px mb-5">
                                 <img src="{{ asset('assets/media/svg/module.svg') }}" alt="">
