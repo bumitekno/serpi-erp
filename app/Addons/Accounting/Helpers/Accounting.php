@@ -10,12 +10,16 @@ class Accounting
     public static function installed()
     {
         Artisan::call('migrate', array('--path' => 'app/Addons/Accounting/Migrations', '--force' => true));
+        Artisan::call('cache:forget spatie.permission.cache');
+        Artisan::call('cache:clear');
     }
 
     public static function uninstalled()
     {
         try {
             Artisan::call('migrate:rollback', array('--path' => 'app/Addons/Accounting/Migrations', '--force' => true));
+            Artisan::call('cache:forget spatie.permission.cache');
+            Artisan::call('cache:clear');
         } catch (\Exception $e) {
             return false;
         }
