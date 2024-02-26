@@ -1,5 +1,9 @@
 @extends('template')
 
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
+
 @push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_tracking">
         <form id="kt_docs_formvalidation_text" class="form" action="{{ route('report.storeshipment') }}" autocomplete="off"

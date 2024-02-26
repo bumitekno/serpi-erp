@@ -1,4 +1,7 @@
 @extends('sales::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_1">
         <form id="kt_docs_formvalidation_text_p" class="form" action="{{ route('sales.pay_credit') }}" autocomplete="off"

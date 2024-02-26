@@ -1,4 +1,7 @@
 @extends('stock::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     <form action="{{ route('stock.storeopname') }}" method="POST" enctype="multipart/form-data">
         @csrf

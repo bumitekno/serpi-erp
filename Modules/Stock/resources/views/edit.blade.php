@@ -1,4 +1,7 @@
 @extends('stock::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     <div class="card">
         <div class="card-header mt-3">

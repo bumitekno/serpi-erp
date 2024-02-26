@@ -354,9 +354,12 @@
                                         <a href="{{ route('users.show', $users->id) }}" class="menu-link px-3">Show</a>
                                     </div>
                                     <!--begin::Menu item-->
-                                    <div class="menu-item px-3">
-                                        <a href="{{ route('users.edit', $users->id) }}" class="menu-link px-3">Edit</a>
-                                    </div>
+                                    @if ($users->id != 1)
+                                        <div class="menu-item px-3">
+                                            <a href="{{ route('users.edit', $users->id) }}"
+                                                class="menu-link px-3">Edit</a>
+                                        </div>
+                                    @endif
                                     <!--end::Menu item-->
                                     <!--begin::Menu item-->
                                     @if ($users->id != 1)

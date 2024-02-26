@@ -1,5 +1,9 @@
 @extends('productpos::layouts.master')
 
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
+
 @push('styles')
     <style type="text/css">
         .read-more-show {

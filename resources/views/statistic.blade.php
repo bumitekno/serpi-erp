@@ -1,4 +1,7 @@
 @extends('template')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     <div class="row g-5 g-xl-8">
         <div class="col-xl-3">

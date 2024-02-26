@@ -1,4 +1,7 @@
 @extends('departement::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     <div class="row justify-content-center">
         <div class="col-xl-8">

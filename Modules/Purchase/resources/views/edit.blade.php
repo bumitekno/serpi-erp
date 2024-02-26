@@ -1,4 +1,7 @@
 @extends('purchase::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     @if ($transaction->id_method_payment == 3)
         <div class="alert alert-warning d-flex align-items-center p-5 mb-10">

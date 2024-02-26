@@ -1,4 +1,7 @@
 @extends('purchase::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     @can('dashboard-purchase')
         <div class="row g-5 g-xl-8">

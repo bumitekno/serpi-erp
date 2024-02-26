@@ -68,14 +68,16 @@
                                                 @endif
                                             </p>
                                             <div class="oe_module_action" modifiers="{}">
-                                                @if ($row->instalation == false)
-                                                    <a href="{{ route('home.install_addons', $row->model) }}"
-                                                        class="btn btn-sm btn-primary float-right"
-                                                        role="button">Install</a>
-                                                @else
-                                                    <a href="{{ route('home.uninstall_addons', $row->model) }}"
-                                                        class="btn btn-sm btn-danger float-right"
-                                                        role="button">Uninstall</a>
+                                                @if (Auth()->user()->getRoleNames()->first() == 'Superadmin')
+                                                    @if ($row->instalation == false)
+                                                        <a href="{{ route('home.install_addons', $row->model) }}"
+                                                            class="btn btn-sm btn-primary float-right"
+                                                            role="button">Install</a>
+                                                    @else
+                                                        <a href="{{ route('home.uninstall_addons', $row->model) }}"
+                                                            class="btn btn-sm btn-danger float-right"
+                                                            role="button">Uninstall</a>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>

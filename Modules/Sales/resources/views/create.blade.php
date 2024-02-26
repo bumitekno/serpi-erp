@@ -1,4 +1,7 @@
 @extends('purchase::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @push('styles')
     <style>
         .fs-large {

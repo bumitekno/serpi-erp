@@ -1,5 +1,7 @@
 @extends('template')
-
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 
 
 @section('content')

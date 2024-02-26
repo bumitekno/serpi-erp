@@ -1,4 +1,7 @@
 @extends('customer::layouts.master')
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @section('content')
     <div class="d-flex flex-column flex-xl-row">
         <div class="flex-column flex-lg-row-auto w-100 w-xl-350px mb-10">

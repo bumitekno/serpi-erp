@@ -26,6 +26,7 @@ use Modules\Purchase\app\Models\PurchaseCredit;
 use Modules\Purchase\app\Models\TransactionPurchase;
 use Modules\Purchase\app\Models\TransactionPurchaseItem;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 
 
 class SystemController extends Controller
@@ -182,16 +183,48 @@ class SystemController extends Controller
 
     public function reset_trans()
     {
-        BalanceSales::query()->delete();
-        SalesCredit::query()->delete();
-        TransactionSales::query()->delete();
-        TransactionSalesItem::query()->delete();
-        PurchaseCredit::query()->delete();
-        TransactionPurchase::query()->delete();
-        TransactionPurchaseItem::query()->delete();
-        TransCardMember::query()->delete();
-        TransactionIncome::query()->delete();
-        TransactionExpense::query()->delete();
+
+        if (Schema::hasTable('balance_sales')) {
+            BalanceSales::truncate();
+        }
+
+        if (Schema::hasTable('transaction_sales_credit')) {
+            SalesCredit::truncate();
+        }
+
+        if (Schema::hasTable('transaction_sales')) {
+            TransactionSales::truncate();
+        }
+
+        if (Schema::hasTable('transaction_item_sales')) {
+            TransactionSalesItem::truncate();
+        }
+
+        if (Schema::hasTable('transaction_purchase')) {
+            TransactionPurchase::truncate();
+        }
+
+        if (Schema::hasTable('transaction_item_purchase')) {
+            TransactionPurchaseItem::truncate();
+        }
+
+        if (Schema::hasTable('transaction_purchase_credit')) {
+            TransCardMember::truncate();
+        }
+
+        if (Schema::hasTable('transaction_card_member')) {
+            PurchaseCredit::truncate();
+        }
+
+        if (Schema::hasTable('transaction_income')) {
+            TransactionIncome::truncate();
+        }
+
+        if (Schema::hasTable('transaction_expense')) {
+            TransactionExpense::truncate();
+        }
+
+
         Session::flash('info', "Reset Transaction is successfully.");
         return redirect()->back();
     }

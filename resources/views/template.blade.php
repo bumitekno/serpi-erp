@@ -342,7 +342,6 @@
                                 </div>
                             </div>
                             <!--end::Action group-->
-
                         </div>
                         <!--end::Toolbar-->
                     </div>

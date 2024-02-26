@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 return new class extends Migration {
     /**
@@ -15,6 +16,10 @@ return new class extends Migration {
         Permission::create(['name' => 'account', 'guard_name' => 'web', 'module' => 'account', 'group_modules' => 'accounting']);
         Permission::create(['name' => 'account_type', 'guard_name' => 'web', 'module' => 'account_type', 'group_modules' => 'accounting']);
         Permission::create(['name' => 'account_jurnal', 'guard_name' => 'web', 'module' => 'account_jurnal', 'group_modules' => 'accounting']);
+
+        $roles_superadmin = Role::where(['name' => 'Superadmin', 'guard_name' => 'web'])->first();
+        $permissions = Permission::all()->pluck('id')->toArray();
+        $roles_superadmin->syncPermissions($permissions);
 
         $this->mDropColumnIfExists('product_pos', 'income_account');
         $this->mDropColumnIfExists('product_pos', 'expense_account');

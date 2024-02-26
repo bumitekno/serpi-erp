@@ -1,5 +1,7 @@
 @extends('customer::layouts.master')
-
+@push('menu-tops')
+    @include('menu-top-pos')
+@endpush
 @push('modals')
     <div class="modal fade" tabindex="-1" id="kt_modal_customer">
         <form id="kt_docs_formvalidation_text" class="form" action="{{ route('customer.cardstore') }}" autocomplete="off"
