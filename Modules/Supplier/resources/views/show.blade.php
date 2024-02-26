@@ -31,7 +31,8 @@
                             class="fs-3 text-gray-800 text-hover-primary fw-bolder mb-1">{{ $supplier->name }}</a>
                         <!--end::Name-->
                         <!--begin::Position-->
-                        <div class="fs-5 fw-bold text-muted mb-6">{{ $supplier?->contact }}</div>
+                        <div class="fs-5 fw-bold text-muted mb-6"> <i class="bi bi-whatsapp"></i> {{ $supplier?->contact }}
+                        </div>
                         <!--end::Position-->
 
                     </div>

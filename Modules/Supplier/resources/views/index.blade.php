@@ -203,7 +203,8 @@
                             class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">{{ $supplier?->name }}</a>
                         <!--end::Name-->
                         <!--begin::Position-->
-                        <div class="fw-bold text-gray-400 mb-6">{{ $supplier?->contact }}</div>
+                        <div class="fw-bold text-gray-400 mb-6"> <i class="bi bi-whatsapp"></i> {{ $supplier?->contact }}
+                        </div>
                         <!--end::Position-->
                         <!--begin::Info-->
                         <form action="{{ route('supplier.destroy', $supplier->id) }}" method="post">

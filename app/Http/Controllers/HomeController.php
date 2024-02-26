@@ -204,11 +204,10 @@ class HomeController extends Controller
                 Session::flash('success', 'Addons ' . $data->name . ' successfully installed');
                 return redirect()->back();
             } else {
-                throw new \Exception(" Modules Addons " . $data->technical_name . ' not found ', 1);
-
+                throw new \Exception("" . $data->technical_name . ' Not Found, Please upgrade !', 1);
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Addons ' . $data->name . ' failed installed' . $e->getMessage());
+            Session::flash('error', 'Addons ' . $data->name . ' failed installed  ' . $e->getMessage());
             return redirect()->back();
         }
     }
