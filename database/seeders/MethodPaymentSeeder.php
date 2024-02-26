@@ -14,6 +14,7 @@ class MethodPaymentSeeder extends Seeder
     public function run(): void
     {
         //
+        MethodPayment::truncate();
         MethodPayment::create([
             'name' => 'Cash'
         ]);

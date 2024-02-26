@@ -12,7 +12,7 @@ class IncomeDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Income::create([
+        Income::updateOrCreate([
             'name' => 'TOP UP'
         ]);
     }

@@ -12,6 +12,8 @@ class UnitProductDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+        UnitProduct::query()->delete();
         // $this->call([]);
         UnitProduct::create([
             'name' => 'Pcs'

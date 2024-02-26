@@ -15,7 +15,7 @@ class SupplierSeeder extends Seeder
     public function run(): void
     {
         //
-        Supplier::create([
+        Supplier::updateOrCreate([
             'code' => Str::random(5),
             'name' => 'Supplier 1',
             'contact' => '627861766171',

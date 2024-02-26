@@ -13,6 +13,9 @@ class ProductPosDatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call([]);
+
+        ProductPos::truncate();
+
         for ($i = 1; $i <= 100; $i++) {
             ProductPos::create([
                 'code_product' => '11231' . $i,

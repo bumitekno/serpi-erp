@@ -13,6 +13,9 @@ class WarehouseDatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call([]);
+
+        Warehouse::query()->delete();
+
         Warehouse::create([
             'code' => '00001',
             'name' => 'Gudang 1'

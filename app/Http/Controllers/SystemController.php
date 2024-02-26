@@ -199,8 +199,7 @@ class SystemController extends Controller
     /** reset data  master */
     public function reset_datamaster()
     {
-        Artisan::call('migrate:fresh');
-        Artisan::call('db:seed --class=FreshInstall');
+        Artisan::call('migrate:fresh --seed');
         Artisan::call('config:clear');
         Session::flash('info', "Reset Data is successfully.");
         return redirect()->back();

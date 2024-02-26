@@ -177,7 +177,8 @@ return [
          */
 
         App\Providers\AddonsProvider::class,
-        App\Addons\Accounting\Illuminate\AccountingServiceProvider::class
+        App\Addons\Accounting\Illuminate\AccountingServiceProvider::class,
+        App\Addons\Pointofsale\Illuminate\PointofsaleServiceProvider::class
 
     ])->toArray(),
 
@@ -200,7 +201,8 @@ return [
          * Addons
          */
         'Addons' => App\Helpers\Addons::class,
-        'Accounting' => App\Addons\Accounting\Helpers\Accounting::class
+        'Accounting' => App\Addons\Accounting\Helpers\Accounting::class,
+        'Pointofsale' => App\Addons\Pointofsale\Helpers\Pointofsale::class,
     ])->toArray(),
 
 ];

@@ -13,7 +13,7 @@ class ExpenseDatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call([]);
-        Expense::create([
+        Expense::updateOrCreate([
             'name' => 'Withdraw'
         ]);
     }

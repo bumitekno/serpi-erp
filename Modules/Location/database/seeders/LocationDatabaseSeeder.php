@@ -13,7 +13,7 @@ class LocationDatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call([]);
-        Location::create([
+        Location::updateOrCreate([
             'name_location' => 'Location 1',
             'default' => 1,
         ]);

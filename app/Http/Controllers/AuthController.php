@@ -70,9 +70,7 @@ class AuthController extends Controller
             ->withProperties(['name' => $user->name])
             ->event('login')
             ->log('login');
-
-        return response()->json(['message' => 'You have successfully logged in', 'redirect' => route('dashboard')], 200);
-
+        return response()->json(['message' => 'You have successfully logged in', 'redirect' => route('home.addons')], 200);
     }
 
     /**

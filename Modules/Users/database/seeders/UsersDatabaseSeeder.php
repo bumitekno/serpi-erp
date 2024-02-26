@@ -28,13 +28,5 @@ class UsersDatabaseSeeder extends Seeder
 
         $superadmin->assignRole('Superadmin');
 
-        // Creating Admin User
-        $admin = User::create([
-            'name' => 'Syed Ahsan Kamal',
-            'email' => 'ahsan@allphptricks.com',
-            'password' => Hash::make('ahsan1234')
-        ]);
-        $admin->assignRole('Admin');
-
     }
 }

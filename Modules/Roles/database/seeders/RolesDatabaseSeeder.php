@@ -21,15 +21,5 @@ class RolesDatabaseSeeder extends Seeder
         $roles_superadmin = Role::create(['name' => 'Superadmin', 'guard_name' => 'web']);
         $permissions = Permission::all()->pluck('id')->toArray();
         $roles_superadmin->syncPermissions($permissions);
-
-        $admin = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
-        $admin->givePermissionTo([
-            'create-user',
-            'edit-user',
-            'delete-user',
-            'create-product',
-            'edit-product',
-            'delete-product'
-        ]);
     }
 }

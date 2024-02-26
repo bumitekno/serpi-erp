@@ -62,6 +62,8 @@
                             <!--begin::Title-->
                             <h1 class="text-dark mb-3">ERP System </h1>
 
+                            <p class="text-info mb-3">Point Of Sales </p>
+
                             @if ($message = Session::get('success'))
                                 <div class="alert alert-success text-center" role="alert">
                                     {{ $message }}

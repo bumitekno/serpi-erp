@@ -15,7 +15,7 @@ class DepartementSeeder extends Seeder
     public function run(): void
     {
         //
-        Departement::create([
+        Departement::updateOrCreate([
             'code' => Str::random(5),
             'name' => 'Departement 1',
             'contact' => '627861766171',

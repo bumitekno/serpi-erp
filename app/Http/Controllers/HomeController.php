@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -25,6 +24,7 @@ use Modules\ProductPos\app\Models\ProductPos;
 use Modules\Location\app\Models\Location;
 use App\Models\Apps\ir_model;
 use App\Helpers\Addons;
+use Illuminate\Http\Request;
 
 
 class HomeController extends Controller
@@ -172,10 +172,18 @@ class HomeController extends Controller
     }
 
     /** Addons */
-    public function Addons()
+    public function Addons(Request $request)
     {
-        $data = ir_model::where('state', 'base')->orderBy('name', 'ASC')->paginate(30);
-        return view('addons')->with(['data' => $data]);
+
+        if (!empty($request->filter)) {
+
+            $data = ir_model::where('state', 'base')->where('technical_name', 'like', '%' . $request->filter . '%')->orderBy('name', 'ASC')->paginate(30);
+
+        } else {
+            $data = ir_model::where('state', 'base')->orderBy('name', 'ASC')->paginate(30);
+        }
+
+        return view('addons')->with(['data' => $data, 'filter' => $request->filter]);
     }
 
     /**

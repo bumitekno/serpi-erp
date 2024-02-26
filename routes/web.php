@@ -30,6 +30,7 @@ Route::prefix('home')->group(function () {
     Route::get('/statistic', [HomeController::class, 'statistic'])->middleware('auth')->name('statistic');
     Route::prefix('addons')->group(function () {
         Route::get('/', [HomeController::class, 'Addons'])->name('home.addons');
+        Route::post('/', [HomeController::class, 'Addons'])->name('home.addons');
         Route::get('/install/{id}', [HomeController::class, 'install'])->name('home.install_addons');
         Route::get('/uninstall/{id}', [HomeController::class, 'uninstall'])->name('home.uninstall_addons');
     })->middleware('auth');

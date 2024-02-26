@@ -15,6 +15,7 @@ class CategoryProductDatabaseSeeder extends Seeder
     {
         // $this->call([]);
 
+        CategoryProduct::query()->delete();
 
         //insert example category 
         CategoryProduct::create([

@@ -15,7 +15,7 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         //
-        Customer::create([
+        Customer::updateOrCreate([
             'code' => Str::random(5),
             'name' => 'Customer 1',
             'contact' => '627861766171',

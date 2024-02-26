@@ -9098,7 +9098,7 @@ button.bg-epsilon:focus {
 
 .mt-5,
 .my-5 {
-    margin-top: 3rem !important;
+    margin-top: 0;
 }
 
 .mr-5,
@@ -10399,7 +10399,7 @@ button.bg-epsilon:focus {
 
     .mt-lg-5,
     .my-lg-5 {
-        margin-top: 3rem !important;
+        margin-top: 0 !important;
     }
 
     .mr-lg-5,
