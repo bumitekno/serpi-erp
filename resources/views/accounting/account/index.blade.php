@@ -5,7 +5,7 @@
         <div class="menu-item me-lg-1">
             <a class="menu-link {{ request()->segment('2') == 'addons' ? 'active' : '' }}  py-3"
                 href="{{ route('home.addons') }}">
-                <span class="menu-title">Addons </span>
+                <span class="menu-title">Apps </span>
             </a>
         </div>
         <div data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start"

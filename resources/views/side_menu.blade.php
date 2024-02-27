@@ -1,5 +1,6 @@
 @php
     $module_pos = \App\Models\Apps\ir_model::where(['state' => 'base', 'model' => 'pointofsale', 'instalation' => true])->first();
+    $module_accounting = \App\Models\Apps\ir_model::where(['state' => 'base', 'model' => 'account', 'instalation' => true])->first();
 @endphp
 
 @if (!empty($module_pos))
@@ -388,6 +389,110 @@
             </div>
         </div>
     @endcanany
+@endif
+
+@if (!empty($module_accounting))
+    <div class="menu-item">
+        <div class="menu-content pt-8 pb-2">
+            <span class="menu-section text-muted text-uppercase fs-8 ls-1">Accounting </span>
+        </div>
+    </div>
+    <div class="menu-item">
+        <a class="menu-link" href="javascript:;">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+            <span class="menu-title">Account</span>
+        </a>
+    </div>
+    <div class="menu-item">
+        <a class="menu-link" href="javascript:;">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+            <span class="menu-title">Jurnal</span>
+        </a>
+    </div>
+    <div class="menu-item">
+        <a class="menu-link" href="javascript:;">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+            <span class="menu-title">Billing & Invoice</span>
+        </a>
+    </div>
+    <div class="menu-item">
+        <a class="menu-link" href="javascript:;">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </span>
+            <span class="menu-title">Report Ledger</span>
+        </a>
+    </div>
 @endif
 
 <div class="menu-item">
