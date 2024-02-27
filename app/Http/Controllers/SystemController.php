@@ -101,17 +101,9 @@ class SystemController extends Controller
         $input = [
             'title' => $request->title,
             'keywords' => $request->keyword,
-            'description' => $request->description
+            'description' => $request->description,
+            'footer' => $request->footer
         ];
-
-        if (!empty($request->title))
-            Session::put('title_web', $request->title);
-
-        if (!empty($request->keyword))
-            Session::put('keyword_web', $request->keyword);
-
-        if (!empty($request->description))
-            Session::put('description_web', $request->description);
 
         if ($request->hasFile('avatar')) {
             $checlogo = SettingApp::find($request->id_settings);
@@ -122,7 +114,6 @@ class SystemController extends Controller
             $imageName = time() . '.' . $request->avatar->extension();
             $path = $request->file('avatar')->storeAs('/upload/icon/web', $imageName, 'public');
             $input['logo'] = $path;
-            Session::put('logo', $input['logo']);
         }
 
         SettingApp::updateOrCreate(

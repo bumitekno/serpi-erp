@@ -154,8 +154,12 @@
             <div class="d-flex flex-center flex-column-auto p-10 ">
                 <!--begin::Links-->
                 <div class="d-flex align-items-center fw-bold fs-6">
-                    <a href="https://bumitekno.com" class="text-muted text-hover-primary px-2">PT.Bumi Tekno
-                        Indonesia</a>
+                    @if (empty(Session::get('footer_web')))
+                        <a href="https://bumitekno.com" class="text-muted text-hover-primary px-2">PT.Bumi Tekno
+                            Indonesia</a>
+                    @else
+                        <span class="text-muted text-hover-primary px-2">{{ Session::get('footer_web') }}</span>
+                    @endif
 
                 </div>
                 <!--end::Links-->

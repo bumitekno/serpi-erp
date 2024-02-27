@@ -32,6 +32,9 @@ class AuthController extends Controller
 
             if (!empty($setting->logo))
                 Session::put('logo', $setting->logo);
+
+            if (!empty($setting->footer))
+                Session::put('footer_web', $setting->footer);
         }
         return view('welcome');
     }

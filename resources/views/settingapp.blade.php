@@ -79,6 +79,14 @@
                 </div>
 
                 <div class="mb-3 row">
+                    <label for="name" class="col-md-4 col-form-label text-md-end text-start">Footer</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="footer" name="footer"
+                            value="{{ $settings?->footer }}">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
                     <div class="col-md-4"></div>
                     <div class="col-md-6">
                         <input type="submit" class=" btn btn-primary" value="Save">
@@ -113,7 +121,8 @@
                 <div class="mb-3 row">
                     <label for="name" class="col-md-4 col-form-label text-md-end text-start">File Restore </label>
                     <div class="col-md-6">
-                        <input type="file" class="form-control" id="file" name="file" accept=".gz" required>
+                        <input type="file" class="form-control" id="file" name="file" accept=".gz"
+                            required>
                         <div class="form-text">Allowed file types: .gz</div>
                     </div>
                 </div>

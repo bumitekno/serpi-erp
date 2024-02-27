@@ -17,7 +17,8 @@ class SettingAppSeeder extends Seeder
         SettingApp::updateOrCreate([
             'title' => 'Service Enterprice Resource Planning Indonesia',
             'description' => 'Service Enterprice Resource Planning Indonesia From PT.Bumi Tekno Indonesia',
-            'keywords' => 'ERP Indonesia'
+            'keywords' => 'ERP Indonesia',
+            'footer' => 'PT. Bumi Tekno Indonesia '
         ]);
     }
 }
