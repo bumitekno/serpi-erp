@@ -10,7 +10,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-4.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Users</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Users</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_user }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0"> List Users
                     </p>
@@ -26,7 +26,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-4.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Departement</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Departement</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_departement }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0"> List Departement store
                     </p>
@@ -42,7 +42,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-2.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Customers</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Customers</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_customer }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0">List Customers</p>
                 </div>
@@ -56,7 +56,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-1.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Supplier</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Supplier</a>
                     <div class="fw-bolder text-primary fs-1 my-6">{{ $count_supplier }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0">List Supplier / Vendor Product
                     </p>
@@ -74,7 +74,8 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-4.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Category Product</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Category
+                        Product</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_category_product }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0"> List Category Product
                     </p>
@@ -90,7 +91,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-2.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Warehouse</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Warehouse</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_warehouse }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0">List Warehouse</p>
                 </div>
@@ -105,7 +106,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-2.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Location</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Location</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_location }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0">List Location Warehouse</p>
                 </div>
@@ -119,7 +120,7 @@
                 style="background-position: right top; background-size: 30% auto; background-image: url({{ asset('assets/media/svg/shapes/abstract-1.svg') }})">
                 <!--begin::Body-->
                 <div class="card-body">
-                    <a href="#" class="card-title fw-bolder text-muted text-hover-primary fs-4">Product</a>
+                    <a href="javascript:;" class="card-title fw-bolder text-muted text-hover-primary fs-4">Product</a>
                     <div class="fw-bolder text-primary my-6 fs-1">{{ $count_product }}</div>
                     <p class="text-dark-75 fw-bold fs-5 m-0">List Product
                     </p>
