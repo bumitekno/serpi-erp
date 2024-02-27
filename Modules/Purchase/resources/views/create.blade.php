@@ -93,7 +93,7 @@
                 Create Purchase Order
             </div>
             <div class="float-end">
-                <a href="{{ route('purchase.index') }}" class="btn btn-success btn-sm my-2"><i
+                <a href="{{ route('purchase.index') }}" class="btn btn-info btn-sm my-2"><i
                         class="bi bi-plus-arrow-left"></i>
                     Back </a>
             </div>

@@ -406,6 +406,29 @@
                         </div>
                         <!--end::Item-->
 
+                        @if (!empty($shipping))
+                            <div class="mb-6">
+                                <div class="fw-bold text-gray-600 fs-7">Number Tracking :</div>
+                                <div class="fw-bolder text-gray-800 fs-6">
+                                    {{ empty($shipping->number_tracking) ? '-' : $shipping->number_tracking }}
+                                    {{ empty($shipping->note) ? '-' : $shipping->note }}
+                                </div>
+                            </div>
+                            <!--end::Item-->
+
+                            <p class="text-info"> Information List this bottom for check tracking delivery </p>
+                            <a href="https://cekresi.com" target="_blank" class="btn btn-info btn-sm mb-3"> Cekresi.com
+                            </a>
+                            <a href="https://berdu.id/cek-resi" target="_blank" class="btn btn-info btn-sm mb-3">
+                                berdu.id </a>
+                            <a href="https://anteraja.id/id/tracking" target="_blank" class="btn btn-info btn-sm mb-3">
+                                Anteraja.id
+                            </a>
+                            <a href="https://kiriminaja.com/tracking" target="_blank" class="btn btn-info btn-sm mb-3">
+                                Kiriminaja.com
+                            </a>
+                        @endif
+
                         @if (!empty($transaction->file))
                             <!--begin::Overlay-->
                             <a class="d-block overlay" data-fslightbox="lightbox-basic"

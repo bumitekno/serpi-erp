@@ -435,7 +435,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">Roles & Permission </span>
+                        <span class="menu-title">Roles & Permissions </span>
                     </a>
                 </div>
             @endcanany
@@ -488,7 +488,7 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Setting Apps </span>
+            <span class="menu-title">Settings</span>
         </a>
     </div>
 @endcan
@@ -512,6 +512,6 @@
             </span>
             <!--end::Svg Icon-->
         </span>
-        <span class="menu-title">Addons</span>
+        <span class="menu-title">Apps</span>
     </a>
 </div>

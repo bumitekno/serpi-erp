@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-header border-0 pt-6">
             <div class="float-start">
-                Addons
+                Apps
             </div>
             <div class="float-end">
                 <form name="search_addons" class="form" method="POST" action="{{ route('home.addons') }}">
@@ -26,7 +26,7 @@
                         </span>
                         <!--end::Svg Icon-->
                         <input type="text" data-kt-user-table-filter="search"
-                            class="form-control form-control-solid w-250px ps-14" placeholder="Search Addons" name="filter"
+                            class="form-control form-control-solid w-250px ps-14" placeholder="Search Apps" name="filter"
                             value="{{ empty($filter) ? '' : $filter }}">
                     </div>
                 </form>
