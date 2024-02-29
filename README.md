@@ -7,6 +7,25 @@ module:make
 Generate a new module.
 php artisan module:make Blog
 
+Use this command on the root folder:
+
+create the only Migration file:
+
+php artisan make:migration create_products_table --create=products
+Create Migration, Model file:
+
+php artisan make:model Product -m
+For Create Migration,Model,Controller file:
+
+php artisan make:model Product -mcr
+If you want to do it manually then you may set --path as per your folder requirement.
+
+php artisan make:migration filename --path=/app/database/migrations/relations
+php artisan make:migration filename --path=/app/database/migrations/translations
+If you want to migrate then:
+
+php artisan migrate --path="/app/database/migrations/relations"
+
 refrensi : https://laravelmodules.com/docs/v10/artisan-commands
 
 Contributor Developer
