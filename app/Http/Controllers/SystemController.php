@@ -48,16 +48,16 @@ class SystemController extends Controller
             return DataTables::of($data_log)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {
-                    return empty($row->created_at) ? '-' : Carbon::parse($row->created_at)->translatedFormat('d F Y');
+                    return empty ($row->created_at) ? '-' : Carbon::parse($row->created_at)->translatedFormat('d F Y');
                 })
                 ->editColumn('updated_at', function ($row) {
-                    return empty($row->updated_at) ? '-' : Carbon::parse($row->updated_at)->translatedFormat('d F Y');
+                    return empty ($row->updated_at) ? '-' : Carbon::parse($row->updated_at)->translatedFormat('d F Y');
                 })
                 ->editColumn('properties', function ($row) {
-                    return empty($row->properties) ? '-' : json_encode($row->properties);
+                    return empty ($row->properties) ? '-' : json_encode($row->properties);
                 })
                 ->editColumn('causer_id', function ($row) {
-                    return empty($row->causer_id) ? '-' : User::find($row->causer_id)?->name;
+                    return empty ($row->causer_id) ? '-' : User::find($row->causer_id)?->name;
                 })
                 ->editColumn('action', function ($row) {
                     $btn = '<a href="' . route('log-activity.destroy', ['id' => $row->id, 'status' => 0]) . '" class="btn btn-danger btn-sm" onclick="return confirm(`Are you sure to delete  this log ?`)"> <i class="bi bi-trash"></i>  Delete</a>';
@@ -107,7 +107,7 @@ class SystemController extends Controller
 
         if ($request->hasFile('avatar')) {
             $checlogo = SettingApp::find($request->id_settings);
-            if (!empty($checlogo->logo))
+            if (!empty ($checlogo->logo))
                 if (Storage::exists($checlogo->logo)) {
                     Storage::delete($checlogo->logo);
                 }
@@ -226,6 +226,22 @@ class SystemController extends Controller
         Artisan::call('migrate:fresh --seed');
         Artisan::call('config:clear');
         Session::flash('info', "Reset Data is successfully.");
+        return redirect()->back();
+    }
+
+    /** disabled logging event */
+    public function disabled_log()
+    {
+        activity()->disableLogging();
+        Session::flash('success', "Log event is disabled");
+        return redirect()->back();
+    }
+
+    /** disabled logging event */
+    public function enabled_log()
+    {
+        activity()->enableLogging();
+        Session::flash('success', "Log event is enabled");
         return redirect()->back();
     }
 

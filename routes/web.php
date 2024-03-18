@@ -57,6 +57,8 @@ Route::prefix('system')->group(function () {
         Route::get('index', [SystemController::class, 'index'])->name('log-activity.index');
         Route::get('delete/{id}', [SystemController::class, 'destroy'])->name('log-activity.destroy');
         Route::get('force/delete/all', [SystemController::class, 'removeAllActivity'])->name('log-activity.removeAllActivity');
+        Route::get('log-disabled', [SystemController::class, 'disabled_log'])->name('log-activity.disabled_log');
+        Route::get('log-enabled', [SystemController::class, 'enabled_log'])->name('log-activity.enabled_log');
     });
     Route::prefix('settings')->group(function () {
         Route::get('index', [SystemController::class, 'settingApps'])->name('settings.settingApps');
