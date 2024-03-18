@@ -24,5 +24,6 @@ class AccountingServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        $this->app->register(AccountingRoutersProvider::class);
     }
 }

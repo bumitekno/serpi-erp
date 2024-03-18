@@ -9,6 +9,6 @@ class res_company extends Model
 {
     use HasFactory;
 
-    protected $table = 'res_company';
+    protected $table = 'res_companies';
     protected $fill = [];
 }

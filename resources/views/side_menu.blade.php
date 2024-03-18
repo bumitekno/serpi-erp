@@ -1,6 +1,14 @@
 @php
-    $module_pos = \App\Models\Apps\ir_model::where(['state' => 'base', 'model' => 'pointofsale', 'instalation' => true])->first();
-    $module_accounting = \App\Models\Apps\ir_model::where(['state' => 'base', 'model' => 'account', 'instalation' => true])->first();
+    $module_pos = \App\Models\Apps\ir_model::where([
+        'state' => 'base',
+        'model' => 'pointofsale',
+        'instalation' => true,
+    ])->first();
+    $module_accounting = \App\Models\Apps\ir_model::where([
+        'state' => 'base',
+        'model' => 'account',
+        'instalation' => true,
+    ])->first();
 @endphp
 
 @if (!empty($module_pos))
@@ -398,7 +406,7 @@
         </div>
     </div>
     <div class="menu-item">
-        <a class="menu-link" href="javascript:;">
+        <a class="menu-link" href="{{ route('account.company') }}">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                 <span class="svg-icon svg-icon-2">
@@ -422,7 +430,7 @@
         </a>
     </div>
     <div class="menu-item">
-        <a class="menu-link" href="javascript:;">
+        <a class="menu-link" href="{{ route('account.index') }}">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                 <span class="svg-icon svg-icon-2">

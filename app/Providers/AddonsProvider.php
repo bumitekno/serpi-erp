@@ -20,6 +20,11 @@ class AddonsProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // auto register service providers
+        $filesystem = $this->app->make('files');
+        foreach ($filesystem->directories(app_path('Addons')) as $directory) {
+            $directoryName = last(explode('/', $directory));
+            $this->app->register("App\\Addons\\{$directoryName}\\Illuminate\\{$directoryName}ServiceProvider");
+        }
     }
 }

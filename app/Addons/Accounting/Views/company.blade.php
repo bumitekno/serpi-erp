@@ -133,7 +133,7 @@
     <div class="card">
         <div class="card-header mt-3">
             <div class="float-start">
-                Accounting
+                Company
             </div>
             <div class="float-end">
             </div>

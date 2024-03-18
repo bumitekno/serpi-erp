@@ -68,15 +68,3 @@ Route::prefix('system')->group(function () {
         Route::get('reset/data/master', [SystemController::class, 'reset_datamaster'])->name('systems.reset_datamaster');
     });
 })->middleware('auth');
-
-/** add ons */
-Route::prefix('addons')->group(function () {
-
-    // ==== Accounting ====
-    Route::group(['namespace' => '\App\Addons\Accounting\Controllers'], function () {
-        // ==== Account Account ====
-        Route::get('Account', 'AccountAccountController@index')->name('account.index');
-    });
-
-})->middleware('auth');
-

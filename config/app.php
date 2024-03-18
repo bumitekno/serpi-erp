@@ -176,9 +176,7 @@ return [
          * Addons
          */
 
-        App\Providers\AddonsProvider::class,
-        App\Addons\Accounting\Illuminate\AccountingServiceProvider::class,
-        App\Addons\Pointofsale\Illuminate\PointofsaleServiceProvider::class
+        App\Providers\AddonsProvider::class
 
     ])->toArray(),
 

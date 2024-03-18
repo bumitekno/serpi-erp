@@ -65,7 +65,7 @@
                                 <!--begin::Info-->
                                 <div class="flex-grow-1 me-2">
                                     <!--begin::Username-->
-                                    <a href="#"
+                                    <a href="{{ url('profil/index') }}"
                                         class="text-white text-hover-primary fs-6 fw-bold">{{ empty(Auth()->user()->name) ? '-' : Auth()->user()->name }}</a>
                                     <!--end::Username-->
                                     <!--begin::Description-->
@@ -192,7 +192,7 @@
                     <!--begin::Brand-->
                     <div class="header-brand">
                         <!--begin::Logo-->
-                        <a href="{{ route('dashboard') }}">
+                        <a href="{{ url('home/addons') }}">
                             @if (empty(Session::get('logo')))
                                 <span class="text-white fs-2tx fw-bolder">ERP</span>
                             @else
