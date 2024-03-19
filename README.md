@@ -28,6 +28,8 @@ php artisan migrate --path="/app/database/migrations/relations"
 
 refrensi : https://laravelmodules.com/docs/v10/artisan-commands
 
+Plugin Addons Module Custome 1. Place Folder Addons 2. create name folder assign with structure folder - NameAddons : - Controllers - Helpers - Illuminate - Migrations - Models - Routes - Seeders - Views
+
 Contributor Developer
 
 Mucharom

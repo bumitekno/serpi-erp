@@ -47,6 +47,21 @@ class HomeController extends Controller
         return view('home')->with([]);
     }
 
+    /**
+     * The function "checkroute" in PHP checks for a specific module and returns its routes or redirects
+     * based on the module's existence.
+     * 
+     * @param `module The `module` parameter in the `checkroute` function is used to determine the route
+     * and group modules for a specific module in the system. The function first checks if the provided
+     * module exists in the permissions table. If it does, it retrieves the routes associated with that
+     * module.
+     * 
+     * @return `The function `checkroute` is returning either a view with data (`nav_route` and
+     * `group_module`) if multiple routes are found for the given module, or it is redirecting to a
+     * specific route based on the module name if only one route is found. If the module is not found in
+     * the database, it returns a 403 error with a message indicating that the module was not found.
+     */
+
     public function checkroute($module)
     {
         $group_modules = Permission::select('group_modules')->distinct()->orderBy('group_modules')->where('group_modules', '=', $module)->first();
@@ -233,6 +248,18 @@ class HomeController extends Controller
         }
     }
 
+
+    /**
+     * The function "check_installed" checks if modules are installed and returns a JSON response with
+     * the result.
+     * 
+     * @param $request The `check_installed` function appears to be a part of a PHP Laravel application.
+     * It takes a `` parameter and calls the `cek_install_modules` method from the `Addons`
+     * class with this parameter.
+     * 
+     * @return ` JSON response with a status of 'success' and the result of the
+     * Addons::cek_install_modules() function call, returned as the 'result' field.
+     */
 
     public function check_installed($request)
     {
