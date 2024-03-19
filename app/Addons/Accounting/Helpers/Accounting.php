@@ -12,6 +12,7 @@ class Accounting
         Artisan::call('migrate', array('--path' => 'app/Addons/Accounting/Migrations', '--force' => true));
         Artisan::call('cache:forget spatie.permission.cache');
         Artisan::call('cache:clear');
+        Artisan::call('db:seed --class=AccountingInstallSeeder');
     }
 
     public static function uninstalled()
