@@ -37,13 +37,23 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header border-0 pt-6">
-            <div class="float-start">
-                Apps
-            </div>
-            <div class="float-end">
-                <form name="search_addons" class="form" method="POST" action="{{ route('home.addons') }}">
-                    @csrf
+        <form name="search_addons" class="form" method="POST" action="{{ route('home.addons') }}">
+            @csrf
+            <div class="card-header border-0 pt-6">
+                <div class="float-start">
+                    Apps
+                </div>
+                <div class="float-end d-flex">
+                    <div class="me-3">
+                        <select class="form-select" data-control="select2" data-placeholder="Select an option"
+                            name="installed">
+                            <option></option>
+                            <option value="1" @if (!empty($installation) && $installation == 1) selected="selected" @endif>Installed
+                            </option>
+                            <option value="0" @if (!empty($installation) && $installation == 0) selected="selected" @endif>Install
+                            </option>
+                        </select>
+                    </div>
                     <div class="d-flex align-items-center position-relative my-1 ">
                         <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                         <span class="svg-icon svg-icon-1 position-absolute ms-6">
@@ -61,9 +71,10 @@
                             class="form-control form-control-solid w-250px ps-14" placeholder="Search Apps" name="filter"
                             value="{{ empty($filter) ? '' : $filter }}">
                     </div>
-                </form>
+
+                </div>
             </div>
-        </div>
+        </form>
         <div class="card-body">
             @if (count($data) > 0)
                 <div class="app-page-title bg-white">
@@ -145,3 +156,12 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(function() {
+            $('select[name=installed]').change(function(e) {
+                $('.form').submit();
+            });
+        });
+    </script>
+@endpush

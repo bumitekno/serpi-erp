@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Addons\Pointofsale\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Seeder as Seeder;
 use IlLuminate\Support\Str;
 use App\Models\Departement;
 

@@ -50,7 +50,7 @@ class HomeController extends Controller
     public function checkroute($module)
     {
         $group_modules = Permission::select('group_modules')->distinct()->orderBy('group_modules')->where('group_modules', '=', $module)->first();
-        if (!empty($group_modules)) {
+        if (!empty ($group_modules)) {
             $route = Permission::select('module', 'group_modules')->distinct()->where('group_modules', $module)->orderBy('module')->get();
             if (count($route) > 1) {
                 return view('module_list')->with(['nav_route' => $route, 'group_module' => $module]);
@@ -175,15 +175,15 @@ class HomeController extends Controller
     public function Addons(Request $request)
     {
 
-        if (!empty($request->filter)) {
-
-            $data = ir_model::where('state', 'base')->where('technical_name', 'like', '%' . $request->filter . '%')->orderBy('name', 'ASC')->paginate(30);
-
+        if (!empty ($request->filter)) {
+            $data = ir_model::where('state', 'base')->where('technical_name', 'like', '%' . $request->filter . '%')->orWhere('instalation', '=', $request->installed)->orderBy('name', 'ASC')->paginate(12);
+        } else if (!empty ($request->installed)) {
+            $data = ir_model::where('state', 'base')->Where('instalation', '=', $request->installed)->orderBy('instalation', 'ASC')->paginate(12);
         } else {
-            $data = ir_model::where('state', 'base')->orderBy('name', 'ASC')->paginate(30);
+            $data = ir_model::where('state', 'base')->orderBy('name', 'ASC')->paginate(12);
         }
 
-        return view('addons')->with(['data' => $data, 'filter' => $request->filter]);
+        return view('addons')->with(['data' => $data, 'filter' => $request->filter, 'installation' => $request->installed]);
     }
 
     /**
@@ -204,7 +204,7 @@ class HomeController extends Controller
                 Session::flash('success', 'Addons ' . $data->name . ' successfully installed');
                 return redirect()->back();
             } else {
-                throw new \Exception("" . $data->technical_name . ' Not Found, Please upgrade !', 1);
+                throw new \Exception(" , " . $data->technical_name . ' Not Found, Under Maintance Development  !', 1);
             }
         } catch (\Exception $e) {
             Session::flash('error', 'Addons ' . $data->name . ' failed installed  ' . $e->getMessage());

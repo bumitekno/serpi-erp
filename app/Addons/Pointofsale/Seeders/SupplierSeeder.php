@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Addons\Pointofsale\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\Customer;
+use Illuminate\Database\Seeder as Seeder;
+use App\Models\Supplier;
 use IlLuminate\Support\Str;
 
-class CustomerSeeder extends Seeder
+class SupplierSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,11 +15,11 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         //
-        Customer::updateOrCreate([
+        Supplier::updateOrCreate([
             'code' => Str::random(5),
-            'name' => 'Customer 1',
+            'name' => 'Supplier 1',
             'contact' => '627861766171',
-            'email' => 'customer@example.com',
+            'email' => 'supplier@example.com',
             'address' => 'Jakarta'
         ]);
     }
