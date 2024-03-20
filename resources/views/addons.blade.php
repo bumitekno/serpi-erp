@@ -43,17 +43,7 @@
                 <div class="float-start">
                     Apps
                 </div>
-                <div class="float-end d-flex">
-                    <div class="me-3">
-                        <select class="form-select" data-control="select2" data-placeholder="Select an option"
-                            name="installed">
-                            <option></option>
-                            <option value="1" @if (!empty($installation) && $installation == 1) selected="selected" @endif>Installed
-                            </option>
-                            <option value="0" @if (!empty($installation) && $installation == 0) selected="selected" @endif>Install
-                            </option>
-                        </select>
-                    </div>
+                <div class="float-end">
                     <div class="d-flex align-items-center position-relative my-1 ">
                         <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                         <span class="svg-icon svg-icon-1 position-absolute ms-6">
@@ -68,8 +58,19 @@
                         </span>
                         <!--end::Svg Icon-->
                         <input type="text" data-kt-user-table-filter="search"
-                            class="form-control form-control-solid w-250px ps-14" placeholder="Search Apps" name="filter"
-                            value="{{ empty($filter) ? '' : $filter }}">
+                            class="form-control form-control-solid w-250px ps-14 me-3" placeholder="Search Apps"
+                            name="filter" value="{{ empty($filter) ? '' : $filter }}">
+
+                        <select class="form-select" data-control="select2" data-placeholder="Select an option"
+                            name="installed">
+                            <option></option>
+                            <option value="1" @if (!empty($installation) && $installation == 1) selected="selected" @endif>
+                                Installed
+                            </option>
+                            <option value="0" @if (!empty($installation) && $installation == 0) selected="selected" @endif>Install
+                            </option>
+                        </select>
+
                     </div>
 
                 </div>
