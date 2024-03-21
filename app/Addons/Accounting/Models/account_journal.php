@@ -39,10 +39,10 @@ class account_journal extends Model
     ];
     public function company()
     {
-        return $this->hasOne('App\Models\Company\res_company', 'id', 'company_id');
+        return $this->hasOne('App\Addons\Accounting\Models\res_company', 'id', 'company_id');
     }
     public function currency()
     {
-        return $this->hasOne('App\Models\Currency\res_currency', 'id', 'currency_id');
+        return $this->hasOne('App\Addons\Accounting\Models\res_currency', 'id', 'currency_id');
     }
 }

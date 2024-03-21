@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Addons\Accounting\Models\res_company;
 use App\Addons\Accounting\Models\res_currency;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 
 class AccountCompanyController extends Controller
@@ -22,15 +24,32 @@ class AccountCompanyController extends Controller
         View::addLocation(app_path() . '/Addons/Accounting/Views');
     }
 
+
+
     /**
-     * Display a listing of the resource.
-     *
+     * This PHP function retrieves and paginates company data based on search query and sorting
+     * criteria.
+     * 
+     * @param Request request The `index` function in the code snippet is a controller method that
+     * handles the logic for displaying a list of companies. Let me explain the parameters used in this
+     * function:
+     * 
+     * @return ` function `index` is returning a view called 'company.index' with an array of data
+     * containing the paginated list of companies based on the search query and sorting criteria. The
+     * data being passed to the view includes the paginated list of companies (``), the search
+     * query (``), and the sorting order (``).
      */
 
-    public function index()
+    public function index(Request $request)
     {
-        $company = res_company::orderBy('code', 'ASC')->paginate(25);
-        return view('company.index')->with(['company' => $company]);
+        $sortby = empty ($request->sortby) ? 'asc' : $request->sortby;
+
+        if (!empty ($request->q)) {
+            $company = res_company::where('company_name', 'like', '%' . $request->q . '%')->orderBy('code', $sortby)->paginate(25)->appends(['sortby' => Str::lower($sortby)]);
+        } else {
+            $company = res_company::orderBy('code', $sortby)->paginate(25)->appends(['sortby' => Str::lower($sortby)]);
+        }
+        return view('company.index')->with(['company' => $company, 'q' => $request->q, 'sort' => Str::lower($sortby)]);
     }
 
     /** 

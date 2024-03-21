@@ -37,7 +37,7 @@ class account_move_line extends Model
     }
     public function company()
     {
-        return $this->hasOne('App\Models\Company\res_company', 'id', 'company_id');
+        return $this->hasOne('App\Addons\Accounting\Models\Company\res_company', 'id', 'company_id');
     }
     public function account()
     {

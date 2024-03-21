@@ -2,8 +2,7 @@
 namespace App\Addons\Accounting\Helpers;
 
 use Artisan;
-use App\Addons\Accounting\Models\account_account;
-use App\Addons\Accounting\Models\account_journal;
+
 
 class Accounting
 {
@@ -37,30 +36,4 @@ class Accounting
         }
     }
 
-    /**
-     * The function `account_account` retrieves account data ordered by code in ascending order.
-     * 
-     * @return  `account_account` function is returning a collection of account records ordered by the
-     * `code` column in ascending order.
-     */
-
-    public static function account_account()
-    {
-        $account = account_account::orderBy('code', 'asc')->get();
-        return $account;
-    }
-
-
-    /**
-     * This PHP function retrieves account journal entries ordered by code in ascending order.
-     * 
-     * @return  `account_journal` entries are being retrieved from the database, ordered by the
-     * `code` field in ascending order, and returned as a collection.
-     */
-
-    public static function account_journal()
-    {
-        $journal = account_journal::orderBy('code', 'asc')->get();
-        return $journal;
-    }
 }

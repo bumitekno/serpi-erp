@@ -32,7 +32,7 @@ class account_payment extends Model
     ];
     public function company()
     {
-        return $this->hasOne('App\Models\Company\res_company', 'id', 'company_id');
+        return $this->hasOne('App\Addons\Accounting\Models\res_company', 'id', 'company_id');
     }
     public function journal()
     {
@@ -40,10 +40,10 @@ class account_payment extends Model
     }
     public function partner()
     {
-        return $this->hasOne('App\Addons\Contact\Models\res_customer', 'id', 'partner_id');
+        return $this->hasOne('App\Addons\Accounting\Models\res_customer', 'id', 'partner_id');
     }
     public function vendor()
     {
-        return $this->hasOne('App\Addons\Contact\Models\res_partner', 'id', 'partner_id');
+        return $this->hasOne('App\Addons\Accounting\Models\res_partner', 'id', 'partner_id');
     }
 }
