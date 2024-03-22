@@ -4,10 +4,15 @@ namespace App\Addons\Accounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class account_account extends Model
 {
-    use softDeletes;
+    use softDeletes, LogsActivity;
+
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'name',
         'currency_id',
@@ -33,5 +38,13 @@ class account_account extends Model
     public function move_lines()
     {
         return $this->hasMany(account_move_line::class, 'account_id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['code', 'name'])
+            ->setDescriptionForEvent(fn(string $eventName) => "This model has been {$eventName}")
+            ->useLogName('AccountingAccount');
     }
 }

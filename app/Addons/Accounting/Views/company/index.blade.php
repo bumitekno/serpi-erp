@@ -54,15 +54,11 @@
                         </thead>
                         <tbody>
                             @forelse ($company as $item)
-                                <tr>
+                                <tr class="table-row " data-href="{{ route('account.company.edit', $item->id) }}">
                                     <td>{{ $item->company_name ?? '-' }}</td>
                                     <td>{{ $item->email ?? '-' }}</td>
                                     <td>{{ $item->Phone ?? '-' }}</td>
-                                    @if (!empty($item->parent_id))
-                                        <td>{{ $item->company_name }}</td>
-                                    @else
-                                        <td>-</td>
-                                    @endif
+                                    <td>{{ $item->parent_id == null ? '-' : $item->parent->company_name }}</td>
                                 </tr>
                             @empty
                             @endforelse
@@ -76,8 +72,13 @@
 @push('scripts')
     <script>
         $(function() {
+
             $('select[name=sortby]').change(function() {
                 $('.form').submit();
+            });
+
+            $(".table-row").click(function() {
+                window.document.location = $(this).data("href");
             });
         });
     </script>

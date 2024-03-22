@@ -4,11 +4,13 @@
 @endpush
 @section('content')
     <div class="card">
-        <form name="form-create" action="{{ route('account.company.store') }}" method="POST" enctype="multipart/form-data">
+        <form name="form-create" action="{{ route('account.company.update', $company->id) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div class="card-header mt-3">
                 <div class="float-start">
-                    Create Company
+                    Company
                 </div>
                 <div class="float-end">
                     <a href="{{ route('account.company') }}" class="btn btn-dark">Back</a>
@@ -26,7 +28,8 @@
                                             <div
                                                 class="o_field_partner_autocomplete dropdown open o_field_widget o_required_modifier">
                                                 <input class="o_input form-control" placeholder="" type="text"
-                                                    id="company_name" name="company_name" required>
+                                                    id="company_name" name="company_name" required
+                                                    value="{{ $company->company_name ?? '' }}">
                                             </div>
                                         </h1>
                                     </div>
@@ -36,7 +39,15 @@
                                     <div class="image-input image-input-empty" data-kt-image-input="true"
                                         style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
                                         <!--begin::Image preview wrapper-->
-                                        <div class="image-input-wrapper w-125px h-125px"></div>
+                                        @if (!empty($company->photo))
+                                            <div class="image-input-wrapper w-125px h-125px"
+                                                style="background-image: url({{ Storage::url($company->photo) }});">
+                                            </div>
+                                        @else
+                                            <div class="image-input-wrapper w-125px h-125px"
+                                                style="background-image: url({{ asset('assets/media/avatars/blank.png') }})">
+                                            </div>
+                                        @endif
                                         <!--end::Image preview wrapper-->
 
                                         <!--begin::Edit button-->
@@ -98,26 +109,26 @@
                                                     <div class="o_address_format">
                                                         <div class="wrap-input200 mb-3">
                                                             <input class="input200 form-control" name="street"
-                                                                value="{{ old('street') }}" placeholder="Street..."
+                                                                value="{{ $company->street ?? '' }}" placeholder="Street..."
                                                                 type="text" id="street">
                                                         </div>
                                                         <div class="wrap-input200 mb-3">
                                                             <input class="input200 form-control"
-                                                                value="{{ old('street2') }}" name="street2"
+                                                                value="{{ $company->street2 ?? '' }}" name="street2"
                                                                 placeholder="Street 2..." type="text" id="street2">
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-6">
                                                                 <div class="wrap-input200 mb-3">
                                                                     <input class="input200 form-control"
-                                                                        value="{{ old('city') }}" name="city"
+                                                                        value="{{ $company->city ?? '' }}" name="city"
                                                                         placeholder="City..." type="text" id="city">
                                                                 </div>
                                                             </div>
                                                             <div class="col-6">
                                                                 <div class="wrap-input200 mb-3">
                                                                     <input class="input200 form-control"
-                                                                        value="{{ old('zip') }}" name="zip"
+                                                                        value="{{ $company->zip }}" name="zip"
                                                                         placeholder="ZIP" type="text" id="zip">
                                                                 </div>
                                                             </div>
@@ -129,7 +140,8 @@
                                                                 data-placeholder="Select country">
                                                                 <option></option>
                                                                 @forelse($res_country as $item)
-                                                                    <option value="{{ $item->id }}">
+                                                                    <option value="{{ $item->id }}"
+                                                                        {{ $company->country_id == $item->id ? 'selected' : '' }}>
                                                                         {{ $item->country_name }}
                                                                     </option>
                                                                 @empty
@@ -142,7 +154,8 @@
                                                                 data-control="select2" data-placeholder="Select state">
                                                                 <option></option>
                                                                 @forelse($res_country_state as $item)
-                                                                    <option value="{{ $item->id }}">
+                                                                    <option value="{{ $item->id }}"
+                                                                        {{ $company->state_id == $item->id ? 'selected' : '' }}>
                                                                         {{ $item->state_name }}
                                                                     </option>
                                                                 @empty
@@ -158,8 +171,9 @@
                                                 </td>
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
-                                                        <input class="input200 form-control" value="{{ old('Phone') }}"
-                                                            name="Phone" type="text" id="Phone">
+                                                        <input class="input200 form-control"
+                                                            value="{{ $company->Phone ?? '' }}" name="Phone"
+                                                            type="text" id="Phone">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -169,8 +183,9 @@
                                                 </td>
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
-                                                        <input class="input200 form-control" value="{{ old('email') }}"
-                                                            name="email" type="Email" id="email">
+                                                        <input class="input200 form-control"
+                                                            value="{{ $company->email ?? '' }}" name="email"
+                                                            type="Email" id="email">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -180,9 +195,10 @@
                                                 </td>
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
-                                                        <input class="input200 form-control" value="{{ old('website') }}"
-                                                            name="website" placeholder="e.g. https://www.mycompany.com"
-                                                            type="text" id="website">
+                                                        <input class="input200 form-control"
+                                                            value="{{ $company->website ?? '' }}" name="website"
+                                                            placeholder="e.g. https://www.mycompany.com" type="text"
+                                                            id="website">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -198,8 +214,9 @@
                                                 </td>
                                                 <td>
                                                     <div class="wrap-input200">
-                                                        <input class="input200 form-control" value="{{ old('vat') }}"
-                                                            name="vat" type="text" id="vat">
+                                                        <input class="input200 form-control"
+                                                            value="{{ $company->vat ?? '' }}" name="vat"
+                                                            type="text" id="vat">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -210,8 +227,8 @@
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('company_registry') }}" name="company_registry"
-                                                            type="text" id="company_registry">
+                                                            value="{{ $company->company_registry ?? '' }}"
+                                                            name="company_registry" type="text" id="company_registry">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -226,7 +243,8 @@
                                                             required name="currency_id">
                                                             <option></option>
                                                             @forelse($res_currency as $item)
-                                                                <option value="{{ $item->id }}">
+                                                                <option value="{{ $item->id }}"
+                                                                    {{ $company->currency_id == $item->id ? 'selected' : '' }}>
                                                                     {{ $item->currency_name }} (
                                                                     {{ $item->symbol }} )
                                                                 </option>
@@ -248,7 +266,8 @@
                                                             name="parent_id">
                                                             <option></option>
                                                             @forelse($parent_company as $item)
-                                                                <option value="{{ $item->id }}">
+                                                                <option value="{{ $item->id }}"
+                                                                    {{ $company->parent_id == $item->id ? 'selected' : '' }}>
                                                                     {{ $item->company_name }}
                                                                 </option>
                                                             @empty
@@ -276,7 +295,7 @@
                                                 <td>
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('social_twitter') }}" name="social_twitter"
+                                                            value="{{ $company->social_twitter }}" name="social_twitter"
                                                             type="text" id="social_twitter">
                                                     </div>
                                                 </td>
@@ -288,8 +307,8 @@
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('social_facebook') }}" name="social_facebook"
-                                                            type="text" id="social_facebook">
+                                                            value="{{ $company->social_facebook ?? '' }}"
+                                                            name="social_facebook" type="text" id="social_facebook">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -300,8 +319,8 @@
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('social_instagram') }}" name="social_instagram"
-                                                            type="text" id="social_instagram">
+                                                            value="{{ $company->social_instagram ?? '' }}"
+                                                            name="social_instagram" type="text" id="social_instagram">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -312,8 +331,8 @@
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('social_youtube') }}" name="social_youtube"
-                                                            type="text" id="social_youtube">
+                                                            value="{{ $company->social_youtube ?? '' }}"
+                                                            name="social_youtube" type="text" id="social_youtube">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -324,8 +343,8 @@
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('social_linkedin') }}" name="social_linkedin"
-                                                            type="text" id="social_linkedin">
+                                                            value="{{ $company->social_linkedin ?? '' }}"
+                                                            name="social_linkedin" type="text" id="social_linkedin">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -336,8 +355,8 @@
                                                 <td style="width: 100%;">
                                                     <div class="wrap-input200">
                                                         <input class="input200 form-control"
-                                                            value="{{ old('social_github') }}" name="social_github"
-                                                            type="text" id="social_github">
+                                                            value="{{ $company->social_github ?? '' }}"
+                                                            name="social_github" type="text" id="social_github">
                                                     </div>
                                                 </td>
                                             </tr>

@@ -26,18 +26,13 @@
                         <thead>
                             <tr>
                                 <th>Group </th>
-                                <th>Modules </th>
+                                <th>Modules</th>
                                 <th>Permission </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($group_modules as $groups)
-                                <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
-                                    <td colspan="3">
-                                        <h3>{{ Str::title(Str::replace('_', ' ', $groups['group_modules'])) }}</h3>
-                                    </td>
-                                </tr>
+                            @forelse ($group_modules as $groups)
                                 @php
                                     $l = \Spatie\Permission\Models\Permission::select('module', 'group_modules')
                                         ->distinct()
@@ -45,26 +40,23 @@
                                         ->orderBy('group_modules')
                                         ->get();
                                 @endphp
+
                                 @foreach ($l as $module)
-                                    @if (count($l) > 1)
-                                        <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
-                                            <td></td>
-                                            <td colspan="2">
-                                                <h3>{{ Str::title(Str::replace('_', ' ', $module['module'])) }}
-                                                </h3>
-                                            </td>
-                                        </tr>
-                                    @else
-                                        <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
-                                            <td colspan="3"></td>
-                                        </tr>
-                                    @endif
                                     @php
-                                        $x = \Spatie\Permission\Models\Permission::where('module', $module['module'])->get();
+                                        $x = \Spatie\Permission\Models\Permission::where(
+                                            'module',
+                                            $module['module'],
+                                        )->get();
                                     @endphp
+
                                     @foreach ($x as $perm)
                                         <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
-                                            <td colspan="2"></td>
+                                            <td> <span class="p-3">
+                                                    {{ Str::title(Str::replace('-', ' ', $perm->group_modules)) }} </span>
+                                            </td>
+                                            <td> <span class="p-3">
+                                                    {{ Str::title(Str::replace('-', ' ', $perm->module)) }} </span>
+                                            </td>
                                             <td> <span class="p-3">
                                                     {{ Str::title(Str::replace('-', ' ', $perm->name)) }} </span>
                                             </td>
@@ -74,7 +66,10 @@
                                         </tr>
                                     @endforeach
                                 @endforeach
-                            @endforeach
+
+                            @empty
+                            @endforelse
+
                         </tbody>
                     </table>
                 </div>
@@ -82,3 +77,11 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+    <script>
+        $(function() {
+            $('.table').DataTable();
+        });
+    </script>
+@endpush
