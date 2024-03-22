@@ -13,9 +13,9 @@ return new class extends Migration {
     public function up(): void
     {
 
-        Permission::create(['name' => 'account', 'guard_name' => 'web', 'module' => 'account', 'group_modules' => 'accounting']);
-        Permission::create(['name' => 'account_type', 'guard_name' => 'web', 'module' => 'account_type', 'group_modules' => 'accounting']);
-        Permission::create(['name' => 'account_jurnal', 'guard_name' => 'web', 'module' => 'account_jurnal', 'group_modules' => 'accounting']);
+        Permission::create(['name' => 'accounting_account', 'guard_name' => 'web', 'module' => 'accounting_account', 'group_modules' => 'accounting']);
+        Permission::create(['name' => 'accounting_company', 'guard_name' => 'web', 'module' => 'accounting_company', 'group_modules' => 'accounting']);
+        Permission::create(['name' => 'accounting_jurnal', 'guard_name' => 'web', 'module' => 'accounting_jurnal', 'group_modules' => 'accounting']);
 
         $roles_superadmin = Role::where(['name' => 'Superadmin', 'guard_name' => 'web'])->first();
         $permissions = Permission::all()->pluck('id')->toArray();

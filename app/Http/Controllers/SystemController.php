@@ -200,11 +200,12 @@ class SystemController extends Controller
         }
 
         if (Schema::hasTable('transaction_purchase_credit')) {
-            TransCardMember::truncate();
+            PurchaseCredit::truncate();
         }
 
         if (Schema::hasTable('transaction_card_member')) {
-            PurchaseCredit::truncate();
+
+            TransCardMember::truncate();
         }
 
         if (Schema::hasTable('transaction_income')) {

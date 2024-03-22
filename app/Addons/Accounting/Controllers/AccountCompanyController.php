@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\File;
 
 
 class AccountCompanyController extends Controller

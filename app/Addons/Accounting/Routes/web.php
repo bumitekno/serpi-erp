@@ -1,6 +1,7 @@
 <?php
 use App\Addons\Accounting\Controllers\AccountAccountController;
 use App\Addons\Accounting\Controllers\AccountCompanyController;
+use App\Addons\Accounting\Controllers\AccountJurnalController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -23,4 +24,13 @@ Route::prefix('company')->group(function () {
     Route::post('/post', [AccountCompanyController::class, 'store'])->name('account.company.store');
     Route::get('/edit/{id}', [AccountCompanyController::class, 'edit'])->name('account.company.edit');
     Route::put('/update/{id}', [AccountCompanyController::class, 'update'])->name('account.company.update');
+});
+
+/** group route journal */
+Route::prefix('journal')->group(function () {
+    Route::get('/', [AccountJurnalController::class, 'index'])->name('account.journal');
+    Route::get('/edit/{id}', [AccountJurnalController::class, 'edit'])->name('account.journal.edit');
+    Route::get('/filter', [AccountJurnalController::class, 'search'])->name('account.journal.filter');
+    Route::get('/create', [AccountJurnalController::class, 'create'])->name('account.journal.create');
+    Route::post('/post', [AccountJurnalController::class, 'store'])->name('account.journal.store');
 });

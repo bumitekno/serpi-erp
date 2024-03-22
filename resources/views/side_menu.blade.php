@@ -479,7 +479,8 @@
         </a>
     </div>
     <div class="menu-item">
-        <a class="menu-link" href="{{ route('account.index') }}">
+        <a class="menu-link {{ request()->segment(2) == 'account' ? 'active' : '' }}"
+            href="{{ route('account.index') }}">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                 <span class="svg-icon svg-icon-2">
@@ -503,7 +504,8 @@
         </a>
     </div>
     <div class="menu-item">
-        <a class="menu-link" href="javascript:;">
+        <a class="menu-link {{ request()->segment(2) == 'journal' ? 'active' : '' }}"
+            href="{{ route('account.journal') }}">
             <span class="menu-icon">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                 <span class="svg-icon svg-icon-2">

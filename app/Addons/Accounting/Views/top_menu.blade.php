@@ -102,7 +102,7 @@
                 </a>
             </div>
             <div class="menu-item">
-                <a class="menu-link py-3" href="javascript:;" title="" data-bs-toggle="tooltip"
+                <a class="menu-link py-3" href="{{ route('account.journal') }}" title="" data-bs-toggle="tooltip"
                     data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right"
                     data-bs-original-title="Journal">
                     <span class="menu-icon">

@@ -20,7 +20,6 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-
                         <div class="mb-3 row">
                             <label for="name" class="col-md-4 col-form-label text-md-end text-start">Name</label>
                             <div class="col-md-6">
@@ -124,7 +123,54 @@
     <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <script>
         $(function() {
-            $('.table').DataTable();
+            $(function() {
+                var groupColumn = 0;
+                var table = $('.table').DataTable({
+                    columnDefs: [{
+                        visible: false,
+                        targets: groupColumn
+                    }],
+                    order: [
+                        [groupColumn, 'asc']
+                    ],
+                    displayLength: 25,
+                    drawCallback: function(settings) {
+                        var api = this.api();
+                        var rows = api.rows({
+                            page: 'current'
+                        }).nodes();
+                        var last = null;
+
+                        api.column(groupColumn, {
+                                page: 'current'
+                            })
+                            .data()
+                            .each(function(group, i) {
+                                if (last !== group) {
+                                    $(rows)
+                                        .eq(i)
+                                        .before(
+                                            '<tr class="group fw-bolder"><td colspan="4">' +
+                                            group +
+                                            '</td></tr>'
+                                        );
+
+                                    last = group;
+                                }
+                            });
+                    }
+                });
+            });
+
+            // Order by the grouping
+            $('.table tbody').on('click', 'tr.group', function() {
+                var currentOrder = table.order()[0];
+                if (currentOrder[0] === groupColumn && currentOrder[1] === 'asc') {
+                    table.order([groupColumn, 'desc']).draw();
+                } else {
+                    table.order([groupColumn, 'asc']).draw();
+                }
+            });
             $("#checkedAll").change(function() {
                 if (this.checked) {
                     $(".checkSingle").each(function() {

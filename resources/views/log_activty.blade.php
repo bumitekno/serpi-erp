@@ -16,7 +16,7 @@
                     </span>
                     <!--end::Svg Icon-->
                     <input type="text" id="kt_filter_search" data-kt-table-filter="search"
-                        class="form-control form-control-solid form-select-sm w-150px ps-9" placeholder="Search Code">
+                        class="form-control form-control-solid form-select-sm w-150px ps-9" placeholder="Search Log">
                 </div>
             </div>
             <div class="float-end">
