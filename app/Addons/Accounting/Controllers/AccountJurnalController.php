@@ -149,7 +149,22 @@ class AccountJurnalController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $bank_account = res_Company_bank::orderBy('company_bank_name', 'asc')->get();
+        $bank = res_bank::orderBy('bank_name', 'asc')->get();
+        $journal = account_journal::findOrFail($id);
+        $company = res_company::orderBy('id', 'asc')->get();
+        $account = account_account::orderBy('code', 'asc')->get();
+        $currency = res_currency::orderBy('currency_name', 'ASC')->get();
+        $account_type = account_account_type::orderBy('id', 'ASC')->get();
+        return view('journal.edit')->with([
+            'company' => $company,
+            'account' => $account,
+            'bank_account' => $bank_account,
+            'bank' => $bank,
+            'currency' => $currency,
+            'account_type' => $account_type,
+            'journal' => $journal
+        ]);
     }
 
     /**
@@ -158,6 +173,41 @@ class AccountJurnalController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $this->validate($request, [
+            'code' => 'required',
+            'name' => 'required|string|max:50',
+            'type' => 'required',
+            'currency_id' => 'required',
+            'company_id' => 'required',
+        ]);
+
+        try {
+            account_journal::where('id', $id)->update([
+                'name' => $request->name,
+                'code' => $request->code,
+                'active' => True,
+                'type' => $request->type,
+                'currency_id' => $request->currency_id,
+                'company_id' => $request->company_id,
+                'default_credit_account_id' => $request->default_credit_account_id,
+                'default_debit_account_id' => $request->default_debit_account_id,
+                'profit_account_id' => $request->profit_account_id,
+                'loss_account_id' => $request->loss_account_id,
+                'post_at' => $request->post_at,
+                'account_type_allowed' => $request->account_type_allowed,
+                'account_allowed' => $request->account_allowed,
+                'bank_account_id' => $request->bank_account_id,
+                'bank' => $request->bank,
+            ]);
+
+            Session::flash('success', 'Journal Update Successfully');
+            return redirect()->back();
+        } catch (\Exception $e) {
+
+            Session::flash('error', $e->getMessage() . 'Something Wrong');
+
+            return redirect()->back();
+        }
     }
 
     /**
@@ -166,5 +216,9 @@ class AccountJurnalController extends Controller
     public function destroy(string $id)
     {
         //
+        $account = account_journal::find($id);
+        $account->delete();
+        Session::flash('success', 'Journal ' . $account->name . ' |  ' . $account->code . ' Deleted Successfully');
+        return redirect()->route('account.journal');
     }
 }

@@ -1,7 +1,9 @@
 <?php
 use App\Addons\Accounting\Controllers\AccountAccountController;
 use App\Addons\Accounting\Controllers\AccountCompanyController;
+use App\Addons\Accounting\Controllers\AccountingPaymentController;
 use App\Addons\Accounting\Controllers\AccountJurnalController;
+use App\Addons\Accounting\Controllers\AccountMovesController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -15,6 +17,7 @@ Route::prefix('account')->group(function () {
     Route::put('/update/{id}', [AccountAccountController::class, 'update'])->name('account.update');
     Route::get('/delete/{id}', [AccountAccountController::class, 'destroy'])->name('account.destroy');
 });
+
 
 /** group route company  */
 Route::prefix('company')->group(function () {
@@ -33,4 +36,24 @@ Route::prefix('journal')->group(function () {
     Route::get('/filter', [AccountJurnalController::class, 'search'])->name('account.journal.filter');
     Route::get('/create', [AccountJurnalController::class, 'create'])->name('account.journal.create');
     Route::post('/post', [AccountJurnalController::class, 'store'])->name('account.journal.store');
+    Route::put('update/{id}', [AccountJurnalController::class, 'update'])->name('account.journal.update');
+    Route::get('/delete/{id}', [AccountJurnalController::class, 'destroy'])->name('account.journal.destroy');
 });
+
+/** group route payment */
+
+Route::prefix('invoice')->group(function () {
+    Route::get('/', [AccountingPaymentController::class, 'index'])->name('account.invoice');
+    Route::get('/create', [AccountingPaymentController::class, 'create'])->name('account.invoice.create');
+    Route::post('/store', [AccountingPaymentController::class, 'store'])->name('account.invoice.store');
+    Route::get('/view/{id}', [AccountingPaymentController::class, 'view'])->name('account.payment.view');
+    Route::get('/edit/{id}', [AccountingPaymentController::class, 'edit'])->name('account.invoice.edit');
+    Route::put('/update/{id}', [AccountingPaymentController::class, 'update'])->name('account.invoice.update');
+    Route::get('/payment/confirm/{id}', [AccountingPaymentController::class, 'posted'])->name('account.payment.posted');
+});
+
+/** account move */
+Route::get('AccountMove', [AccountMovesController::class, 'index'])->name('accountmove.index');
+Route::get('AccountMove/invoice/{id}', [AccountMovesController::class, 'invoice'])->name('accountmove.invoice');
+Route::get('AccountMove/purchase/{id}', [AccountMovesController::class, 'purchase'])->name('accountmove.purchase');
+Route::get('AccountMove/payment/{id}', [AccountMovesController::class, 'payment'])->name('accountmove.payment');

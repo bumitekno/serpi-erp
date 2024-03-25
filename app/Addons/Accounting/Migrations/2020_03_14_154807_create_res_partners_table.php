@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+class CreateResPartnersTable extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,7 +13,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('res_customers', function (Blueprint $table) {
+        Schema::create('res_partners', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->integer('company_id')->nullable()->index();
@@ -50,7 +51,6 @@ return new class extends Migration {
             $table->string('additional_info')->nullable();
             $table->string('job_title')->nullable();
             $table->string('logo')->nullable();
-            $table->foreignId('receivable_account')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -63,6 +63,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('res_customers');
+        Schema::dropIfExists('res_partners');
     }
-};
+}

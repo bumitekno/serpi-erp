@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class account_payment extends Model
 {
+
+    protected $table = "account_payments";
+
     protected $fillable = [
         'name',
         'payment_reference',

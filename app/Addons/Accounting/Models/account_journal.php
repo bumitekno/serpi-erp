@@ -4,10 +4,15 @@ namespace App\Addons\Accounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class account_journal extends Model
 {
-    use softDeletes;
+    use softDeletes, LogsActivity;
+
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'name',
         'code',
@@ -44,5 +49,13 @@ class account_journal extends Model
     public function currency()
     {
         return $this->hasOne('App\Addons\Accounting\Models\res_currency', 'id', 'currency_id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['code', 'name'])
+            ->setDescriptionForEvent(fn(string $eventName) => "This model has been {$eventName}")
+            ->useLogName('AccountingJournal');
     }
 }
