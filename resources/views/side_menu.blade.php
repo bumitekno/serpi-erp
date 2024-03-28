@@ -405,14 +405,63 @@
             <span class="menu-section text-muted text-uppercase fs-8 ls-1">Accounting </span>
         </div>
     </div>
-    <div class="menu-item">
-        <a class="menu-link" href="javascript:;">
+
+
+    <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+        <span class="menu-link">
             <span class="menu-icon">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                <!--begin::Svg Icon | path: icons/duotune/communication/com006.svg-->
                 <span class="svg-icon svg-icon-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none">
-                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
+                            fill="black">
+                        </rect>
+                    </svg>
+                </span>
+            </span>
+            <span class="menu-title"> Invoice & Payment</span>
+            <span class="menu-arrow"></span>
+        </span>
+        <div class="menu-sub menu-sub-accordion menu-active-bg" kt-hidden-height="273"
+            style="display: none; overflow: hidden;">
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'invoice' ? 'active' : '' }} " href="#">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Invoice</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'payment' ? 'active' : '' }} "
+                    href="{{ route('account.payment') }}">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Payment</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+        <span class="menu-link">
+            <span class="menu-icon">
+                <!--begin::Svg Icon | path: icons/duotune/communication/com006.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black">
+                        </rect>
                         <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
                             fill="black">
                         </rect>
@@ -426,34 +475,60 @@
                 </span>
                 <!--end::Svg Icon-->
             </span>
-            <span class="menu-title">Billing</span>
-        </a>
+            <span class="menu-title">Configuration</span>
+            <span class="menu-arrow"></span>
+        </span>
+        <div class="menu-sub menu-sub-accordion menu-active-bg" kt-hidden-height="273"
+            style="display: none; overflow: hidden;">
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'company' ? 'active' : '' }} "
+                    href="{{ route('account.company') }}">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Company</span>
+                </a>
+            </div>
+
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'client' ? 'active' : '' }} " href="#">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Client</span>
+                </a>
+            </div>
+
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'vendor' ? 'active' : '' }} " href="#">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Vendor</span>
+                </a>
+            </div>
+
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'account' ? 'active' : '' }}"
+                    href="{{ route('account.index') }}">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Account</span>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a class="menu-link {{ request()->segment(2) == 'journal' ? 'active' : '' }}"
+                    href="{{ route('account.journal') }}">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                    <span class="menu-title">Jurnal</span>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="menu-item">
-        <a class="menu-link {{ request()->segment(2) == 'invoice' ? 'active' : '' }} "
-            href="{{ route('account.invoice') }}">
-            <span class="menu-icon">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
-                <span class="svg-icon svg-icon-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none">
-                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
-                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-            </span>
-            <span class="menu-title">Invoice</span>
-        </a>
-    </div>
+
     <div class="menu-item">
         <a class="menu-link" href="javascript:;">
             <span class="menu-icon">
@@ -476,81 +551,6 @@
                 <!--end::Svg Icon-->
             </span>
             <span class="menu-title">Report Ledger</span>
-        </a>
-    </div>
-    <div class="menu-item">
-        <a class="menu-link {{ request()->segment(2) == 'company' ? 'active' : '' }} "
-            href="{{ route('account.company') }}">
-            <span class="menu-icon">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
-                <span class="svg-icon svg-icon-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none">
-                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
-                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-            </span>
-            <span class="menu-title">Company</span>
-        </a>
-    </div>
-    <div class="menu-item">
-        <a class="menu-link {{ request()->segment(2) == 'account' ? 'active' : '' }}"
-            href="{{ route('account.index') }}">
-            <span class="menu-icon">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
-                <span class="svg-icon svg-icon-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none">
-                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
-                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-            </span>
-            <span class="menu-title">Account</span>
-        </a>
-    </div>
-    <div class="menu-item">
-        <a class="menu-link {{ request()->segment(2) == 'journal' ? 'active' : '' }}"
-            href="{{ route('account.journal') }}">
-            <span class="menu-icon">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
-                <span class="svg-icon svg-icon-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none">
-                        <rect x="2" y="2" width="9" height="9" rx="2" fill="black"></rect>
-                        <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                        <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2"
-                            fill="black">
-                        </rect>
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-            </span>
-            <span class="menu-title">Jurnal</span>
         </a>
     </div>
 @endif

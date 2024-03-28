@@ -3,11 +3,18 @@
     @include('top_menu')
 @endpush
 @section('content')
-    <form action="{{ route('account.invoice.store') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('account.payment.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="card">
             <div class="card-header">
-                <H1 class="py-3">Invoice Create </H1>
+                <div class="float-start">
+                    <H1 class="py-3">Payment Create </H1>
+                </div>
+                <div class="float-end">
+                    <div class="py-3">
+                        <a href="{{ route('account.payment') }}" class="btn btn-dark"> Back </a>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 @if ($message = Session::get('error'))
@@ -79,17 +86,6 @@
                                                         data-control="select2" data-placeholder="Select Partner">
                                                         <option></option>
                                                         @foreach ($partner_customer as $row)
-                                                            <option value="{{ $row->id }}">
-                                                                {{ ucfirst($row->name) }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="form-group" id="vendor" style="display:none">
-                                                    <select name="partner_id_sup"
-                                                        class="form-control o_input o_field_widget o_required_modifier form-select"
-                                                        data-control="select2" data-placeholder="Select Partner">
-                                                        <option></option>
-                                                        @foreach ($partner_vendor as $row)
                                                             <option value="{{ $row->id }}">
                                                                 {{ ucfirst($row->name) }}</option>
                                                         @endforeach
@@ -267,12 +263,12 @@
 
             $('select[name=partner_type]').change(function(e) {
                 if (e.target.value == 'customer') {
-                    $('#idSelect').select2();
+                    $('#partner_id_cust').select2();
                     $('#customer').show();
                     $('#vendor').hide();
                 } else if (e.target.value == 'vendor') {
+                    $('#partner_id_sup').select2();
                     $('#vendor').show();
-                    $('#vendor').attr('required', 'required');
                     $('#customer').hide();
                 }
             });

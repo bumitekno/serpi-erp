@@ -3,7 +3,7 @@
     @include('top_menu')
 @endpush
 @section('content')
-    <form action="{{ route('account.invoice.update', $data->id) }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('account.payment.update', $data->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="card">

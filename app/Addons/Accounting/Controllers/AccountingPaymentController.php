@@ -90,7 +90,7 @@ class AccountingPaymentController extends Controller
                 'payment_type' => $request->payment_type,
                 'payment_method_id' => $request->payment_method,
                 'partner_type' => $request->partner_type,
-                'partner_id' => $request->partner_type == 'customer' ? $request->partner_id_cust : $request->partner_id_sup,
+                'partner_id' => $partner,
                 'amount' => $request->amount,
                 'currency_id' => res_company::where('id', $request->company_id)->first()?->id,
                 'payment_date' => $request->payment_date,
@@ -179,9 +179,14 @@ class AccountingPaymentController extends Controller
     {
         try {
             if ($request->partner_type == "customer") {
-                $partner = res_customer::find($request->partner_id);
+                /* In the provided code snippet, the `` variable is being used to retrieve the
+                partner information based on the `partner_type` specified in the request. Depending
+                on whether the `partner_type` is "customer" or "vendor", the code fetches the
+                corresponding partner details from the database using either the `res_customer` or
+                `res_partner` model. */
+                $partner = res_customer::find($request->partner_id_cust);
             } else if ($request->partner_type == "vendor") {
-                $partner = res_partner::find($request->partner_id);
+                $partner = res_partner::find($request->partner_id_sup);
             }
             $payment = account_payment::findOrFail($id);
             $payment->update([

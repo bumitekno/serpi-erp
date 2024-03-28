@@ -30,7 +30,7 @@
                             <div class="me-3">
 
                             </div>
-                            <a href="{{ route('account.invoice.create') }}" class="btn btn-primary">Create</a>
+                            <a href="{{ route('account.payment.create') }}" class="btn btn-primary">Create</a>
                         </div>
                     </div>
                 </form>
