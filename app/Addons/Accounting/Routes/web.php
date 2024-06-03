@@ -60,6 +60,6 @@ Route::get('AccountMove/purchase/{id}', [AccountMovesController::class, 'purchas
 Route::get('AccountMove/payment/{id}', [AccountMovesController::class, 'payment'])->name('accountmove.payment');
 
 /** customer */
-Route::prefix('customer')->group(function () {
+Route::prefix('client')->group(function () {
     Route::get('/', [AccountCustomerController::class, 'index'])->name('account.customer');
 });
